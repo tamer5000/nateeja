@@ -249,7 +249,7 @@
         .corner-br { bottom: 20px; right: 20px; -webkit-transform: scaleY(-1); transform: scaleY(-1); }
         .corner-bl { bottom: 20px; left: 20px; -webkit-transform: scale(-1, -1); transform: scale(-1, -1); }
 
-        /* 1. اللوحة الرئيسية - الجمعة */
+        /* 1. اللوحة الرئيسية - اليوم */
         .friday-section {
             position: absolute;
             left: 31.5%;
@@ -492,6 +492,91 @@
             display: flex;
             align-items: center;
             justify-content: center;
+        }
+
+        /* تنسيق مخصص للشاشات العريضة بنسبة 16:9 (1920x1080) */
+        body.widescreen-16-9 .calendar-sheet {
+            width: 1920px;
+            height: 1080px;
+        }
+
+        body.widescreen-16-9 .islamic-pattern-bg {
+            width: 1920px;
+            height: 1080px;
+        }
+
+        body.widescreen-16-9 .friday-section {
+            left: 33%;
+            width: 34%;
+            top: 3%;
+            height: 35%;
+        }
+
+        body.widescreen-16-9 .friday-plaque-container {
+            height: 255px;
+        }
+
+        body.widescreen-16-9 .friday-title {
+            font-size: 144px;
+        }
+
+        body.widescreen-16-9 .hijri-card {
+            left: 5%;
+            width: 24.5%;
+            top: 6.5%;
+            height: 50.5%;
+        }
+
+        body.widescreen-16-9 .gregorian-card {
+            right: 5%;
+            width: 24.5%;
+            top: 6.5%;
+            height: 50.5%;
+        }
+
+        body.widescreen-16-9 .date-day-number {
+            font-size: 176px;
+        }
+
+        body.widescreen-16-9 .date-month-name {
+            font-size: 50px;
+        }
+
+        body.widescreen-16-9 .date-year-text {
+            font-size: 52px;
+        }
+
+        body.widescreen-16-9 .coptic-section {
+            top: 40.5%;
+            width: 32%;
+        }
+
+        body.widescreen-16-9 .coptic-text {
+            font-size: 42px;
+        }
+
+        body.widescreen-16-9 .prayer-table-container {
+            left: 5%;
+            right: 5%;
+            top: 61%;
+            height: 29%;
+        }
+
+        body.widescreen-16-9 .prayer-name {
+            font-size: 36px;
+        }
+
+        body.widescreen-16-9 .prayer-time-value {
+            font-size: 60px;
+        }
+
+        body.widescreen-16-9 .prayer-period {
+            font-size: 30px;
+        }
+
+        body.widescreen-16-9 .bottom-center-ornament {
+            bottom: 34px;
+            width: 560px;
         }
 
         /* زر القائمة ولوحة الضبط داخل الورقة للموبايل */
@@ -862,7 +947,7 @@
                         </g>
                     </pattern>
                 </defs>
-                <rect width="1536" height="1024" fill="url(#islamicStarGrid)"/>
+                <rect width="100%" height="100%" fill="url(#islamicStarGrid)"/>
             </svg>
 
             <div class="ambient-lighting"></div>
@@ -1169,11 +1254,27 @@
         </main>
     </div>
 
-    <!-- سكريبت متوافق مع كافة المتصفحات القديمة والحديثة -->
+    <!-- سكريبت متوافق مع كافة المتصفحات القديمة والحديثة ويدعم 16:9 و 3:2 -->
     <script>
         function padTwo(num) {
             var s = String(num);
             return s.length < 2 ? '0' + s : s;
+        }
+
+        function hasClassName(el, cls) {
+            return (' ' + (el.className || '') + ' ').indexOf(' ' + cls + ' ') !== -1;
+        }
+
+        function addClassName(el, cls) {
+            if (!el || hasClassName(el, cls)) return;
+            el.className = ((el.className || '') + ' ' + cls).replace(/^\s+|\s+$/g, '');
+        }
+
+        function removeClassName(el, cls) {
+            if (!el || !hasClassName(el, cls)) return;
+            el.className = (' ' + (el.className || '') + ' ')
+                .replace(' ' + cls + ' ', ' ')
+                .replace(/^\s+|\s+$/g, '');
         }
 
         function toggleSettings(forceState) {
@@ -1421,6 +1522,7 @@
             var isMobileLayout = viewportWidth <= 640;
 
             if (isMobileLayout) {
+                removeClassName(document.body, 'widescreen-16-9');
                 wrapper.style.width = '100%';
                 wrapper.style.height = 'auto';
                 wrapper.style.maxWidth = '520px';
@@ -1438,11 +1540,23 @@
                 return;
             }
 
+            var aspectRatio = viewportWidth / Math.max(1, viewportHeight);
+            var use16By9 = viewportWidth >= 1024 && aspectRatio >= 1.58;
+
+            if (use16By9) {
+                addClassName(document.body, 'widescreen-16-9');
+            } else {
+                removeClassName(document.body, 'widescreen-16-9');
+            }
+
+            var baseWidth = use16By9 ? 1920 : 1536;
+            var baseHeight = use16By9 ? 1080 : 1024;
+
             sheet.style.position = 'absolute';
             sheet.style.top = '0px';
             sheet.style.left = '0px';
-            sheet.style.width = '1536px';
-            sheet.style.height = '1024px';
+            sheet.style.width = baseWidth + 'px';
+            sheet.style.height = baseHeight + 'px';
             sheet.style.webkitTransformOrigin = 'top left';
             sheet.style.transformOrigin = 'top left';
 
@@ -1450,9 +1564,9 @@
             var availableWidth = Math.max(320, viewportWidth - 28);
             var availableHeight = Math.max(240, viewportHeight - toolbarHeight - 28);
 
-            var scale = Math.min(availableWidth / 1536, availableHeight / 1024);
-            var renderedWidth = Math.floor(1536 * scale);
-            var renderedHeight = Math.floor(1024 * scale);
+            var scale = Math.min(availableWidth / baseWidth, availableHeight / baseHeight);
+            var renderedWidth = Math.floor(baseWidth * scale);
+            var renderedHeight = Math.floor(baseHeight * scale);
 
             wrapper.style.maxWidth = 'none';
             wrapper.style.width = renderedWidth + 'px';
@@ -1500,7 +1614,7 @@
                 for (var i = 0; i < mobileCitySelector.options.length; i++) {
                     governorates.push({
                         value: mobileCitySelector.options[i].value,
-                        text: mobileCitySelector.options[i].textContent.trim()
+                        text: (mobileCitySelector.options[i].textContent || '').replace(/^\s+|\s+$/g, '')
                     });
                 }
 
@@ -1525,7 +1639,7 @@
 
                 function renderList(container, emptyClass, optionClass, query) {
                     if (!container) return;
-                    var q = (query || '').trim().toLowerCase();
+                    var q = (query || '').replace(/^\s+|\s+$/g, '').toLowerCase();
                     while (container.firstChild) {
                         container.removeChild(container.firstChild);
                     }
@@ -1634,7 +1748,8 @@
             var sheet = document.getElementById('calendarSheet');
             var wrapper = document.getElementById('sheetWrapper');
             if (sheet && wrapper) {
-                var scale = wrapper.clientWidth / 1536;
+                var baseWidth = hasClassName(document.body, 'widescreen-16-9') ? 1920 : 1536;
+                var scale = wrapper.clientWidth / baseWidth;
                 sheet.style.webkitTransform = 'scale(' + scale + ')';
                 sheet.style.transform = 'scale(' + scale + ')';
             }
