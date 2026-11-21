@@ -4,11 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ورقة نتيجة يومية ومواقيت الصلاة - القاهرة</title>
-    <!-- استدعاء خطوط عربية فاخرة وواضحة من Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Cairo:wght@600;700;800;900&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
         :root {
@@ -40,122 +38,180 @@
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            min-height: 100dvh;
-            padding: 16px;
+            padding: 14px;
             overflow-x: hidden;
         }
 
-        /* حاوية التحكم العلوية للطباعة والمعاينة */
+        /* شريط الأدوات بتصميم CSS خالص دون الاعتماد على مكتبات خارجية */
         .toolbar {
             width: 100%;
             max-width: 1200px;
             display: flex;
+            flex-wrap: wrap;
             justify-content: space-between;
             align-items: center;
+            gap: 12px;
             margin-bottom: 14px;
-            padding: 10px 20px;
-            background: rgba(15, 35, 66, 0.9);
-            border: 1px solid var(--gold-main);
+            padding: 10px 18px;
+            background: rgba(15, 35, 66, 0.95);
+            border: 1px solid #C9A24B;
             border-radius: 12px;
             color: #FAF7F0;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
         }
 
-        .btn-gold {
-            background: linear-gradient(135deg, var(--gold-main), var(--gold-dark));
-            color: #0A1B36;
-            font-weight: 800;
-            padding: 8px 20px;
-            border-radius: 8px;
-            border: 1px solid var(--gold-light);
-            cursor: pointer;
-            transition: all 0.25s ease;
-            display: inline-flex;
+        .toolbar-info,
+        .toolbar-controls {
+            display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
-        .btn-gold:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 15px rgba(201, 162, 75, 0.45);
-            filter: brightness(1.06);
+        .live-dot {
+            display: inline-block;
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            background-color: #C9A24B;
+            flex-shrink: 0;
+        }
+
+        .toolbar-title {
+            font-weight: 800;
+            font-size: 15px;
+            color: #FAF7F0;
+        }
+
+        .live-badge {
+            font-size: 12px;
+            padding: 3px 10px;
+            border-radius: 999px;
+            background: #1B365D;
+            color: #E8CF88;
+            border: 1px solid rgba(201, 162, 75, 0.45);
+        }
+
+        .btn-gold {
+            background: linear-gradient(135deg, #C9A24B, #A67C2E);
+            color: #0A1B36;
+            font-family: 'Cairo', sans-serif;
+            font-weight: 800;
+            padding: 7px 18px;
+            border-radius: 8px;
+            border: 1px solid #E8CF88;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 14px;
+        }
+
+        .btn-outline-gold {
+            background: transparent;
+            color: #E8CF88;
+            border: 1px solid #C9A24B;
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-family: 'Cairo', sans-serif;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .date-picker-input {
+            background: rgba(250, 247, 240, 0.12);
+            border: 1px solid #C9A24B;
+            color: #FAF7F0;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 14px;
+            outline: none;
+            min-height: 38px;
         }
 
         .desktop-governorate-picker { position: relative; min-width: 150px; }
         .desktop-governorate-button {
-            width: 100%; min-height: 42px; display: flex;
+            width: 100%; min-height: 38px; display: flex;
             align-items: center; justify-content: space-between;
             gap: 12px; cursor: pointer; text-align: right;
-            background: rgba(250,247,240,.12); color: #FAF7F0;
-            border: 1px solid var(--gold-main); border-radius: 8px;
-            padding: 8px 12px; font: inherit;
+            background: rgba(250,247,240,0.12); color: #FAF7F0;
+            border: 1px solid #C9A24B; border-radius: 8px;
+            padding: 6px 12px; font-family: 'Cairo', sans-serif; font-size: 14px;
         }
         .desktop-governorate-dropdown {
             position: absolute; top: calc(100% + 6px); right: 0;
             width: 230px; max-width: calc(100vw - 36px); z-index: 1000; padding: 8px;
-            border: 1px solid var(--gold-main); border-radius: 10px;
-            background: #0A1B36; box-shadow: 0 10px 24px rgba(0,0,0,.4);
+            border: 1px solid #C9A24B; border-radius: 10px;
+            background: #0A1B36; box-shadow: 0 10px 24px rgba(0,0,0,0.45);
         }
         .desktop-governorate-dropdown[hidden] { display: none !important; }
         .desktop-governorate-search {
-            box-sizing: border-box; width: 100%; min-height: 40px;
-            margin-bottom: 7px; padding: 8px 10px; direction: rtl;
+            box-sizing: border-box; width: 100%; min-height: 38px;
+            margin-bottom: 7px; padding: 6px 10px; direction: rtl;
             text-align: right; color: #FAF7F0;
-            background: rgba(250,247,240,.10);
-            border: 1px solid var(--gold-main); border-radius: 7px;
+            background: rgba(250,247,240,0.10);
+            border: 1px solid #C9A24B; border-radius: 7px;
+            font-family: 'Cairo', sans-serif;
         }
-        .desktop-governorate-options { max-height: 260px; overflow-y: auto; }
+        .desktop-governorate-options { max-height: 250px; overflow-y: auto; }
         .desktop-governorate-option {
             display: block; width: 100%; padding: 8px 10px;
-            border: 0; border-bottom: 1px solid rgba(201,162,75,.2);
+            border: 0; border-bottom: 1px solid rgba(201,162,75,0.2);
             background: transparent; color: #FAF7F0; text-align: right;
-            font: inherit; cursor: pointer;
+            font-family: 'Cairo', sans-serif; font-size: 14px; cursor: pointer;
         }
         .desktop-governorate-option:hover,
         .desktop-governorate-option[aria-selected="true"] {
-            background: rgba(201,162,75,.18); color: var(--gold-light);
+            background: rgba(201,162,75,0.22); color: #E8CF88;
         }
-        .desktop-governorate-empty { padding: 10px; color: #FAF7F0; text-align: center; }
+        .desktop-governorate-empty { padding: 10px; color: #FAF7F0; text-align: center; font-size: 14px; }
 
-        /* الحاوية المتجاوبة للآيباد والشاشات الكبيرة والكمبيوتر */
+        /* الحاوية الرئيسية مع ارتفاع افتراضي آمن قبل التحجيم */
         .sheet-wrapper {
             width: 100%;
+            max-width: 1200px;
+            height: 640px;
             position: relative;
             box-shadow: 0 25px 60px rgba(0, 0, 0, 0.55);
             border-radius: 6px;
             overflow: hidden;
-            background-color: var(--ivory-bg);
+            background-color: #FAF7F0;
             margin: 0 auto;
         }
 
-        /* لوحة التصميم الأساسية بأبعاد ثابتة 1536x1024 بتمركز متوافق مع جميع المتصفحات */
+        /* لوحة التصميم الأساسية بأبعاد ثابتة 1536x1024 */
         .calendar-sheet {
             width: 1536px;
             height: 1024px;
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform-origin: center center;
-            transform: translate(-50%, -50%) scale(1);
-            background-color: var(--ivory-bg);
+            top: 0;
+            left: 0;
+            -webkit-transform-origin: top left;
+            transform-origin: top left;
+            background-color: #FAF7F0;
             overflow: hidden;
+            -webkit-user-select: none;
             user-select: none;
         }
 
         /* خلفية النقوش الهندسية الإسلامية الدقيقة */
         .islamic-pattern-bg {
             position: absolute;
-            inset: 0;
+            top: 0; left: 0; right: 0; bottom: 0;
             opacity: 0.055;
             pointer-events: none;
             z-index: 1;
         }
 
-        /* تدرج إضاءة ناعم لإعطاء عمق للورقة */
+        /* تدرج إضاءة ناعم */
         .ambient-lighting {
             position: absolute;
-            inset: 0;
+            top: 0; left: 0; right: 0; bottom: 0;
             background: radial-gradient(circle at 50% 42%, rgba(255, 255, 255, 0.65) 0%, rgba(235, 224, 200, 0.35) 100%);
             pointer-events: none;
             z-index: 2;
@@ -164,8 +220,8 @@
         /* الإطار الخارجي المزدوج */
         .outer-frame-navy {
             position: absolute;
-            inset: 22px;
-            border: 3px solid var(--navy-main);
+            top: 22px; left: 22px; right: 22px; bottom: 22px;
+            border: 3px solid #0F2342;
             border-radius: 14px;
             pointer-events: none;
             z-index: 10;
@@ -173,8 +229,8 @@
 
         .outer-frame-gold {
             position: absolute;
-            inset: 29px;
-            border: 2px solid var(--gold-main);
+            top: 29px; left: 29px; right: 29px; bottom: 29px;
+            border: 2px solid #C9A24B;
             border-radius: 10px;
             pointer-events: none;
             z-index: 10;
@@ -189,11 +245,11 @@
             pointer-events: none;
         }
         .corner-tr { top: 20px; right: 20px; }
-        .corner-tl { top: 20px; left: 20px; transform: scaleX(-1); }
-        .corner-br { bottom: 20px; right: 20px; transform: scaleY(-1); }
-        .corner-bl { bottom: 20px; left: 20px; transform: scale(-1, -1); }
+        .corner-tl { top: 20px; left: 20px; -webkit-transform: scaleX(-1); transform: scaleX(-1); }
+        .corner-br { bottom: 20px; right: 20px; -webkit-transform: scaleY(-1); transform: scaleY(-1); }
+        .corner-bl { bottom: 20px; left: 20px; -webkit-transform: scale(-1, -1); transform: scale(-1, -1); }
 
-        /* 1. اللوحة الرئيسية - الجمعة (X: 32% إلى 68%, Y: 3% إلى 37%) */
+        /* 1. اللوحة الرئيسية - الجمعة */
         .friday-section {
             position: absolute;
             left: 31.5%;
@@ -227,7 +283,7 @@
             line-height: 1;
             margin-top: -12px;
             text-shadow:
-                0 3px 0 var(--gold-dark),
+                0 3px 0 #A67C2E,
                 0 6px 18px rgba(201, 162, 75, 0.65),
                 0 10px 25px rgba(0, 0, 0, 0.45);
             letter-spacing: 1px;
@@ -241,33 +297,26 @@
             width: 26.5%;
             background: linear-gradient(180deg, #FDFBF7 0%, #F3EBDC 100%);
             border-radius: 24px;
-            border: 3px solid var(--gold-main);
+            border: 3px solid #C9A24B;
             box-shadow:
                 0 14px 30px rgba(15, 35, 66, 0.14),
                 inset 0 0 0 4px #FAF6EE,
-                inset 0 0 0 6px var(--gold-dark);
+                inset 0 0 0 6px #A67C2E;
             display: flex;
             flex-direction: column;
             overflow: hidden;
             z-index: 15;
         }
 
-        /* التاريخ الهجري (أعلى اليسار X: 4.5% إلى 31%) */
-        .hijri-card {
-            left: 4.5%;
-        }
-
-        /* التاريخ الميلادي (أعلى اليمين X: 69% إلى 95.5%) */
-        .gregorian-card {
-            right: 4.5%;
-        }
+        .hijri-card { left: 4.5%; }
+        .gregorian-card { right: 4.5%; }
 
         .date-card-header {
             height: 86px;
             margin: 6px 6px 0 6px;
             border-radius: 16px 16px 4px 4px;
-            background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy-light) 50%, var(--navy-dark) 100%);
-            border-bottom: 3px solid var(--gold-main);
+            background: linear-gradient(135deg, #0A1B36 0%, #1B365D 50%, #0A1B36 100%);
+            border-bottom: 3px solid #C9A24B;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -288,7 +337,7 @@
             font-family: 'Cairo', sans-serif;
             font-size: 168px;
             font-weight: 900;
-            color: var(--navy-main);
+            color: #0F2342;
             line-height: 0.92;
             margin-top: 6px;
             text-shadow: 0 4px 10px rgba(15, 35, 66, 0.12);
@@ -298,14 +347,14 @@
             font-family: 'Cairo', sans-serif;
             font-size: 46px;
             font-weight: 800;
-            color: var(--navy-dark);
+            color: #0A1B36;
             line-height: 1.15;
         }
 
         .gold-divider-line {
             width: 78%;
             height: 2.5px;
-            background: linear-gradient(90deg, transparent 0%, var(--gold-dark) 20%, var(--gold-main) 50%, var(--gold-dark) 80%, transparent 100%);
+            background: linear-gradient(90deg, transparent 0%, #A67C2E 20%, #C9A24B 50%, #A67C2E 80%, transparent 100%);
             border-radius: 2px;
         }
 
@@ -313,14 +362,15 @@
             font-family: 'Cairo', sans-serif;
             font-size: 48px;
             font-weight: 800;
-            color: var(--navy-main);
+            color: #0F2342;
             line-height: 1.1;
         }
 
-        /* 3. التاريخ القبطي في المنتصف أسفل لوحة الجمعة */
+        /* 3. التاريخ القبطي */
         .coptic-section {
             position: absolute;
             left: 50%;
+            -webkit-transform: translateX(-50%);
             transform: translateX(-50%);
             top: 40.5%;
             width: 34%;
@@ -335,7 +385,7 @@
             font-family: 'Cairo', sans-serif;
             font-size: 38px;
             font-weight: 800;
-            color: var(--navy-main);
+            color: #0F2342;
             letter-spacing: 0.5px;
             margin-bottom: 10px;
         }
@@ -348,7 +398,7 @@
             top: 61.5%;
             height: 28.2%;
             border-radius: 22px;
-            border: 3px solid var(--gold-main);
+            border: 3px solid #C9A24B;
             box-shadow:
                 0 16px 35px rgba(15, 35, 66, 0.16),
                 inset 0 0 0 3px #FAF6EE;
@@ -372,14 +422,14 @@
             bottom: 8px;
             left: 0;
             width: 2px;
-            background: linear-gradient(180deg, var(--gold-light) 0%, var(--gold-main) 50%, var(--gold-dark) 100%);
+            background: linear-gradient(180deg, #E8CF88 0%, #C9A24B 50%, #A67C2E 100%);
             z-index: 5;
         }
 
         .prayer-header {
             height: 43%;
-            background: linear-gradient(180deg, var(--navy-dark) 0%, var(--navy-light) 100%);
-            border-bottom: 3px solid var(--gold-main);
+            background: linear-gradient(180deg, #0A1B36 0%, #1B365D 100%);
+            border-bottom: 3px solid #C9A24B;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -415,7 +465,7 @@
             font-family: 'Cairo', sans-serif;
             font-size: 54px;
             font-weight: 900;
-            color: var(--navy-main);
+            color: #0F2342;
             line-height: 1.05;
             letter-spacing: 0.5px;
         }
@@ -424,7 +474,7 @@
             font-family: 'Cairo', sans-serif;
             font-size: 28px;
             font-weight: 800;
-            color: var(--navy-light);
+            color: #1B365D;
             margin-top: 2px;
             line-height: 1;
         }
@@ -434,6 +484,7 @@
             position: absolute;
             bottom: 40px;
             left: 50%;
+            -webkit-transform: translateX(-50%);
             transform: translateX(-50%);
             width: 480px;
             height: 32px;
@@ -443,103 +494,7 @@
             justify-content: center;
         }
 
-        /* إعدادات الطباعة الاحترافية */
-        @media print {
-            @page {
-                size: landscape;
-                margin: 0;
-            }
-            body {
-                background: #FFFFFF;
-                padding: 0;
-                margin: 0;
-                min-height: auto;
-            }
-            .toolbar {
-                display: none !important;
-            }
-            .sheet-wrapper {
-                max-width: 100%;
-                width: 100vw;
-                height: 100vh;
-                box-shadow: none;
-                border-radius: 0;
-            }
-            .calendar-sheet {
-                top: 0 !important;
-                left: 0 !important;
-                transform-origin: top left !important;
-            }
-        }
-
-        /* تنسيق الشاشات المتوسطة والكبيرة */
-        @media screen and (min-width: 701px) {
-            body {
-                padding: 12px 16px;
-                justify-content: center;
-            }
-
-            .toolbar {
-                margin-bottom: 12px;
-            }
-        }
-
-        @media screen and (min-width: 1600px) {
-            .toolbar {
-                min-height: 64px;
-                padding: 12px 24px;
-                font-size: 18px;
-            }
-
-            .toolbar button,
-            .toolbar input,
-            .desktop-governorate-button {
-                min-height: 46px;
-                font-size: 17px;
-            }
-
-            .desktop-governorate-dropdown {
-                width: 290px;
-            }
-
-            .desktop-governorate-search,
-            .desktop-governorate-option {
-                min-height: 44px;
-                font-size: 17px;
-            }
-        }
-
-        /* تنسيق منتقي التاريخ في شريط الأدوات */
-        .date-picker-input {
-            background: rgba(250, 247, 240, 0.12);
-            border: 1px solid var(--gold-main);
-            color: #FAF7F0;
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-family: 'Cairo', sans-serif;
-            font-size: 14px;
-            outline: none;
-            color-scheme: dark;
-        }
-        .btn-outline-gold {
-            background: transparent;
-            color: var(--gold-light);
-            border: 1px solid var(--gold-main);
-            padding: 7px 14px;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .btn-outline-gold:hover {
-            background: rgba(201, 162, 75, 0.18);
-        }
-
-        /* زر القائمة ولوحة الضبط داخل الورقة */
+        /* زر القائمة ولوحة الضبط داخل الورقة للموبايل */
         .sheet-menu-toggle {
             position: absolute;
             top: 145px;
@@ -550,35 +505,28 @@
             display: none !important;
             align-items: center;
             justify-content: center;
-            color: var(--gold-light);
-            background: linear-gradient(145deg, var(--navy-light), var(--navy-dark));
-            border: 2px solid var(--gold-main);
+            color: #E8CF88;
+            background: linear-gradient(145deg, #1B365D, #0A1B36);
+            border: 2px solid #C9A24B;
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(10, 27, 54, 0.2);
             cursor: pointer;
         }
 
-        .sheet-menu-toggle:hover {
-            filter: brightness(1.15);
-        }
-
-        .sheet-settings-panel[hidden] {
-            display: none !important;
-        }
-
+        .sheet-settings-panel[hidden] { display: none !important; }
         .sheet-settings-panel {
             position: absolute;
             top: 201px;
             right: 42px;
             z-index: 45;
-            width: min(300px, calc(100% - 84px));
+            width: 280px;
             padding: 16px;
             display: flex;
             flex-direction: column;
             gap: 12px;
             color: #FAF7F0;
             background: linear-gradient(160deg, #1B365D, #0A1B36);
-            border: 2px solid var(--gold-main);
+            border: 2px solid #C9A24B;
             border-radius: 14px;
             box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3);
         }
@@ -587,7 +535,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            color: var(--gold-light);
+            color: #E8CF88;
             font-weight: 800;
             font-size: 17px;
         }
@@ -595,7 +543,7 @@
         .sheet-settings-close {
             border: 0;
             background: transparent;
-            color: var(--gold-light);
+            color: #E8CF88;
             font-size: 28px;
             line-height: 1;
             cursor: pointer;
@@ -611,29 +559,30 @@
             width: 100%;
             min-height: 42px;
         }
+
         .governorate-picker { position: relative; width: 100%; }
         .governorate-picker-button {
             display: flex; align-items: center; justify-content: space-between;
-            cursor: pointer; text-align: right; font: inherit;
+            cursor: pointer; text-align: right; font: inherit; width: 100%;
         }
         .governorate-dropdown {
             position: absolute; top: calc(100% + 5px); right: 0; left: 0;
-            z-index: 100; padding: 8px; border: 1px solid var(--gold-main);
-            border-radius: 10px; background: var(--navy-dark);
-            box-shadow: 0 10px 24px rgba(0,0,0,.35);
+            z-index: 100; padding: 8px; border: 1px solid #C9A24B;
+            border-radius: 10px; background: #0A1B36;
+            box-shadow: 0 10px 24px rgba(0,0,0,0.35);
         }
         .governorate-dropdown[hidden] { display: none !important; }
-        .governorate-search { box-sizing: border-box; margin-bottom: 7px; }
+        .governorate-search { box-sizing: border-box; margin-bottom: 7px; width: 100%; }
         .governorate-options { max-height: 190px; overflow-y: auto; }
         .governorate-option {
             display: block; width: 100%; padding: 8px 10px; border: 0;
-            border-bottom: 1px solid rgba(201,162,75,.22);
+            border-bottom: 1px solid rgba(201,162,75,0.22);
             background: transparent; color: #FAF7F0; text-align: right;
             font: inherit; cursor: pointer;
         }
         .governorate-option:hover,
         .governorate-option[aria-selected="true"] {
-            background: rgba(201,162,75,.18); color: var(--gold-light);
+            background: rgba(201,162,75,0.18); color: #E8CF88;
         }
         .governorate-empty { padding: 10px; color: #FAF7F0; text-align: center; }
         .prayer-city-heading { display: none; }
@@ -642,13 +591,39 @@
             display: flex;
             gap: 8px;
         }
-
         .sheet-settings-actions > button {
             flex: 1;
             justify-content: center;
         }
 
-        @media screen and (max-width: 700px) {
+        /* تكبير أزرار وقوائم التحكم على الشاشات الكبيرة جداً */
+        @media screen and (min-width: 1600px) {
+            .toolbar {
+                min-height: 64px;
+                padding: 12px 24px;
+            }
+            .toolbar-title { font-size: 18px; }
+            .live-badge { font-size: 14px; }
+            .toolbar button,
+            .toolbar input,
+            .desktop-governorate-button {
+                min-height: 46px;
+                font-size: 17px;
+            }
+            .desktop-governorate-dropdown { width: 290px; }
+            .desktop-governorate-search,
+            .desktop-governorate-option {
+                min-height: 44px;
+                font-size: 17px;
+            }
+        }
+
+        /* تخطيط الهواتف فقط (640px فأقل حتى يظهر الآيباد بالتصميم الكامل) */
+        @media screen and (max-width: 640px) {
+            body {
+                justify-content: flex-start;
+                padding: 10px;
+            }
             .toolbar { display: none !important; }
             .sheet-menu-toggle {
                 display: flex !important;
@@ -658,55 +633,28 @@
                 height: 40px;
                 border-radius: 10px;
             }
-
-            .sheet-menu-toggle svg {
-                width: 19px;
-                height: 19px;
-            }
-
             .sheet-settings-panel {
                 top: 118px;
                 right: 16px;
-                width: min(280px, calc(100% - 32px));
+                width: calc(100% - 32px);
+                max-width: 280px;
                 padding: 12px;
             }
-        }
-
-        @media print {
-            .sheet-menu-toggle,
-            .sheet-settings-panel {
-                display: none !important;
-            }
-        }
-
-        /* =========================
-           تخطيط مستقل للهواتف
-           ========================= */
-        @media screen and (max-width: 700px) {
-            body {
-                justify-content: flex-start;
-                padding: 10px;
-            }
-
             .sheet-wrapper {
                 width: 100%;
                 max-width: 520px;
-                aspect-ratio: auto;
-                height: auto;
+                height: auto !important;
                 overflow: visible;
                 border-radius: 8px;
             }
-
             .calendar-sheet {
-                position: relative;
-                top: auto;
-                left: auto;
-                right: auto;
-                width: 100%;
-                height: auto;
-                min-height: 0;
+                position: relative !important;
+                top: auto !important;
+                left: auto !important;
+                width: 100% !important;
+                height: auto !important;
+                -webkit-transform: none !important;
                 transform: none !important;
-                transform-origin: top right;
                 display: grid;
                 grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
                 grid-template-areas:
@@ -720,287 +668,102 @@
                 overflow: hidden;
                 border-radius: 8px;
             }
-
-            .islamic-pattern-bg,
-            .ambient-lighting,
-            .outer-frame-navy,
-            .outer-frame-gold,
-            .corner-ornament,
-            .bottom-center-ornament {
-                pointer-events: none;
-            }
-
-            .outer-frame-navy {
-                inset: 7px;
-                border-width: 2px;
-                border-radius: 10px;
-            }
-
-            .outer-frame-gold {
-                inset: 12px;
-                border-width: 1px;
-                border-radius: 7px;
-            }
-
-            .corner-ornament {
-                width: 54px;
-                height: 54px;
-            }
-
+            .outer-frame-navy { top: 7px; left: 7px; right: 7px; bottom: 7px; border-width: 2px; border-radius: 10px; }
+            .outer-frame-gold { top: 12px; left: 12px; right: 12px; bottom: 12px; border-width: 1px; border-radius: 7px; }
+            .corner-ornament { width: 54px; height: 54px; }
             .corner-tr { top: 6px; right: 6px; }
             .corner-tl { top: 6px; left: 6px; }
             .corner-br { bottom: 6px; right: 6px; }
             .corner-bl { bottom: 6px; left: 6px; }
-
             .friday-section {
                 grid-area: friday;
-                position: relative;
-                left: auto;
-                right: auto;
-                top: auto;
-                width: 100%;
-                height: auto;
-                min-height: 0;
-                gap: 0;
-                justify-content: center;
+                position: relative; left: auto; top: auto; width: 100%; height: auto;
                 padding: 2px 18px 0;
             }
-
             .friday-section > svg:first-child,
-            .friday-section > svg:last-child {
-                width: min(52%, 180px);
-                height: auto;
-            }
-
-            .friday-plaque-container {
-                width: 100%;
-                max-width: 360px;
-                height: clamp(100px, 29vw, 142px);
-                filter: drop-shadow(0 7px 12px rgba(10, 27, 54, 0.24));
-            }
-
-            .friday-title {
-                font-size: clamp(54px, 15vw, 78px);
-                margin-top: -5px;
-            }
-
+            .friday-section > svg:last-child { width: 52%; max-width: 180px; height: auto; }
+            .friday-plaque-container { width: 100%; max-width: 360px; height: 120px; }
+            .friday-title { font-size: 64px; margin-top: -5px; }
             .date-card {
-                position: relative;
-                top: auto;
-                left: auto;
-                right: auto;
-                width: auto;
-                height: clamp(176px, 49vw, 220px);
-                min-width: 0;
-                border-radius: 14px;
-                border-width: 2px;
+                position: relative; top: auto; left: auto; right: auto; width: auto;
+                height: 190px; border-radius: 14px; border-width: 2px;
             }
-
             .hijri-card { grid-area: hijri; }
             .gregorian-card { grid-area: gregorian; }
-
-            .date-card-header {
-                height: 42px;
-                margin: 4px 4px 0;
-                border-radius: 9px 9px 3px 3px;
-                border-bottom-width: 2px;
-            }
-
-            .date-card-header svg {
-                width: 28px;
-                height: 28px;
-            }
-
-            .date-card-body {
-                padding: 7px 5px 10px;
-                justify-content: space-evenly;
-            }
-
-            .date-day-number {
-                font-size: clamp(54px, 15vw, 76px);
-                line-height: 0.95;
-                margin-top: 0;
-            }
-
-            .date-month-name {
-                font-size: clamp(16px, 4.5vw, 22px);
-                line-height: 1.2;
-                overflow-wrap: anywhere;
-            }
-
-            .gold-divider-line {
-                width: 78%;
-                height: 2px;
-            }
-
-            .date-year-text {
-                font-size: clamp(17px, 4.8vw, 23px);
-                line-height: 1.1;
-            }
-
+            .date-card-header { height: 42px; margin: 4px 4px 0; border-radius: 9px 9px 3px 3px; border-bottom-width: 2px; }
+            .date-card-header svg { width: 28px; height: 28px; }
+            .date-card-body { padding: 7px 5px 10px; justify-content: space-evenly; }
+            .date-day-number { font-size: 62px; line-height: 0.95; margin-top: 0; }
+            .date-month-name { font-size: 18px; line-height: 1.2; }
+            .date-year-text { font-size: 19px; line-height: 1.1; }
             .coptic-section {
-                grid-area: coptic;
-                position: relative;
-                left: auto;
-                top: auto;
-                transform: none;
-                width: 100%;
-                padding: 2px 4px;
+                grid-area: coptic; position: relative; left: auto; top: auto;
+                -webkit-transform: none; transform: none; width: 100%; padding: 2px 4px;
             }
-
-            .coptic-text {
-                font-size: clamp(18px, 5vw, 25px);
-                line-height: 1.35;
-                margin-bottom: 3px;
-                text-align: center;
-            }
-
-            .coptic-section svg {
-                width: min(75%, 260px);
-                height: auto;
-            }
-
+            .coptic-text { font-size: 20px; line-height: 1.35; margin-bottom: 3px; text-align: center; }
+            .coptic-section svg { width: 75%; max-width: 260px; height: auto; }
             .prayer-city-heading {
-                display: block;
-                grid-area: cityheading;
-                position: static;
-                text-align: center;
-                color: var(--navy-main);
-                font-size: 20px;
-                font-weight: 800;
-                line-height: 1.3;
-                margin: 0 0 -4px;
+                display: block; grid-area: cityheading; text-align: center;
+                color: #0F2342; font-size: 20px; font-weight: 800; margin: 0 0 -4px;
             }
-
             .prayer-table-container {
-                grid-area: prayers;
-                position: relative;
-                left: auto;
-                right: auto;
-                top: auto;
-                width: 100%;
-                height: auto;
-                min-height: 0;
-                grid-template-columns: repeat(3, minmax(0, 1fr));
-                border-radius: 14px;
-                border-width: 2px;
+                grid-area: prayers; position: relative; left: auto; right: auto; top: auto;
+                width: 100%; height: auto; grid-template-columns: repeat(3, minmax(0, 1fr));
+                border-radius: 14px; border-width: 2px;
             }
-
-            .prayer-col {
-                min-width: 0;
-                min-height: 118px;
-                border-bottom: 1px solid rgba(166, 124, 46, 0.45);
-            }
-
+            .prayer-col { min-width: 0; min-height: 118px; border-bottom: 1px solid rgba(166, 124, 46, 0.45); }
             .prayer-col:nth-child(3n + 1),
-            .prayer-col:nth-child(3n + 2) {
-                border-left: 1px solid rgba(166, 124, 46, 0.45);
-            }
-
-            .prayer-col:not(:last-child)::after {
-                display: none;
-            }
-
-            .prayer-header {
-                height: 58px;
-                min-height: 58px;
-                gap: 2px;
-                padding: 4px 2px;
-                border-bottom-width: 2px;
-            }
-
-            .prayer-icon {
-                width: 25px;
-                height: 25px;
-            }
-
-            .prayer-name {
-                font-size: clamp(15px, 4.2vw, 19px);
-                line-height: 1.1;
-            }
-
-            .prayer-time-cell {
-                min-height: 58px;
-                padding: 5px 2px;
-            }
-
-            .prayer-time-value {
-                font-size: clamp(22px, 6.3vw, 30px);
-                line-height: 1.1;
-                letter-spacing: 0;
-            }
-
-            .prayer-period {
-                font-size: 15px;
-                margin-top: 2px;
-            }
-
-            .bottom-center-ornament {
-                width: min(68%, 280px);
-                height: 22px;
-                bottom: 17px;
-            }
-
-            .bottom-center-ornament svg {
-                width: 100%;
-                height: 100%;
-            }
+            .prayer-col:nth-child(3n + 2) { border-left: 1px solid rgba(166, 124, 46, 0.45); }
+            .prayer-col:not(:last-child)::after { display: none; }
+            .prayer-header { height: 58px; min-height: 58px; gap: 2px; padding: 4px 2px; border-bottom-width: 2px; }
+            .prayer-icon { width: 25px; height: 25px; }
+            .prayer-name { font-size: 16px; line-height: 1.1; }
+            .prayer-time-cell { min-height: 58px; padding: 5px 2px; }
+            .prayer-time-value { font-size: 24px; line-height: 1.1; letter-spacing: 0; }
+            .prayer-period { font-size: 15px; margin-top: 2px; }
+            .bottom-center-ornament { width: 68%; max-width: 280px; height: 22px; bottom: 17px; }
+            .bottom-center-ornament svg { width: 100%; height: 100%; }
         }
 
-        @media screen and (max-width: 360px) {
-            body { padding: 6px; }
-            .calendar-sheet { padding: 24px 12px 48px; gap: 9px; }
-            .date-card { height: 168px; }
-            .date-day-number { font-size: 52px; }
-            .date-month-name { font-size: 15px; }
-            .date-year-text { font-size: 16px; }
-            .prayer-col { min-height: 108px; }
-            .prayer-header { height: 54px; min-height: 54px; }
-            .prayer-time-value { font-size: 21px; }
-        }
-
+        /* إعدادات الطباعة */
         @media print {
-            .calendar-sheet {
-                display: block;
-                width: 1536px;
-                height: 1024px;
-                min-height: 0;
-                padding: 0;
-                border-radius: 0;
-            }
+            @page { size: landscape; margin: 0; }
+            body { background: #FFFFFF; padding: 0; margin: 0; min-height: auto; }
+            .toolbar, .sheet-menu-toggle, .sheet-settings-panel { display: none !important; }
+            .sheet-wrapper { max-width: 100%; width: 100vw; height: 100vh; box-shadow: none; border-radius: 0; }
+            .calendar-sheet { display: block; width: 1536px; height: 1024px; padding: 0; border-radius: 0; }
         }
     </style>
 </head>
 <body>
 
-    <!-- شريط أدوات علوي للمعاينة الحية وتحديد التاريخ والطباعة -->
-    <div class="toolbar flex-wrap gap-3">
-        <div class="flex items-center gap-3">
-            <span id="liveStatusDot" class="inline-block w-3 h-3 rounded-full bg-[#C9A24B] transition-colors"></span>
-            <span id="toolbarCityTitle" class="font-bold text-sm sm:text-base text-[#FAF7F0]">ورقة نتيجة يومية ومواقيت الصلاة — القاهرة</span>
-            <span id="liveStatusText" class="text-xs px-2.5 py-0.5 rounded-full bg-[#1B365D] text-[#E8CF88] border border-[#C9A24B]/40">جاري التحديث الحي...</span>
+    <div class="toolbar">
+        <div class="toolbar-info">
+            <span id="liveStatusDot" class="live-dot"></span>
+            <span id="toolbarCityTitle" class="toolbar-title">ورقة نتيجة يومية ومواقيت الصلاة — القاهرة</span>
+            <span id="liveStatusText" class="live-badge">جاري التحديث الحي...</span>
         </div>
-        <div class="flex items-center gap-2 sm:gap-3 flex-wrap">
+        <div class="toolbar-controls">
             <div class="desktop-governorate-picker" id="desktopGovernoratePicker">
                 <button type="button" id="desktopGovernorateButton"
-                        class="date-picker-input desktop-governorate-button"
+                        class="desktop-governorate-button"
                         aria-expanded="false" aria-controls="desktopGovernorateDropdown">
                     <span id="desktopGovernorateLabel">القاهرة</span>
                     <span aria-hidden="true">⌄</span>
                 </button>
                 <div id="desktopGovernorateDropdown" class="desktop-governorate-dropdown" hidden>
                     <input type="search" id="desktopGovernorateSearch"
-                           class="date-picker-input desktop-governorate-search"
+                           class="desktop-governorate-search"
                            placeholder="ابحث داخل المحافظات..." autocomplete="off"
                            aria-label="ابحث داخل قائمة المحافظات">
                     <div id="desktopGovernorateOptions" class="desktop-governorate-options"></div>
                 </div>
             </div>
             <input type="date" id="dateSelector" class="date-picker-input" title="اختر تاريخاً للمعاينة">
-            <button onclick="resetToToday()" class="btn-outline-gold" title="العودة لتاريخ اليوم المباشر">
+            <button type="button" onclick="resetToToday()" class="btn-outline-gold" title="العودة لتاريخ اليوم المباشر">
                 <span>اليوم</span>
             </button>
-            <button onclick="window.print()" class="btn-gold" title="طباعة الورقة بجودة عالية">
+            <button type="button" onclick="window.print()" class="btn-gold" title="طباعة الورقة بجودة عالية">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="6 9 6 2 18 2 18 9"></polyline>
                     <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
@@ -1011,10 +774,8 @@
         </div>
     </div>
 
-    <!-- الحاوية الرئيسية بنسبة عرض إلى ارتفاع 3:2 -->
     <div class="sheet-wrapper" id="sheetWrapper">
         <main class="calendar-sheet" id="calendarSheet">
-            <!-- زر القائمة داخل التصميم نفسه -->
             <button type="button" id="settingsToggle" class="sheet-menu-toggle"
                     aria-expanded="false" aria-controls="settingsPanel"
                     onclick="toggleSettings()" title="أدوات الضبط">
@@ -1026,7 +787,6 @@
                 </svg>
             </button>
 
-            <!-- لوحة الضبط المنبثقة داخل حدود التصميم -->
             <div id="settingsPanel" class="sheet-settings-panel" hidden>
                 <div class="sheet-settings-heading">
                     <span>أدوات الضبط</span>
@@ -1082,12 +842,12 @@
                 <label class="sheet-settings-label" for="mobileDateSelector">اختيار تاريخ المعاينة</label>
                 <input type="date" id="mobileDateSelector" class="date-picker-input" title="اختر تاريخاً للمعاينة">
                 <div class="sheet-settings-actions">
-                    <button onclick="resetToToday()" class="btn-outline-gold" title="العودة لتاريخ اليوم المباشر">اليوم</button>
-                    <button onclick="window.print()" class="btn-gold" title="طباعة الورقة بجودة عالية">طباعة</button>
+                    <button type="button" onclick="resetToToday()" class="btn-outline-gold" title="العودة لتاريخ اليوم المباشر">اليوم</button>
+                    <button type="button" onclick="window.print()" class="btn-gold" title="طباعة الورقة بجودة عالية">طباعة</button>
                 </div>
             </div>
 
-            <!-- 1. الخلفية الهندسية الإسلامية الشفافة -->
+            <!-- 1. الخلفية الهندسية الإسلامية -->
             <svg class="islamic-pattern-bg" width="1536" height="1024" xmlns="http://www.w3.org/2000/svg">
                 <defs>
                     <pattern id="islamicStarGrid" width="120" height="120" patternUnits="userSpaceOnUse">
@@ -1105,14 +865,11 @@
                 <rect width="1536" height="1024" fill="url(#islamicStarGrid)"/>
             </svg>
 
-            <!-- إضاءة محيطية ناعمة -->
             <div class="ambient-lighting"></div>
-
-            <!-- 2. الإطار الخارجي المزدوج (أزرق بحري + ذهبي) -->
             <div class="outer-frame-navy"></div>
             <div class="outer-frame-gold"></div>
 
-            <!-- الزخارف الهندسية الإسلامية الذهبية في الأركان الأربعة -->
+            <!-- زخارف الأركان -->
             <svg class="corner-ornament corner-tr" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M112 8H36C20.5 8 8 20.5 8 36V112" stroke="#0F2342" stroke-width="3.5"/>
                 <path d="M106 16H40C26.7 16 16 26.7 16 40V106" stroke="#C9A24B" stroke-width="2.5"/>
@@ -1157,7 +914,7 @@
                 <path d="M29 49L34 54L29 59L24 54Z" fill="#C9A24B"/>
             </svg>
 
-            <!-- 3. العنوان الرئيسي: لوحة الجمعة الزخرفية (أعلى المنتصف) -->
+            <!-- 3. لوحة اليوم -->
             <header class="friday-section">
                 <svg width="260" height="36" viewBox="0 0 260 36" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M10 28H95C108 28 118 14 130 6C142 14 152 28 165 28H250" stroke="#C9A24B" stroke-width="2.2" stroke-linecap="round"/>
@@ -1167,7 +924,7 @@
                 </svg>
 
                 <div class="friday-plaque-container">
-                    <svg width="100%" height="100%" viewBox="0 0 580 250" fill="none" xmlns="http://www.w3.org/2000/svg" style="position: absolute; inset: 0;">
+                    <svg width="100%" height="100%" viewBox="0 0 580 250" fill="none" xmlns="http://www.w3.org/2000/svg" style="position: absolute; top: 0; left: 0;">
                         <defs>
                             <linearGradient id="navyPlaqueGrad" x1="0" y1="0" x2="0" y2="250" gradientUnits="userSpaceOnUse">
                                 <stop offset="0%" stop-color="#091830"/>
@@ -1196,7 +953,7 @@
                 </svg>
             </header>
 
-            <!-- 4. صندوق التاريخ الهجري (أعلى اليسار) -->
+            <!-- 4. صندوق التاريخ الهجري -->
             <section class="date-card hijri-card" aria-label="التاريخ الهجري">
                 <div class="date-card-header">
                     <svg width="46" height="46" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1219,7 +976,7 @@
                 </div>
             </section>
 
-            <!-- 5. صندوق التاريخ الميلادي (أعلى اليمين) -->
+            <!-- 5. صندوق التاريخ الميلادي -->
             <section class="date-card gregorian-card" aria-label="التاريخ الميلادي">
                 <div class="date-card-header">
                     <svg width="44" height="44" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1276,7 +1033,6 @@
             <!-- 7. جدول مواقيت الصلاة -->
             <div id="prayerCityHeading" class="prayer-city-heading">مواقيت الصلاة — القاهرة</div>
             <section class="prayer-table-container" aria-label="مواقيت الصلاة">
-
                 <div class="prayer-col">
                     <div class="prayer-header">
                         <svg class="prayer-icon" viewBox="0 0 48 48" fill="none">
@@ -1385,10 +1141,9 @@
                         <div class="prayer-period" id="ishaPeriod">م</div>
                     </div>
                 </div>
-
             </section>
 
-            <!-- 8. زخرفة ذهبية أفقية في منتصف أسفل التصميم -->
+            <!-- 8. زخرفة ذهبية سفلية -->
             <footer class="bottom-center-ornament" aria-hidden="true">
                 <svg width="480" height="32" viewBox="0 0 480 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <line x1="10" y1="16" x2="185" y2="16" stroke="url(#botGoldL)" stroke-width="2"/>
@@ -1411,21 +1166,25 @@
                     <circle cx="284" cy="16" r="2.5" fill="#A67C2E"/>
                 </svg>
             </footer>
-
         </main>
     </div>
 
-    <!-- سكريبت التحجيم التلقائي وجلب البيانات الحية -->
+    <!-- سكريبت متوافق مع كافة المتصفحات القديمة والحديثة -->
     <script>
+        function padTwo(num) {
+            var s = String(num);
+            return s.length < 2 ? '0' + s : s;
+        }
+
         function toggleSettings(forceState) {
-            const panel = document.getElementById('settingsPanel');
-            const button = document.getElementById('settingsToggle');
+            var panel = document.getElementById('settingsPanel');
+            var button = document.getElementById('settingsToggle');
             if (!panel || !button) return;
-            const shouldOpen = typeof forceState === 'boolean' ? forceState : panel.hidden;
+            var shouldOpen = typeof forceState === 'boolean' ? forceState : panel.hidden;
 
             if (shouldOpen) {
-                const desktopDateInput = document.getElementById('dateSelector');
-                const mobileDateInput = document.getElementById('mobileDateSelector');
+                var desktopDateInput = document.getElementById('dateSelector');
+                var mobileDateInput = document.getElementById('mobileDateSelector');
                 if (desktopDateInput && mobileDateInput) {
                     mobileDateInput.value = desktopDateInput.value || getCairoTodayValue();
                 }
@@ -1436,24 +1195,26 @@
         }
 
         function getCairoTodayValue() {
-            const cairoToday = getCairoNow();
-            const yyyy = cairoToday.getFullYear();
-            const mm = String(cairoToday.getMonth() + 1).padStart(2, '0');
-            const dd = String(cairoToday.getDate()).padStart(2, '0');
-            return `${yyyy}-${mm}-${dd}`;
+            var cairoToday = getCairoNow();
+            var yyyy = cairoToday.getFullYear();
+            var mm = padTwo(cairoToday.getMonth() + 1);
+            var dd = padTwo(cairoToday.getDate());
+            return yyyy + '-' + mm + '-' + dd;
         }
 
         function toArabicDigits(value) {
-            const arabicDigits = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
-            return String(value).replace(/\d/g, d => arabicDigits[Number(d)]);
+            var arabicDigits = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+            return String(value).replace(/\d/g, function (d) {
+                return arabicDigits[Number(d)];
+            });
         }
 
-        const ARABIC_DAYS = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
-        const GREGORIAN_MONTHS = [
+        var ARABIC_DAYS = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+        var GREGORIAN_MONTHS = [
             'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
             'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'
         ];
-        const HIJRI_MONTHS = {
+        var HIJRI_MONTHS = {
             1: 'محرم',
             2: 'صفر',
             3: 'ربيع الأول',
@@ -1467,191 +1228,197 @@
             11: 'ذو القعدة',
             12: 'ذو الحجة'
         };
-        const COPTIC_MONTHS = [
+        var COPTIC_MONTHS = [
             'توت', 'بابه', 'هاتور', 'كيهك', 'طوبة', 'أمشير',
             'برمهات', 'برمودة', 'بشنس', 'بؤونة', 'أبيب', 'مسرى', 'النسيء'
         ];
 
         function calculateCopticDate(dateObj) {
-            const year = dateObj.getFullYear();
-            const month = dateObj.getMonth() + 1;
-            const day = dateObj.getDate();
+            var year = dateObj.getFullYear();
+            var month = dateObj.getMonth() + 1;
+            var day = dateObj.getDate();
 
-            const a = Math.floor((14 - month) / 12);
-            const y = year + 4800 - a;
-            const m = month + 12 * a - 3;
-            const jdn = day + Math.floor((153 * m + 2) / 5) + 365 * y +
-                        Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) - 32045;
+            var a = Math.floor((14 - month) / 12);
+            var y = year + 4800 - a;
+            var m = month + 12 * a - 3;
+            var jdn = day + Math.floor((153 * m + 2) / 5) + 365 * y +
+                      Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) - 32045;
 
-            const copticEpoch = 1825030;
-            const daysSinceEpoch = jdn - copticEpoch;
-            const copticYear = Math.floor((4 * daysSinceEpoch + 3) / 1461) + 1;
-            const dayOfYear = daysSinceEpoch - Math.floor((1461 * (copticYear - 1)) / 4);
-            const copticMonthIndex = Math.floor(dayOfYear / 30);
-            const copticDay = (dayOfYear % 30) + 1;
+            var copticEpoch = 1825030;
+            var daysSinceEpoch = jdn - copticEpoch;
+            var copticYear = Math.floor((4 * daysSinceEpoch + 3) / 1461) + 1;
+            var dayOfYear = daysSinceEpoch - Math.floor((1461 * (copticYear - 1)) / 4);
+            var copticMonthIndex = Math.floor(dayOfYear / 30);
+            var copticDay = (dayOfYear % 30) + 1;
 
-            const monthName = COPTIC_MONTHS[copticMonthIndex] || COPTIC_MONTHS[0];
-            return `${toArabicDigits(copticDay)} ${monthName} ${toArabicDigits(copticYear)} ق`;
+            var monthName = COPTIC_MONTHS[copticMonthIndex] || COPTIC_MONTHS[0];
+            return toArabicDigits(copticDay) + ' ' + monthName + ' ' + toArabicDigits(copticYear) + ' ق';
         }
 
         function formatPrayerTime12h(time24Str) {
             if (!time24Str) return { time: '٠٠:٠٠', period: 'ص' };
-            const cleanTime = time24Str.split(' ')[0];
-            const [hourStr, minuteStr] = cleanTime.split(':');
-            let hour = parseInt(hourStr, 10);
-            const minute = minuteStr.padStart(2, '0');
-            const period = hour >= 12 ? 'م' : 'ص';
+            var cleanTime = time24Str.split(' ')[0];
+            var parts = cleanTime.split(':');
+            var hour = parseInt(parts[0], 10);
+            var minute = padTwo(parts[1]);
+            var period = hour >= 12 ? 'م' : 'ص';
 
             hour = hour % 12;
             if (hour === 0) hour = 12;
-            const formattedHour = String(hour).padStart(2, '0');
+            var formattedHour = padTwo(hour);
 
             return {
-                time: toArabicDigits(`${formattedHour}:${minute}`),
+                time: toArabicDigits(formattedHour + ':' + minute),
                 period: period
             };
         }
 
         function updateLocalDates(targetDate) {
-            const dayName = ARABIC_DAYS[targetDate.getDay()];
-            const gDay = targetDate.getDate();
-            const gMonth = GREGORIAN_MONTHS[targetDate.getMonth()];
-            const gYear = targetDate.getFullYear();
+            var dayName = ARABIC_DAYS[targetDate.getDay()];
+            var gDay = targetDate.getDate();
+            var gMonth = GREGORIAN_MONTHS[targetDate.getMonth()];
+            var gYear = targetDate.getFullYear();
 
             document.getElementById('dayNameDisplay').textContent = dayName;
             document.getElementById('gregorianDayDisplay').textContent = toArabicDigits(gDay);
             document.getElementById('gregorianMonthDisplay').textContent = gMonth;
-            document.getElementById('gregorianYearDisplay').textContent = `${toArabicDigits(gYear)} م`;
+            document.getElementById('gregorianYearDisplay').textContent = toArabicDigits(gYear) + ' م';
             document.getElementById('copticDateDisplay').textContent = calculateCopticDate(targetDate);
 
             try {
-                const hijriParts = new Intl.DateTimeFormat('en-TN-u-ca-islamic-umalqura', {
-                    day: 'numeric',
-                    month: 'numeric',
-                    year: 'numeric'
-                }).formatToParts(targetDate);
-
-                const hDay = hijriParts.find(p => p.type === 'day')?.value;
-                const hMonthNum = parseInt(hijriParts.find(p => p.type === 'month')?.value, 10);
-                const hYear = hijriParts.find(p => p.type === 'year')?.value;
-
-                if (hDay && hMonthNum && hYear) {
-                    document.getElementById('hijriDayDisplay').textContent = toArabicDigits(hDay);
-                    document.getElementById('hijriMonthDisplay').textContent = HIJRI_MONTHS[hMonthNum] || '';
-                    document.getElementById('hijriYearDisplay').textContent = `${toArabicDigits(hYear)} هـ`;
+                if (typeof Intl !== 'undefined' && Intl.DateTimeFormat) {
+                    var formatter = new Intl.DateTimeFormat('en-TN-u-ca-islamic-umalqura', {
+                        day: 'numeric',
+                        month: 'numeric',
+                        year: 'numeric'
+                    });
+                    if (formatter.formatToParts) {
+                        var hijriParts = formatter.formatToParts(targetDate);
+                        var hDay = null, hMonthNum = 0, hYear = null;
+                        for (var i = 0; i < hijriParts.length; i++) {
+                            if (hijriParts[i].type === 'day') hDay = hijriParts[i].value;
+                            if (hijriParts[i].type === 'month') hMonthNum = parseInt(hijriParts[i].value, 10);
+                            if (hijriParts[i].type === 'year') hYear = hijriParts[i].value;
+                        }
+                        if (hDay && hMonthNum && hYear) {
+                            document.getElementById('hijriDayDisplay').textContent = toArabicDigits(hDay);
+                            document.getElementById('hijriMonthDisplay').textContent = HIJRI_MONTHS[hMonthNum] || '';
+                            document.getElementById('hijriYearDisplay').textContent = toArabicDigits(hYear) + ' هـ';
+                        }
+                    }
                 }
-            } catch (e) {
-                console.warn('Intl Hijri fallback skipped:', e);
-            }
+            } catch (e) {}
         }
 
-        async function fetchCairoLiveData(targetDate = new Date()) {
-            const statusDot = document.getElementById('liveStatusDot');
-            const statusText = document.getElementById('liveStatusText');
+        function fetchCairoLiveData(targetDate) {
+            if (!targetDate) targetDate = new Date();
+            var statusDot = document.getElementById('liveStatusDot');
+            var statusText = document.getElementById('liveStatusText');
 
             updateLocalDates(targetDate);
 
-            const citySelector = document.getElementById('mobileCitySelector');
-            const selectedCity = citySelector ? citySelector.value : 'Cairo';
-            const selectedCityLabel = citySelector
+            var citySelector = document.getElementById('mobileCitySelector');
+            var selectedCity = citySelector ? citySelector.value : 'Cairo';
+            var selectedCityLabel = (citySelector && citySelector.selectedIndex >= 0)
                 ? citySelector.options[citySelector.selectedIndex].text
                 : 'القاهرة';
-            const toolbarCityTitle = document.getElementById('toolbarCityTitle');
+
+            var toolbarCityTitle = document.getElementById('toolbarCityTitle');
             if (toolbarCityTitle) {
-                toolbarCityTitle.textContent = `ورقة نتيجة يومية ومواقيت الصلاة — ${selectedCityLabel}`;
+                toolbarCityTitle.textContent = 'ورقة نتيجة يومية ومواقيت الصلاة — ' + selectedCityLabel;
             }
-            const prayerCityHeading = document.getElementById('prayerCityHeading');
+            var prayerCityHeading = document.getElementById('prayerCityHeading');
             if (prayerCityHeading) {
-                prayerCityHeading.textContent = `مواقيت الصلاة — ${selectedCityLabel}`;
+                prayerCityHeading.textContent = 'مواقيت الصلاة — ' + selectedCityLabel;
             }
 
             statusDot.style.backgroundColor = '#E8CF88';
-            statusText.textContent = `جاري جلب مواقيت ${selectedCityLabel}...`;
+            statusText.textContent = 'جاري جلب مواقيت ' + selectedCityLabel + '...';
 
-            const dd = String(targetDate.getDate()).padStart(2, '0');
-            const mm = String(targetDate.getMonth() + 1).padStart(2, '0');
-            const yyyy = targetDate.getFullYear();
-            const dateParam = `${dd}-${mm}-${yyyy}`;
+            var dd = padTwo(targetDate.getDate());
+            var mm = padTwo(targetDate.getMonth() + 1);
+            var yyyy = targetDate.getFullYear();
+            var dateParam = dd + '-' + mm + '-' + yyyy;
+            var apiUrl = 'https://api.aladhan.com/v1/timingsByCity/' + dateParam +
+                         '?city=' + encodeURIComponent(selectedCity) + '&country=Egypt&method=5';
 
-            try {
-                const apiUrl = `https://api.aladhan.com/v1/timingsByCity/${dateParam}?city=${encodeURIComponent(selectedCity)}&country=Egypt&method=5`;
-                const response = await fetch(apiUrl);
-                if (!response.ok) throw new Error('فشل الاتصال بخادم المواقيت');
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', apiUrl, true);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState !== 4) return;
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    try {
+                        var json = JSON.parse(xhr.responseText);
+                        if (json.code === 200 && json.data) {
+                            var timings = json.data.timings;
+                            var hijri = json.data.date.hijri;
 
-                const json = await response.json();
-                if (json.code === 200 && json.data) {
-                    const timings = json.data.timings;
-                    const hijri = json.data.date.hijri;
+                            var prayersMap = [
+                                { key: 'Fajr', timeId: 'fajrTime', periodId: 'fajrPeriod' },
+                                { key: 'Sunrise', timeId: 'sunriseTime', periodId: 'sunrisePeriod' },
+                                { key: 'Dhuhr', timeId: 'dhuhrTime', periodId: 'dhuhrPeriod' },
+                                { key: 'Asr', timeId: 'asrTime', periodId: 'asrPeriod' },
+                                { key: 'Maghrib', timeId: 'maghribTime', periodId: 'maghribPeriod' },
+                                { key: 'Isha', timeId: 'ishaTime', periodId: 'ishaPeriod' }
+                            ];
 
-                    const prayersMap = [
-                        { key: 'Fajr', timeId: 'fajrTime', periodId: 'fajrPeriod' },
-                        { key: 'Sunrise', timeId: 'sunriseTime', periodId: 'sunrisePeriod' },
-                        { key: 'Dhuhr', timeId: 'dhuhrTime', periodId: 'dhuhrPeriod' },
-                        { key: 'Asr', timeId: 'asrTime', periodId: 'asrPeriod' },
-                        { key: 'Maghrib', timeId: 'maghribTime', periodId: 'maghribPeriod' },
-                        { key: 'Isha', timeId: 'ishaTime', periodId: 'ishaPeriod' }
-                    ];
+                            for (var i = 0; i < prayersMap.length; i++) {
+                                var item = prayersMap[i];
+                                var formatted = formatPrayerTime12h(timings[item.key]);
+                                document.getElementById(item.timeId).textContent = formatted.time;
+                                document.getElementById(item.periodId).textContent = formatted.period;
+                            }
 
-                    prayersMap.forEach(item => {
-                        const formatted = formatPrayerTime12h(timings[item.key]);
-                        document.getElementById(item.timeId).textContent = formatted.time;
-                        document.getElementById(item.periodId).textContent = formatted.period;
-                    });
+                            if (hijri) {
+                                var hDayClean = parseInt(hijri.day, 10);
+                                var hMonthAr = HIJRI_MONTHS[hijri.month.number] || hijri.month.ar;
+                                document.getElementById('hijriDayDisplay').textContent = toArabicDigits(hDayClean);
+                                document.getElementById('hijriMonthDisplay').textContent = hMonthAr;
+                                document.getElementById('hijriYearDisplay').textContent = toArabicDigits(hijri.year) + ' هـ';
+                            }
 
-                    if (hijri) {
-                        const hDayClean = parseInt(hijri.day, 10);
-                        const hMonthAr = HIJRI_MONTHS[hijri.month.number] || hijri.month.ar;
-                        document.getElementById('hijriDayDisplay').textContent = toArabicDigits(hDayClean);
-                        document.getElementById('hijriMonthDisplay').textContent = hMonthAr;
-                        document.getElementById('hijriYearDisplay').textContent = `${toArabicDigits(hijri.year)} هـ`;
-                    }
-
-                    statusDot.style.backgroundColor = '#34D399';
-                    statusText.textContent = `محدث مباشرة • توقيت ${selectedCityLabel}`;
+                            statusDot.style.backgroundColor = '#34D399';
+                            statusText.textContent = 'محدث مباشرة • توقيت ' + selectedCityLabel;
+                            return;
+                        }
+                    } catch (e) {}
                 }
-            } catch (error) {
-                console.error('Error fetching live prayer times:', error);
                 statusDot.style.backgroundColor = '#F59E0B';
-                statusText.textContent = `تعذر تحديث مواقيت ${selectedCityLabel}`;
-            }
+                statusText.textContent = 'تعذر تحديث مواقيت ' + selectedCityLabel;
+            };
+            xhr.send();
         }
 
         function getCairoNow() {
             try {
-                const cairoStr = new Date().toLocaleString('en-US', { timeZone: 'Africa/Cairo' });
-                return new Date(cairoStr);
-            } catch (e) {
-                return new Date();
-            }
+                var cairoStr = new Date().toLocaleString('en-US', { timeZone: 'Africa/Cairo' });
+                var d = new Date(cairoStr);
+                if (!isNaN(d.getTime())) return d;
+            } catch (e) {}
+            return new Date();
         }
 
         function resetToToday() {
-            const cairoToday = getCairoNow();
-            const todayValue = getCairoTodayValue();
+            var cairoToday = getCairoNow();
+            var todayValue = getCairoTodayValue();
 
-            document.getElementById('dateSelector').value = todayValue;
-            const mobileDateInput = document.getElementById('mobileDateSelector');
+            var dateInput = document.getElementById('dateSelector');
+            if (dateInput) dateInput.value = todayValue;
+            var mobileDateInput = document.getElementById('mobileDateSelector');
             if (mobileDateInput) mobileDateInput.value = todayValue;
 
             fetchCairoLiveData(cairoToday);
         }
 
-        let scaleRafId = null;
-
-        function scheduleScaleCalendarSheet() {
-            if (scaleRafId) cancelAnimationFrame(scaleRafId);
-            scaleRafId = requestAnimationFrame(scaleCalendarSheet);
-        }
-
         function scaleCalendarSheet() {
-            const wrapper = document.getElementById('sheetWrapper');
-            const sheet = document.getElementById('calendarSheet');
-            const toolbar = document.querySelector('.toolbar');
+            var wrapper = document.getElementById('sheetWrapper');
+            var sheet = document.getElementById('calendarSheet');
+            var toolbar = document.querySelector('.toolbar');
             if (!wrapper || !sheet) return;
 
-            const viewportWidth = document.documentElement.clientWidth || window.innerWidth;
-            const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
-            const isMobileLayout = viewportWidth <= 700;
+            var viewportWidth = document.documentElement.clientWidth || window.innerWidth;
+            var viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+            var isMobileLayout = viewportWidth <= 640;
 
             if (isMobileLayout) {
                 wrapper.style.width = '100%';
@@ -1662,6 +1429,7 @@
                 sheet.style.left = 'auto';
                 sheet.style.width = '100%';
                 sheet.style.height = 'auto';
+                sheet.style.webkitTransform = 'none';
                 sheet.style.transform = 'none';
                 if (toolbar) {
                     toolbar.style.width = '';
@@ -1671,28 +1439,26 @@
             }
 
             sheet.style.position = 'absolute';
-            sheet.style.top = '50%';
-            sheet.style.left = '50%';
+            sheet.style.top = '0px';
+            sheet.style.left = '0px';
             sheet.style.width = '1536px';
             sheet.style.height = '1024px';
-            sheet.style.transformOrigin = 'center center';
+            sheet.style.webkitTransformOrigin = 'top left';
+            sheet.style.transformOrigin = 'top left';
 
-            const bodyStyle = window.getComputedStyle(document.body);
-            const padX = (parseFloat(bodyStyle.paddingLeft) || 0) + (parseFloat(bodyStyle.paddingRight) || 0);
-            const padY = (parseFloat(bodyStyle.paddingTop) || 0) + (parseFloat(bodyStyle.paddingBottom) || 0);
-            const toolbarHeight = toolbar ? (toolbar.offsetHeight + 14) : 0;
+            var toolbarHeight = toolbar ? (toolbar.offsetHeight + 16) : 0;
+            var availableWidth = Math.max(320, viewportWidth - 28);
+            var availableHeight = Math.max(240, viewportHeight - toolbarHeight - 28);
 
-            const availableWidth = Math.max(320, viewportWidth - padX);
-            const availableHeight = Math.max(240, viewportHeight - padY - toolbarHeight);
-
-            const scale = Math.min(availableWidth / 1536, availableHeight / 1024);
-            const renderedWidth = Math.floor(1536 * scale);
-            const renderedHeight = Math.floor(1024 * scale);
+            var scale = Math.min(availableWidth / 1536, availableHeight / 1024);
+            var renderedWidth = Math.floor(1536 * scale);
+            var renderedHeight = Math.floor(1024 * scale);
 
             wrapper.style.maxWidth = 'none';
             wrapper.style.width = renderedWidth + 'px';
             wrapper.style.height = renderedHeight + 'px';
-            sheet.style.transform = `translate(-50%, -50%) scale(${scale})`;
+            sheet.style.webkitTransform = 'scale(' + scale + ')';
+            sheet.style.transform = 'scale(' + scale + ')';
 
             if (toolbar) {
                 toolbar.style.maxWidth = 'none';
@@ -1700,216 +1466,180 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', function () {
-            scaleCalendarSheet();
-        });
-
-        window.addEventListener('load', () => {
+        function initApp() {
             scaleCalendarSheet();
             resetToToday();
 
-            const dateInput = document.getElementById('dateSelector');
-            dateInput.addEventListener('change', (e) => {
-                if (e.target.value) {
-                    const [y, m, d] = e.target.value.split('-').map(Number);
-                    const selectedDate = new Date(y, m - 1, d);
+            var dateInput = document.getElementById('dateSelector');
+            if (dateInput) {
+                dateInput.addEventListener('change', function (e) {
+                    if (e.target.value) {
+                        var parts = e.target.value.split('-');
+                        var selectedDate = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+                        fetchCairoLiveData(selectedDate);
+                    }
+                });
+            }
+
+            var mobileCitySelector = document.getElementById('mobileCitySelector');
+            var mobileCitySearch = document.getElementById('mobileCitySearch');
+            var governoratePickerButton = document.getElementById('governoratePickerButton');
+            var governorateDropdown = document.getElementById('governorateDropdown');
+            var governorateOptions = document.getElementById('governorateOptions');
+            var governorateSelectedLabel = document.getElementById('governorateSelectedLabel');
+
+            var desktopPicker = document.getElementById('desktopGovernoratePicker');
+            var desktopButton = document.getElementById('desktopGovernorateButton');
+            var desktopDropdown = document.getElementById('desktopGovernorateDropdown');
+            var desktopSearch = document.getElementById('desktopGovernorateSearch');
+            var desktopOptions = document.getElementById('desktopGovernorateOptions');
+            var desktopLabel = document.getElementById('desktopGovernorateLabel');
+
+            if (mobileCitySelector) {
+                var governorates = [];
+                for (var i = 0; i < mobileCitySelector.options.length; i++) {
+                    governorates.push({
+                        value: mobileCitySelector.options[i].value,
+                        text: mobileCitySelector.options[i].textContent.trim()
+                    });
+                }
+
+                function selectCity(item) {
+                    mobileCitySelector.value = item.value;
+                    if (desktopLabel) desktopLabel.textContent = item.text;
+                    if (governorateSelectedLabel) governorateSelectedLabel.textContent = item.text;
+                    if (desktopDropdown) desktopDropdown.hidden = true;
+                    if (desktopButton) desktopButton.setAttribute('aria-expanded', 'false');
+                    if (governorateDropdown) governorateDropdown.hidden = true;
+                    if (governoratePickerButton) governoratePickerButton.setAttribute('aria-expanded', 'false');
+
+                    var currentDateValue = dateInput ? dateInput.value : '';
+                    var selectedDate = getCairoNow();
+                    if (currentDateValue) {
+                        var p = currentDateValue.split('-');
+                        selectedDate = new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2]));
+                    }
                     fetchCairoLiveData(selectedDate);
+                    toggleSettings(false);
                 }
-            });
 
-            const mobileCitySelector = document.getElementById('mobileCitySelector');
-            const mobileCitySearch = document.getElementById('mobileCitySearch');
-            const governoratePickerButton = document.getElementById('governoratePickerButton');
-            const governorateDropdown = document.getElementById('governorateDropdown');
-            const governorateOptions = document.getElementById('governorateOptions');
-            const governorateSelectedLabel = document.getElementById('governorateSelectedLabel');
-
-            if (mobileCitySelector && mobileCitySearch && governoratePickerButton &&
-                governorateDropdown && governorateOptions) {
-                const governorates = Array.from(mobileCitySelector.options).map(option => ({
-                    value: option.value,
-                    text: option.textContent.trim()
-                }));
-
-                function renderGovernorates(query = '') {
-                    const q = query.trim().toLocaleLowerCase('ar');
-                    const matches = governorates.filter(item =>
-                        item.text.toLocaleLowerCase('ar').includes(q)
-                    );
-                    governorateOptions.replaceChildren();
-
-                    if (!matches.length) {
-                        const empty = document.createElement('div');
-                        empty.className = 'governorate-empty';
-                        empty.textContent = 'لا توجد محافظة بهذا الاسم';
-                        governorateOptions.appendChild(empty);
-                        return;
+                function renderList(container, emptyClass, optionClass, query) {
+                    if (!container) return;
+                    var q = (query || '').trim().toLowerCase();
+                    while (container.firstChild) {
+                        container.removeChild(container.firstChild);
                     }
-
-                    matches.forEach(item => {
-                        const optionButton = document.createElement('button');
-                        optionButton.type = 'button';
-                        optionButton.className = 'governorate-option';
-                        optionButton.textContent = item.text;
-                        optionButton.setAttribute('aria-selected',
-                            String(item.value === mobileCitySelector.value));
-                        optionButton.addEventListener('click', () => {
-                            mobileCitySelector.value = item.value;
-                            governorateSelectedLabel.textContent = item.text;
-                            governorateDropdown.hidden = true;
-                            governoratePickerButton.setAttribute('aria-expanded', 'false');
-                            mobileCitySelector.dispatchEvent(new Event('change', { bubbles: true }));
-                        });
-                        governorateOptions.appendChild(optionButton);
-                    });
-                }
-
-                renderGovernorates();
-
-                const desktopPicker = document.getElementById('desktopGovernoratePicker');
-                const desktopButton = document.getElementById('desktopGovernorateButton');
-                const desktopDropdown = document.getElementById('desktopGovernorateDropdown');
-                const desktopSearch = document.getElementById('desktopGovernorateSearch');
-                const desktopOptions = document.getElementById('desktopGovernorateOptions');
-                const desktopLabel = document.getElementById('desktopGovernorateLabel');
-
-                function renderDesktopGovernorates(query = '') {
-                    if (!desktopOptions) return;
-                    const q = query.trim().toLocaleLowerCase('ar');
-                    const matches = governorates.filter(item =>
-                        item.text.toLocaleLowerCase('ar').includes(q)
-                    );
-                    desktopOptions.replaceChildren();
-
-                    if (!matches.length) {
-                        const empty = document.createElement('div');
-                        empty.className = 'desktop-governorate-empty';
-                        empty.textContent = 'لا توجد محافظة بهذا الاسم';
-                        desktopOptions.appendChild(empty);
-                        return;
+                    var count = 0;
+                    for (var j = 0; j < governorates.length; j++) {
+                        var item = governorates[j];
+                        if (item.text.toLowerCase().indexOf(q) === -1) continue;
+                        count++;
+                        (function (cityItem) {
+                            var btn = document.createElement('button');
+                            btn.type = 'button';
+                            btn.className = optionClass;
+                            btn.textContent = cityItem.text;
+                            btn.setAttribute('aria-selected', String(cityItem.value === mobileCitySelector.value));
+                            btn.addEventListener('click', function () {
+                                selectCity(cityItem);
+                            });
+                            container.appendChild(btn);
+                        })(item);
                     }
-
-                    matches.forEach(item => {
-                        const optionButton = document.createElement('button');
-                        optionButton.type = 'button';
-                        optionButton.className = 'desktop-governorate-option';
-                        optionButton.textContent = item.text;
-                        optionButton.setAttribute('aria-selected',
-                            String(item.value === mobileCitySelector.value));
-                        optionButton.addEventListener('click', () => {
-                            mobileCitySelector.value = item.value;
-                            if (desktopLabel) desktopLabel.textContent = item.text;
-                            if (governorateSelectedLabel) governorateSelectedLabel.textContent = item.text;
-                            desktopDropdown.hidden = true;
-                            desktopButton.setAttribute('aria-expanded', 'false');
-                            mobileCitySelector.dispatchEvent(new Event('change', { bubbles: true }));
-                        });
-                        desktopOptions.appendChild(optionButton);
-                    });
+                    if (count === 0) {
+                        var empty = document.createElement('div');
+                        empty.className = emptyClass;
+                        empty.textContent = 'لا توجد محافظة بهذا الاسم';
+                        container.appendChild(empty);
+                    }
                 }
+
+                renderList(governorateOptions, 'governorate-empty', 'governorate-option', '');
+                renderList(desktopOptions, 'desktop-governorate-empty', 'desktop-governorate-option', '');
 
                 if (desktopButton && desktopDropdown && desktopSearch) {
-                    renderDesktopGovernorates();
-                    desktopButton.addEventListener('click', () => {
-                        const opening = desktopDropdown.hidden;
+                    desktopButton.addEventListener('click', function () {
+                        var opening = desktopDropdown.hidden;
                         desktopDropdown.hidden = !opening;
                         desktopButton.setAttribute('aria-expanded', String(opening));
                         if (opening) {
                             desktopSearch.value = '';
-                            renderDesktopGovernorates();
+                            renderList(desktopOptions, 'desktop-governorate-empty', 'desktop-governorate-option', '');
                             desktopSearch.focus();
                         }
                     });
-                    desktopSearch.addEventListener('input', () => {
-                        renderDesktopGovernorates(desktopSearch.value);
-                    });
-                    document.addEventListener('click', event => {
-                        if (desktopPicker && !desktopPicker.contains(event.target) && !desktopDropdown.hidden) {
-                            desktopDropdown.hidden = true;
-                            desktopButton.setAttribute('aria-expanded', 'false');
-                        }
+                    desktopSearch.addEventListener('input', function () {
+                        renderList(desktopOptions, 'desktop-governorate-empty', 'desktop-governorate-option', desktopSearch.value);
                     });
                 }
 
-                governoratePickerButton.addEventListener('click', () => {
-                    const opening = governorateDropdown.hidden;
-                    governorateDropdown.hidden = !opening;
-                    governoratePickerButton.setAttribute('aria-expanded', String(opening));
-                    if (opening) {
-                        mobileCitySearch.value = '';
-                        renderGovernorates();
-                        mobileCitySearch.focus();
+                if (governoratePickerButton && governorateDropdown && mobileCitySearch) {
+                    governoratePickerButton.addEventListener('click', function () {
+                        var opening = governorateDropdown.hidden;
+                        governorateDropdown.hidden = !opening;
+                        governoratePickerButton.setAttribute('aria-expanded', String(opening));
+                        if (opening) {
+                            mobileCitySearch.value = '';
+                            renderList(governorateOptions, 'governorate-empty', 'governorate-option', '');
+                            mobileCitySearch.focus();
+                        }
+                    });
+                    mobileCitySearch.addEventListener('input', function () {
+                        renderList(governorateOptions, 'governorate-empty', 'governorate-option', mobileCitySearch.value);
+                    });
+                }
+
+                document.addEventListener('click', function (event) {
+                    if (desktopPicker && desktopDropdown && !desktopPicker.contains(event.target) && !desktopDropdown.hidden) {
+                        desktopDropdown.hidden = true;
+                        if (desktopButton) desktopButton.setAttribute('aria-expanded', 'false');
                     }
-                });
-
-                mobileCitySearch.addEventListener('input', () => {
-                    renderGovernorates(mobileCitySearch.value);
-                });
-
-                document.addEventListener('click', event => {
-                    const picker = document.getElementById('governoratePicker');
-                    if (picker && !picker.contains(event.target) && !governorateDropdown.hidden) {
+                    var picker = document.getElementById('governoratePicker');
+                    if (picker && governorateDropdown && !picker.contains(event.target) && !governorateDropdown.hidden) {
                         governorateDropdown.hidden = true;
-                        governoratePickerButton.setAttribute('aria-expanded', 'false');
+                        if (governoratePickerButton) governoratePickerButton.setAttribute('aria-expanded', 'false');
                     }
                 });
             }
 
-            if (mobileCitySelector) {
-                mobileCitySelector.addEventListener('change', () => {
-                    const chosenOption = mobileCitySelector.options[mobileCitySelector.selectedIndex];
-                    if (governorateSelectedLabel && chosenOption) {
-                        governorateSelectedLabel.textContent = chosenOption.textContent.trim();
-                    }
-                    const desktopGovernorateLabel = document.getElementById('desktopGovernorateLabel');
-                    if (desktopGovernorateLabel && chosenOption) {
-                        desktopGovernorateLabel.textContent = chosenOption.textContent.trim();
-                    }
-                    const currentDateValue = document.getElementById('dateSelector').value;
-                    let selectedDate = getCairoNow();
-                    if (currentDateValue) {
-                        const [y, m, d] = currentDateValue.split('-').map(Number);
-                        selectedDate = new Date(y, m - 1, d);
-                    }
-
-                    fetchCairoLiveData(selectedDate);
-                    toggleSettings(false);
-                });
-            }
-
-            const mobileDateInput = document.getElementById('mobileDateSelector');
+            var mobileDateInput = document.getElementById('mobileDateSelector');
             if (mobileDateInput) {
-                mobileDateInput.addEventListener('change', (e) => {
+                mobileDateInput.addEventListener('change', function (e) {
                     if (e.target.value) {
-                        const [y, m, d] = e.target.value.split('-').map(Number);
-                        const selectedDate = new Date(y, m - 1, d);
-                        dateInput.value = e.target.value;
+                        var parts = e.target.value.split('-');
+                        var selectedDate = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+                        if (dateInput) dateInput.value = e.target.value;
                         mobileDateInput.value = e.target.value;
                         fetchCairoLiveData(selectedDate);
                         toggleSettings(false);
                     }
                 });
             }
-        });
+        }
 
-        window.addEventListener('resize', scheduleScaleCalendarSheet);
-        window.addEventListener('orientationchange', () => {
-            scheduleScaleCalendarSheet();
-            setTimeout(scheduleScaleCalendarSheet, 200);
-            setTimeout(scheduleScaleCalendarSheet, 500);
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initApp);
+        } else {
+            initApp();
+        }
+
+        window.addEventListener('load', scaleCalendarSheet);
+        window.addEventListener('resize', scaleCalendarSheet);
+        window.addEventListener('orientationchange', function () {
+            scaleCalendarSheet();
+            setTimeout(scaleCalendarSheet, 250);
+            setTimeout(scaleCalendarSheet, 600);
         });
-        window.addEventListener('beforeprint', () => {
-            const sheet = document.getElementById('calendarSheet');
-            const wrapper = document.getElementById('sheetWrapper');
+        window.addEventListener('beforeprint', function () {
+            var sheet = document.getElementById('calendarSheet');
+            var wrapper = document.getElementById('sheetWrapper');
             if (sheet && wrapper) {
-                const scale = wrapper.clientWidth / 1536;
-                sheet.style.top = '0';
-                sheet.style.left = '0';
-                sheet.style.transformOrigin = 'top left';
-                sheet.style.transform = `scale(${scale})`;
+                var scale = wrapper.clientWidth / 1536;
+                sheet.style.webkitTransform = 'scale(' + scale + ')';
+                sheet.style.transform = 'scale(' + scale + ')';
             }
         });
-        window.addEventListener('afterprint', scheduleScaleCalendarSheet);
+        window.addEventListener('afterprint', scaleCalendarSheet);
     </script>
 </body>
 </html>
