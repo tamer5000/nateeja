@@ -468,6 +468,54 @@
             }
         }
 
+
+        /* وضع الشاشات الذكية: مساحة عرض كاملة مع الحفاظ على ورقة 3:2 */
+        body.smart-tv-mode {
+            min-height: 100vh;
+            padding: 18px 24px;
+            justify-content: center;
+            gap: 0;
+        }
+        body.smart-tv-mode .toolbar {
+            width: auto;
+            max-width: none;
+            min-height: 64px;
+            margin-bottom: 14px;
+            padding: 12px 22px;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        body.smart-tv-mode .toolbar button,
+        body.smart-tv-mode .toolbar select,
+        body.smart-tv-mode .toolbar input {
+            min-height: 48px;
+            font-size: 18px;
+        }
+        body.smart-tv-mode .sheet-wrapper {
+            max-width: none;
+            width: auto;
+            height: auto;
+            aspect-ratio: auto;
+            flex: 0 0 auto;
+        }
+        body.smart-tv-mode .calendar-sheet {
+            transform-origin: top right;
+        }
+        body.smart-tv-mode .desktop-governorate-dropdown {
+            width: 300px;
+            font-size: 18px;
+        }
+        body.smart-tv-mode .desktop-governorate-search,
+        body.smart-tv-mode .desktop-governorate-option {
+            min-height: 48px;
+            font-size: 18px;
+        }
+        @media screen and (max-width: 700px) {
+            body.smart-tv-mode {
+                padding: 10px;
+            }
+        }
+
         /* تنسيق منتقي التاريخ في شريط الأدوات */
         .date-picker-input {
             background: rgba(250, 247, 240, 0.12);
@@ -1645,14 +1693,59 @@
             fetchCairoLiveData(cairoToday);
         }
 
+        function isSamsungSmartTV() {
+            const ua = navigator.userAgent || '';
+            return /SMART-TV|SMARTTV|Tizen|SamsungBrowser|Maple/i.test(ua) ||
+                   (window.location.search && window.location.search.indexOf('tv=1') !== -1);
+        }
+
         function scaleCalendarSheet() {
             const wrapper = document.getElementById('sheetWrapper');
             const sheet = document.getElementById('calendarSheet');
+            const toolbar = document.querySelector('.toolbar');
             if (!wrapper || !sheet) return;
 
-            const wrapperWidth = wrapper.clientWidth;
-            const scale = wrapperWidth / 1536;
-            sheet.style.transform = `scale(${scale})`;
+            const isMobileLayout = window.innerWidth <= 700;
+            if (isMobileLayout) {
+                document.body.classList.remove('smart-tv-mode');
+                wrapper.style.height = '';
+                wrapper.style.width = '';
+                sheet.style.transform = 'none';
+                return;
+            }
+
+            const tvMode = isSamsungSmartTV() && window.innerWidth > 700;
+            document.body.classList.toggle('smart-tv-mode', tvMode);
+
+            if (tvMode) {
+                /* حساب الحجم يدوياً لتفادي اعتماد المتصفح القديم على aspect-ratio */
+                const sidePadding = 48;
+                const verticalPadding = 150;
+                const availableWidth = Math.max(320, window.innerWidth - sidePadding);
+                const availableHeight = Math.max(240, window.innerHeight - verticalPadding);
+                const scale = Math.min(availableWidth / 1536, availableHeight / 1024);
+                const renderedWidth = Math.floor(1536 * scale);
+                const renderedHeight = Math.floor(1024 * scale);
+
+                wrapper.style.width = renderedWidth + 'px';
+                wrapper.style.height = renderedHeight + 'px';
+                wrapper.style.maxWidth = 'none';
+                sheet.style.transform = 'scale(' + scale + ')';
+
+                if (toolbar) {
+                    toolbar.style.width = renderedWidth + 'px';
+                    toolbar.style.maxWidth = 'none';
+                }
+            } else {
+                /* fallback عام: بعض متصفحات التلفزيون لا تدعم CSS aspect-ratio */
+                wrapper.style.height = Math.round(wrapper.clientWidth * 2 / 3) + 'px';
+                const scale = wrapper.clientWidth / 1536;
+                sheet.style.transform = 'scale(' + scale + ')';
+                if (toolbar) {
+                    toolbar.style.width = '';
+                    toolbar.style.maxWidth = '';
+                }
+            }
         }
 
         window.addEventListener('load', () => {
@@ -1849,6 +1942,7 @@
         });
 
         window.addEventListener('resize', scaleCalendarSheet);
+        window.addEventListener('orientationchange', scaleCalendarSheet);
         window.addEventListener('beforeprint', () => {
             const sheet = document.getElementById('calendarSheet');
             const wrapper = document.getElementById('sheetWrapper');
