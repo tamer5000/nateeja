@@ -1,0 +1,1915 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ورقة نتيجة يومية ومواقيت الصلاة - القاهرة</title>
+    <!-- استدعاء خطوط عربية فاخرة وواضحة من Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Cairo:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        :root {
+            --navy-dark: #0A1B36;
+            --navy-main: #0F2342;
+            --navy-light: #1B365D;
+            --gold-dark: #A67C2E;
+            --gold-main: #C9A24B;
+            --gold-light: #E8CF88;
+            --gold-pale: #F6E6B4;
+            --ivory-bg: #FAF7F0;
+            --cream-card: #F5EFE2;
+            --cream-deep: #EAE0CC;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        body {
+            background-color: #1E242B;
+            font-family: 'Cairo', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            min-height: 100dvh;
+            padding: 16px;
+            overflow-x: hidden;
+        }
+
+        /* حاوية التحكم العلوية للطباعة والمعاينة */
+        .toolbar {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+            padding: 10px 20px;
+            background: rgba(15, 35, 66, 0.9);
+            border: 1px solid var(--gold-main);
+            border-radius: 12px;
+            color: #FAF7F0;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-gold {
+            background: linear-gradient(135deg, var(--gold-main), var(--gold-dark));
+            color: #0A1B36;
+            font-weight: 800;
+            padding: 8px 20px;
+            border-radius: 8px;
+            border: 1px solid var(--gold-light);
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 15px;
+        }
+
+        .btn-gold:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(201, 162, 75, 0.45);
+            filter: brightness(1.06);
+        }
+
+        .desktop-governorate-picker { position: relative; min-width: 150px; }
+        .desktop-governorate-button {
+            width: 100%; min-height: 42px; display: flex;
+            align-items: center; justify-content: space-between;
+            gap: 12px; cursor: pointer; text-align: right;
+            background: rgba(250,247,240,.12); color: #FAF7F0;
+            border: 1px solid var(--gold-main); border-radius: 8px;
+            padding: 8px 12px; font: inherit;
+        }
+        .desktop-governorate-dropdown {
+            position: absolute; top: calc(100% + 6px); right: 0;
+            width: 230px; max-width: calc(100vw - 36px); z-index: 1000; padding: 8px;
+            border: 1px solid var(--gold-main); border-radius: 10px;
+            background: #0A1B36; box-shadow: 0 10px 24px rgba(0,0,0,.4);
+        }
+        .desktop-governorate-dropdown[hidden] { display: none !important; }
+        .desktop-governorate-search {
+            box-sizing: border-box; width: 100%; min-height: 40px;
+            margin-bottom: 7px; padding: 8px 10px; direction: rtl;
+            text-align: right; color: #FAF7F0;
+            background: rgba(250,247,240,.10);
+            border: 1px solid var(--gold-main); border-radius: 7px;
+        }
+        .desktop-governorate-options { max-height: 260px; overflow-y: auto; }
+        .desktop-governorate-option {
+            display: block; width: 100%; padding: 8px 10px;
+            border: 0; border-bottom: 1px solid rgba(201,162,75,.2);
+            background: transparent; color: #FAF7F0; text-align: right;
+            font: inherit; cursor: pointer;
+        }
+        .desktop-governorate-option:hover,
+        .desktop-governorate-option[aria-selected="true"] {
+            background: rgba(201,162,75,.18); color: var(--gold-light);
+        }
+        .desktop-governorate-empty { padding: 10px; color: #FAF7F0; text-align: center; }
+
+        /* الحاوية المتجاوبة للآيباد والشاشات الكبيرة والكمبيوتر */
+        .sheet-wrapper {
+            width: 100%;
+            position: relative;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.55);
+            border-radius: 6px;
+            overflow: hidden;
+            background-color: var(--ivory-bg);
+            margin: 0 auto;
+        }
+
+        /* لوحة التصميم الأساسية بأبعاد ثابتة 1536x1024 بتمركز متوافق مع جميع المتصفحات */
+        .calendar-sheet {
+            width: 1536px;
+            height: 1024px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform-origin: center center;
+            transform: translate(-50%, -50%) scale(1);
+            background-color: var(--ivory-bg);
+            overflow: hidden;
+            user-select: none;
+        }
+
+        /* خلفية النقوش الهندسية الإسلامية الدقيقة */
+        .islamic-pattern-bg {
+            position: absolute;
+            inset: 0;
+            opacity: 0.055;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* تدرج إضاءة ناعم لإعطاء عمق للورقة */
+        .ambient-lighting {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% 42%, rgba(255, 255, 255, 0.65) 0%, rgba(235, 224, 200, 0.35) 100%);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        /* الإطار الخارجي المزدوج */
+        .outer-frame-navy {
+            position: absolute;
+            inset: 22px;
+            border: 3px solid var(--navy-main);
+            border-radius: 14px;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .outer-frame-gold {
+            position: absolute;
+            inset: 29px;
+            border: 2px solid var(--gold-main);
+            border-radius: 10px;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* زخارف الأركان الأربعة */
+        .corner-ornament {
+            position: absolute;
+            width: 115px;
+            height: 115px;
+            z-index: 12;
+            pointer-events: none;
+        }
+        .corner-tr { top: 20px; right: 20px; }
+        .corner-tl { top: 20px; left: 20px; transform: scaleX(-1); }
+        .corner-br { bottom: 20px; right: 20px; transform: scaleY(-1); }
+        .corner-bl { bottom: 20px; left: 20px; transform: scale(-1, -1); }
+
+        /* 1. اللوحة الرئيسية - الجمعة (X: 32% إلى 68%, Y: 3% إلى 37%) */
+        .friday-section {
+            position: absolute;
+            left: 31.5%;
+            width: 37%;
+            top: 3.2%;
+            height: 34.5%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 15;
+        }
+
+        .friday-plaque-container {
+            position: relative;
+            width: 100%;
+            height: 245px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            filter: drop-shadow(0 14px 24px rgba(10, 27, 54, 0.28));
+        }
+
+        .friday-title {
+            position: relative;
+            z-index: 5;
+            font-family: 'Amiri', serif;
+            font-size: 138px;
+            font-weight: 700;
+            color: #FCF9F2;
+            line-height: 1;
+            margin-top: -12px;
+            text-shadow:
+                0 3px 0 var(--gold-dark),
+                0 6px 18px rgba(201, 162, 75, 0.65),
+                0 10px 25px rgba(0, 0, 0, 0.45);
+            letter-spacing: 1px;
+        }
+
+        /* 2. صناديق التاريخ الهجري والميلادي */
+        .date-card {
+            position: absolute;
+            top: 7.2%;
+            height: 49.5%;
+            width: 26.5%;
+            background: linear-gradient(180deg, #FDFBF7 0%, #F3EBDC 100%);
+            border-radius: 24px;
+            border: 3px solid var(--gold-main);
+            box-shadow:
+                0 14px 30px rgba(15, 35, 66, 0.14),
+                inset 0 0 0 4px #FAF6EE,
+                inset 0 0 0 6px var(--gold-dark);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 15;
+        }
+
+        /* التاريخ الهجري (أعلى اليسار X: 4.5% إلى 31%) */
+        .hijri-card {
+            left: 4.5%;
+        }
+
+        /* التاريخ الميلادي (أعلى اليمين X: 69% إلى 95.5%) */
+        .gregorian-card {
+            right: 4.5%;
+        }
+
+        .date-card-header {
+            height: 86px;
+            margin: 6px 6px 0 6px;
+            border-radius: 16px 16px 4px 4px;
+            background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy-light) 50%, var(--navy-dark) 100%);
+            border-bottom: 3px solid var(--gold-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .date-card-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px 22px 20px;
+            text-align: center;
+        }
+
+        .date-day-number {
+            font-family: 'Cairo', sans-serif;
+            font-size: 168px;
+            font-weight: 900;
+            color: var(--navy-main);
+            line-height: 0.92;
+            margin-top: 6px;
+            text-shadow: 0 4px 10px rgba(15, 35, 66, 0.12);
+        }
+
+        .date-month-name {
+            font-family: 'Cairo', sans-serif;
+            font-size: 46px;
+            font-weight: 800;
+            color: var(--navy-dark);
+            line-height: 1.15;
+        }
+
+        .gold-divider-line {
+            width: 78%;
+            height: 2.5px;
+            background: linear-gradient(90deg, transparent 0%, var(--gold-dark) 20%, var(--gold-main) 50%, var(--gold-dark) 80%, transparent 100%);
+            border-radius: 2px;
+        }
+
+        .date-year-text {
+            font-family: 'Cairo', sans-serif;
+            font-size: 48px;
+            font-weight: 800;
+            color: var(--navy-main);
+            line-height: 1.1;
+        }
+
+        /* 3. التاريخ القبطي في المنتصف أسفل لوحة الجمعة */
+        .coptic-section {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            top: 40.5%;
+            width: 34%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 15;
+        }
+
+        .coptic-text {
+            font-family: 'Cairo', sans-serif;
+            font-size: 38px;
+            font-weight: 800;
+            color: var(--navy-main);
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+
+        /* 4. جدول مواقيت الصلاة */
+        .prayer-table-container {
+            position: absolute;
+            left: 3.8%;
+            right: 3.8%;
+            top: 61.5%;
+            height: 28.2%;
+            border-radius: 22px;
+            border: 3px solid var(--gold-main);
+            box-shadow:
+                0 16px 35px rgba(15, 35, 66, 0.16),
+                inset 0 0 0 3px #FAF6EE;
+            background: linear-gradient(180deg, #FBF8F1 0%, #EFE5D1 100%);
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            overflow: hidden;
+            z-index: 15;
+        }
+
+        .prayer-col {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .prayer-col:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 8px;
+            bottom: 8px;
+            left: 0;
+            width: 2px;
+            background: linear-gradient(180deg, var(--gold-light) 0%, var(--gold-main) 50%, var(--gold-dark) 100%);
+            z-index: 5;
+        }
+
+        .prayer-header {
+            height: 43%;
+            background: linear-gradient(180deg, var(--navy-dark) 0%, var(--navy-light) 100%);
+            border-bottom: 3px solid var(--gold-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 8px 4px;
+        }
+
+        .prayer-icon {
+            width: 44px;
+            height: 44px;
+            filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.35));
+        }
+
+        .prayer-name {
+            font-family: 'Cairo', sans-serif;
+            font-size: 32px;
+            font-weight: 800;
+            color: #FFFFFF;
+            line-height: 1.1;
+        }
+
+        .prayer-time-cell {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 6px 4px;
+        }
+
+        .prayer-time-value {
+            font-family: 'Cairo', sans-serif;
+            font-size: 54px;
+            font-weight: 900;
+            color: var(--navy-main);
+            line-height: 1.05;
+            letter-spacing: 0.5px;
+        }
+
+        .prayer-period {
+            font-family: 'Cairo', sans-serif;
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--navy-light);
+            margin-top: 2px;
+            line-height: 1;
+        }
+
+        /* 5. الزخرفة الذهبية السفلية في المنتصف */
+        .bottom-center-ornament {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 480px;
+            height: 32px;
+            z-index: 15;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* إعدادات الطباعة الاحترافية */
+        @media print {
+            @page {
+                size: landscape;
+                margin: 0;
+            }
+            body {
+                background: #FFFFFF;
+                padding: 0;
+                margin: 0;
+                min-height: auto;
+            }
+            .toolbar {
+                display: none !important;
+            }
+            .sheet-wrapper {
+                max-width: 100%;
+                width: 100vw;
+                height: 100vh;
+                box-shadow: none;
+                border-radius: 0;
+            }
+            .calendar-sheet {
+                top: 0 !important;
+                left: 0 !important;
+                transform-origin: top left !important;
+            }
+        }
+
+        /* تنسيق الشاشات المتوسطة والكبيرة */
+        @media screen and (min-width: 701px) {
+            body {
+                padding: 12px 16px;
+                justify-content: center;
+            }
+
+            .toolbar {
+                margin-bottom: 12px;
+            }
+        }
+
+        @media screen and (min-width: 1600px) {
+            .toolbar {
+                min-height: 64px;
+                padding: 12px 24px;
+                font-size: 18px;
+            }
+
+            .toolbar button,
+            .toolbar input,
+            .desktop-governorate-button {
+                min-height: 46px;
+                font-size: 17px;
+            }
+
+            .desktop-governorate-dropdown {
+                width: 290px;
+            }
+
+            .desktop-governorate-search,
+            .desktop-governorate-option {
+                min-height: 44px;
+                font-size: 17px;
+            }
+        }
+
+        /* تنسيق منتقي التاريخ في شريط الأدوات */
+        .date-picker-input {
+            background: rgba(250, 247, 240, 0.12);
+            border: 1px solid var(--gold-main);
+            color: #FAF7F0;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 14px;
+            outline: none;
+            color-scheme: dark;
+        }
+        .btn-outline-gold {
+            background: transparent;
+            color: var(--gold-light);
+            border: 1px solid var(--gold-main);
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-outline-gold:hover {
+            background: rgba(201, 162, 75, 0.18);
+        }
+
+        /* زر القائمة ولوحة الضبط داخل الورقة */
+        .sheet-menu-toggle {
+            position: absolute;
+            top: 145px;
+            right: 42px;
+            z-index: 40;
+            width: 48px;
+            height: 48px;
+            display: none !important;
+            align-items: center;
+            justify-content: center;
+            color: var(--gold-light);
+            background: linear-gradient(145deg, var(--navy-light), var(--navy-dark));
+            border: 2px solid var(--gold-main);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(10, 27, 54, 0.2);
+            cursor: pointer;
+        }
+
+        .sheet-menu-toggle:hover {
+            filter: brightness(1.15);
+        }
+
+        .sheet-settings-panel[hidden] {
+            display: none !important;
+        }
+
+        .sheet-settings-panel {
+            position: absolute;
+            top: 201px;
+            right: 42px;
+            z-index: 45;
+            width: min(300px, calc(100% - 84px));
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            color: #FAF7F0;
+            background: linear-gradient(160deg, #1B365D, #0A1B36);
+            border: 2px solid var(--gold-main);
+            border-radius: 14px;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3);
+        }
+
+        .sheet-settings-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: var(--gold-light);
+            font-weight: 800;
+            font-size: 17px;
+        }
+
+        .sheet-settings-close {
+            border: 0;
+            background: transparent;
+            color: var(--gold-light);
+            font-size: 28px;
+            line-height: 1;
+            cursor: pointer;
+        }
+
+        .sheet-settings-label {
+            color: #FAF7F0;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .sheet-settings-panel .date-picker-input {
+            width: 100%;
+            min-height: 42px;
+        }
+        .governorate-picker { position: relative; width: 100%; }
+        .governorate-picker-button {
+            display: flex; align-items: center; justify-content: space-between;
+            cursor: pointer; text-align: right; font: inherit;
+        }
+        .governorate-dropdown {
+            position: absolute; top: calc(100% + 5px); right: 0; left: 0;
+            z-index: 100; padding: 8px; border: 1px solid var(--gold-main);
+            border-radius: 10px; background: var(--navy-dark);
+            box-shadow: 0 10px 24px rgba(0,0,0,.35);
+        }
+        .governorate-dropdown[hidden] { display: none !important; }
+        .governorate-search { box-sizing: border-box; margin-bottom: 7px; }
+        .governorate-options { max-height: 190px; overflow-y: auto; }
+        .governorate-option {
+            display: block; width: 100%; padding: 8px 10px; border: 0;
+            border-bottom: 1px solid rgba(201,162,75,.22);
+            background: transparent; color: #FAF7F0; text-align: right;
+            font: inherit; cursor: pointer;
+        }
+        .governorate-option:hover,
+        .governorate-option[aria-selected="true"] {
+            background: rgba(201,162,75,.18); color: var(--gold-light);
+        }
+        .governorate-empty { padding: 10px; color: #FAF7F0; text-align: center; }
+        .prayer-city-heading { display: none; }
+
+        .sheet-settings-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .sheet-settings-actions > button {
+            flex: 1;
+            justify-content: center;
+        }
+
+        @media screen and (max-width: 700px) {
+            .toolbar { display: none !important; }
+            .sheet-menu-toggle {
+                display: flex !important;
+                top: 70px;
+                right: 16px;
+                width: 40px;
+                height: 40px;
+                border-radius: 10px;
+            }
+
+            .sheet-menu-toggle svg {
+                width: 19px;
+                height: 19px;
+            }
+
+            .sheet-settings-panel {
+                top: 118px;
+                right: 16px;
+                width: min(280px, calc(100% - 32px));
+                padding: 12px;
+            }
+        }
+
+        @media print {
+            .sheet-menu-toggle,
+            .sheet-settings-panel {
+                display: none !important;
+            }
+        }
+
+        /* =========================
+           تخطيط مستقل للهواتف
+           ========================= */
+        @media screen and (max-width: 700px) {
+            body {
+                justify-content: flex-start;
+                padding: 10px;
+            }
+
+            .sheet-wrapper {
+                width: 100%;
+                max-width: 520px;
+                aspect-ratio: auto;
+                height: auto;
+                overflow: visible;
+                border-radius: 8px;
+            }
+
+            .calendar-sheet {
+                position: relative;
+                top: auto;
+                left: auto;
+                right: auto;
+                width: 100%;
+                height: auto;
+                min-height: 0;
+                transform: none !important;
+                transform-origin: top right;
+                display: grid;
+                grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+                grid-template-areas:
+                    "friday friday"
+                    "hijri gregorian"
+                    "coptic coptic"
+                    "cityheading cityheading"
+                    "prayers prayers";
+                gap: 12px;
+                padding: 28px 16px 54px;
+                overflow: hidden;
+                border-radius: 8px;
+            }
+
+            .islamic-pattern-bg,
+            .ambient-lighting,
+            .outer-frame-navy,
+            .outer-frame-gold,
+            .corner-ornament,
+            .bottom-center-ornament {
+                pointer-events: none;
+            }
+
+            .outer-frame-navy {
+                inset: 7px;
+                border-width: 2px;
+                border-radius: 10px;
+            }
+
+            .outer-frame-gold {
+                inset: 12px;
+                border-width: 1px;
+                border-radius: 7px;
+            }
+
+            .corner-ornament {
+                width: 54px;
+                height: 54px;
+            }
+
+            .corner-tr { top: 6px; right: 6px; }
+            .corner-tl { top: 6px; left: 6px; }
+            .corner-br { bottom: 6px; right: 6px; }
+            .corner-bl { bottom: 6px; left: 6px; }
+
+            .friday-section {
+                grid-area: friday;
+                position: relative;
+                left: auto;
+                right: auto;
+                top: auto;
+                width: 100%;
+                height: auto;
+                min-height: 0;
+                gap: 0;
+                justify-content: center;
+                padding: 2px 18px 0;
+            }
+
+            .friday-section > svg:first-child,
+            .friday-section > svg:last-child {
+                width: min(52%, 180px);
+                height: auto;
+            }
+
+            .friday-plaque-container {
+                width: 100%;
+                max-width: 360px;
+                height: clamp(100px, 29vw, 142px);
+                filter: drop-shadow(0 7px 12px rgba(10, 27, 54, 0.24));
+            }
+
+            .friday-title {
+                font-size: clamp(54px, 15vw, 78px);
+                margin-top: -5px;
+            }
+
+            .date-card {
+                position: relative;
+                top: auto;
+                left: auto;
+                right: auto;
+                width: auto;
+                height: clamp(176px, 49vw, 220px);
+                min-width: 0;
+                border-radius: 14px;
+                border-width: 2px;
+            }
+
+            .hijri-card { grid-area: hijri; }
+            .gregorian-card { grid-area: gregorian; }
+
+            .date-card-header {
+                height: 42px;
+                margin: 4px 4px 0;
+                border-radius: 9px 9px 3px 3px;
+                border-bottom-width: 2px;
+            }
+
+            .date-card-header svg {
+                width: 28px;
+                height: 28px;
+            }
+
+            .date-card-body {
+                padding: 7px 5px 10px;
+                justify-content: space-evenly;
+            }
+
+            .date-day-number {
+                font-size: clamp(54px, 15vw, 76px);
+                line-height: 0.95;
+                margin-top: 0;
+            }
+
+            .date-month-name {
+                font-size: clamp(16px, 4.5vw, 22px);
+                line-height: 1.2;
+                overflow-wrap: anywhere;
+            }
+
+            .gold-divider-line {
+                width: 78%;
+                height: 2px;
+            }
+
+            .date-year-text {
+                font-size: clamp(17px, 4.8vw, 23px);
+                line-height: 1.1;
+            }
+
+            .coptic-section {
+                grid-area: coptic;
+                position: relative;
+                left: auto;
+                top: auto;
+                transform: none;
+                width: 100%;
+                padding: 2px 4px;
+            }
+
+            .coptic-text {
+                font-size: clamp(18px, 5vw, 25px);
+                line-height: 1.35;
+                margin-bottom: 3px;
+                text-align: center;
+            }
+
+            .coptic-section svg {
+                width: min(75%, 260px);
+                height: auto;
+            }
+
+            .prayer-city-heading {
+                display: block;
+                grid-area: cityheading;
+                position: static;
+                text-align: center;
+                color: var(--navy-main);
+                font-size: 20px;
+                font-weight: 800;
+                line-height: 1.3;
+                margin: 0 0 -4px;
+            }
+
+            .prayer-table-container {
+                grid-area: prayers;
+                position: relative;
+                left: auto;
+                right: auto;
+                top: auto;
+                width: 100%;
+                height: auto;
+                min-height: 0;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                border-radius: 14px;
+                border-width: 2px;
+            }
+
+            .prayer-col {
+                min-width: 0;
+                min-height: 118px;
+                border-bottom: 1px solid rgba(166, 124, 46, 0.45);
+            }
+
+            .prayer-col:nth-child(3n + 1),
+            .prayer-col:nth-child(3n + 2) {
+                border-left: 1px solid rgba(166, 124, 46, 0.45);
+            }
+
+            .prayer-col:not(:last-child)::after {
+                display: none;
+            }
+
+            .prayer-header {
+                height: 58px;
+                min-height: 58px;
+                gap: 2px;
+                padding: 4px 2px;
+                border-bottom-width: 2px;
+            }
+
+            .prayer-icon {
+                width: 25px;
+                height: 25px;
+            }
+
+            .prayer-name {
+                font-size: clamp(15px, 4.2vw, 19px);
+                line-height: 1.1;
+            }
+
+            .prayer-time-cell {
+                min-height: 58px;
+                padding: 5px 2px;
+            }
+
+            .prayer-time-value {
+                font-size: clamp(22px, 6.3vw, 30px);
+                line-height: 1.1;
+                letter-spacing: 0;
+            }
+
+            .prayer-period {
+                font-size: 15px;
+                margin-top: 2px;
+            }
+
+            .bottom-center-ornament {
+                width: min(68%, 280px);
+                height: 22px;
+                bottom: 17px;
+            }
+
+            .bottom-center-ornament svg {
+                width: 100%;
+                height: 100%;
+            }
+        }
+
+        @media screen and (max-width: 360px) {
+            body { padding: 6px; }
+            .calendar-sheet { padding: 24px 12px 48px; gap: 9px; }
+            .date-card { height: 168px; }
+            .date-day-number { font-size: 52px; }
+            .date-month-name { font-size: 15px; }
+            .date-year-text { font-size: 16px; }
+            .prayer-col { min-height: 108px; }
+            .prayer-header { height: 54px; min-height: 54px; }
+            .prayer-time-value { font-size: 21px; }
+        }
+
+        @media print {
+            .calendar-sheet {
+                display: block;
+                width: 1536px;
+                height: 1024px;
+                min-height: 0;
+                padding: 0;
+                border-radius: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- شريط أدوات علوي للمعاينة الحية وتحديد التاريخ والطباعة -->
+    <div class="toolbar flex-wrap gap-3">
+        <div class="flex items-center gap-3">
+            <span id="liveStatusDot" class="inline-block w-3 h-3 rounded-full bg-[#C9A24B] transition-colors"></span>
+            <span id="toolbarCityTitle" class="font-bold text-sm sm:text-base text-[#FAF7F0]">ورقة نتيجة يومية ومواقيت الصلاة — القاهرة</span>
+            <span id="liveStatusText" class="text-xs px-2.5 py-0.5 rounded-full bg-[#1B365D] text-[#E8CF88] border border-[#C9A24B]/40">جاري التحديث الحي...</span>
+        </div>
+        <div class="flex items-center gap-2 sm:gap-3 flex-wrap">
+            <div class="desktop-governorate-picker" id="desktopGovernoratePicker">
+                <button type="button" id="desktopGovernorateButton"
+                        class="date-picker-input desktop-governorate-button"
+                        aria-expanded="false" aria-controls="desktopGovernorateDropdown">
+                    <span id="desktopGovernorateLabel">القاهرة</span>
+                    <span aria-hidden="true">⌄</span>
+                </button>
+                <div id="desktopGovernorateDropdown" class="desktop-governorate-dropdown" hidden>
+                    <input type="search" id="desktopGovernorateSearch"
+                           class="date-picker-input desktop-governorate-search"
+                           placeholder="ابحث داخل المحافظات..." autocomplete="off"
+                           aria-label="ابحث داخل قائمة المحافظات">
+                    <div id="desktopGovernorateOptions" class="desktop-governorate-options"></div>
+                </div>
+            </div>
+            <input type="date" id="dateSelector" class="date-picker-input" title="اختر تاريخاً للمعاينة">
+            <button onclick="resetToToday()" class="btn-outline-gold" title="العودة لتاريخ اليوم المباشر">
+                <span>اليوم</span>
+            </button>
+            <button onclick="window.print()" class="btn-gold" title="طباعة الورقة بجودة عالية">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                    <rect x="6" y="14" width="12" height="8"></rect>
+                </svg>
+                <span>طباعة</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- الحاوية الرئيسية بنسبة عرض إلى ارتفاع 3:2 -->
+    <div class="sheet-wrapper" id="sheetWrapper">
+        <main class="calendar-sheet" id="calendarSheet">
+            <!-- زر القائمة داخل التصميم نفسه -->
+            <button type="button" id="settingsToggle" class="sheet-menu-toggle"
+                    aria-expanded="false" aria-controls="settingsPanel"
+                    onclick="toggleSettings()" title="أدوات الضبط">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                    <line x1="4" y1="6" x2="20" y2="6"></line>
+                    <line x1="4" y1="12" x2="20" y2="12"></line>
+                    <line x1="4" y1="18" x2="20" y2="18"></line>
+                </svg>
+            </button>
+
+            <!-- لوحة الضبط المنبثقة داخل حدود التصميم -->
+            <div id="settingsPanel" class="sheet-settings-panel" hidden>
+                <div class="sheet-settings-heading">
+                    <span>أدوات الضبط</span>
+                    <button type="button" class="sheet-settings-close"
+                            onclick="toggleSettings(false)" aria-label="إغلاق القائمة">×</button>
+                </div>
+                <label class="sheet-settings-label" for="mobileCitySelector">اختيار المدينة</label>
+                <div class="governorate-picker" id="governoratePicker">
+                    <button type="button" id="governoratePickerButton"
+                            class="date-picker-input governorate-picker-button"
+                            aria-expanded="false" aria-controls="governorateDropdown">
+                        <span id="governorateSelectedLabel">القاهرة</span>
+                        <span aria-hidden="true">⌄</span>
+                    </button>
+                    <div id="governorateDropdown" class="governorate-dropdown" hidden>
+                        <input type="search" id="mobileCitySearch"
+                               class="date-picker-input governorate-search"
+                               placeholder="ابحث داخل المحافظات..."
+                               aria-label="ابحث داخل قائمة المحافظات"
+                               autocomplete="off">
+                        <div id="governorateOptions" class="governorate-options"></div>
+                    </div>
+                </div>
+                <select id="mobileCitySelector" class="date-picker-input" title="اختر المحافظة" hidden>
+                    <option value="Cairo" selected>القاهرة</option>
+                    <option value="Giza">الجيزة</option>
+                    <option value="Alexandria">الإسكندرية</option>
+                    <option value="Qalyubia">القليوبية</option>
+                    <option value="Monufia">المنوفية</option>
+                    <option value="Gharbia">الغربية</option>
+                    <option value="Kafr El Sheikh">كفر الشيخ</option>
+                    <option value="Dakahlia">الدقهلية</option>
+                    <option value="Damietta">دمياط</option>
+                    <option value="Sharqia">الشرقية</option>
+                    <option value="Beheira">البحيرة</option>
+                    <option value="Ismailia">الإسماعيلية</option>
+                    <option value="Port Said">بورسعيد</option>
+                    <option value="Suez">السويس</option>
+                    <option value="North Sinai">شمال سيناء</option>
+                    <option value="South Sinai">جنوب سيناء</option>
+                    <option value="Faiyum">الفيوم</option>
+                    <option value="Beni Suef">بني سويف</option>
+                    <option value="Minya">المنيا</option>
+                    <option value="Asyut">أسيوط</option>
+                    <option value="Sohag">سوهاج</option>
+                    <option value="Qena">قنا</option>
+                    <option value="Luxor">الأقصر</option>
+                    <option value="Aswan">أسوان</option>
+                    <option value="Red Sea">البحر الأحمر</option>
+                    <option value="New Valley">الوادي الجديد</option>
+                    <option value="Matrouh">مطروح</option>
+                </select>
+                <label class="sheet-settings-label" for="mobileDateSelector">اختيار تاريخ المعاينة</label>
+                <input type="date" id="mobileDateSelector" class="date-picker-input" title="اختر تاريخاً للمعاينة">
+                <div class="sheet-settings-actions">
+                    <button onclick="resetToToday()" class="btn-outline-gold" title="العودة لتاريخ اليوم المباشر">اليوم</button>
+                    <button onclick="window.print()" class="btn-gold" title="طباعة الورقة بجودة عالية">طباعة</button>
+                </div>
+            </div>
+
+            <!-- 1. الخلفية الهندسية الإسلامية الشفافة -->
+            <svg class="islamic-pattern-bg" width="1536" height="1024" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <pattern id="islamicStarGrid" width="120" height="120" patternUnits="userSpaceOnUse">
+                        <g fill="none" stroke="#8C6723" stroke-width="1.5">
+                            <polygon points="60,10 74,46 110,60 74,74 60,110 46,74 10,60 46,46"/>
+                            <rect x="25" y="25" width="70" height="70" transform="rotate(45 60 60)"/>
+                            <circle cx="60" cy="60" r="18"/>
+                            <line x1="0" y1="0" x2="25" y2="25"/>
+                            <line x1="120" y1="0" x2="95" y2="25"/>
+                            <line x1="0" y1="120" x2="25" y2="95"/>
+                            <line x1="120" y1="120" x2="95" y2="95"/>
+                        </g>
+                    </pattern>
+                </defs>
+                <rect width="1536" height="1024" fill="url(#islamicStarGrid)"/>
+            </svg>
+
+            <!-- إضاءة محيطية ناعمة -->
+            <div class="ambient-lighting"></div>
+
+            <!-- 2. الإطار الخارجي المزدوج (أزرق بحري + ذهبي) -->
+            <div class="outer-frame-navy"></div>
+            <div class="outer-frame-gold"></div>
+
+            <!-- الزخارف الهندسية الإسلامية الذهبية في الأركان الأربعة -->
+            <svg class="corner-ornament corner-tr" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M112 8H36C20.5 8 8 20.5 8 36V112" stroke="#0F2342" stroke-width="3.5"/>
+                <path d="M106 16H40C26.7 16 16 26.7 16 40V106" stroke="#C9A24B" stroke-width="2.5"/>
+                <path d="M92 16C92 34 78 46 62 46C46 46 38 58 38 72C38 86 26 94 16 94" stroke="#C9A24B" stroke-width="2" stroke-linecap="round"/>
+                <path d="M76 16C76 28 66 36 54 36C42 36 34 44 34 56C34 68 24 76 16 76" stroke="#A67C2E" stroke-width="1.8"/>
+                <circle cx="32" cy="32" r="7" fill="#C9A24B"/>
+                <circle cx="32" cy="32" r="3" fill="#0F2342"/>
+                <path d="M54 24L59 29L54 34L49 29Z" fill="#C9A24B"/>
+                <path d="M29 49L34 54L29 59L24 54Z" fill="#C9A24B"/>
+            </svg>
+
+            <svg class="corner-ornament corner-tl" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M112 8H36C20.5 8 8 20.5 8 36V112" stroke="#0F2342" stroke-width="3.5"/>
+                <path d="M106 16H40C26.7 16 16 26.7 16 40V106" stroke="#C9A24B" stroke-width="2.5"/>
+                <path d="M92 16C92 34 78 46 62 46C46 46 38 58 38 72C38 86 26 94 16 94" stroke="#C9A24B" stroke-width="2" stroke-linecap="round"/>
+                <path d="M76 16C76 28 66 36 54 36C42 36 34 44 34 56C34 68 24 76 16 76" stroke="#A67C2E" stroke-width="1.8"/>
+                <circle cx="32" cy="32" r="7" fill="#C9A24B"/>
+                <circle cx="32" cy="32" r="3" fill="#0F2342"/>
+                <path d="M54 24L59 29L54 34L49 29Z" fill="#C9A24B"/>
+                <path d="M29 49L34 54L29 59L24 54Z" fill="#C9A24B"/>
+            </svg>
+
+            <svg class="corner-ornament corner-br" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M112 8H36C20.5 8 8 20.5 8 36V112" stroke="#0F2342" stroke-width="3.5"/>
+                <path d="M106 16H40C26.7 16 16 26.7 16 40V106" stroke="#C9A24B" stroke-width="2.5"/>
+                <path d="M92 16C92 34 78 46 62 46C46 46 38 58 38 72C38 86 26 94 16 94" stroke="#C9A24B" stroke-width="2" stroke-linecap="round"/>
+                <path d="M76 16C76 28 66 36 54 36C42 36 34 44 34 56C34 68 24 76 16 76" stroke="#A67C2E" stroke-width="1.8"/>
+                <circle cx="32" cy="32" r="7" fill="#C9A24B"/>
+                <circle cx="32" cy="32" r="3" fill="#0F2342"/>
+                <path d="M54 24L59 29L54 34L49 29Z" fill="#C9A24B"/>
+                <path d="M29 49L34 54L29 59L24 54Z" fill="#C9A24B"/>
+            </svg>
+
+            <svg class="corner-ornament corner-bl" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M112 8H36C20.5 8 8 20.5 8 36V112" stroke="#0F2342" stroke-width="3.5"/>
+                <path d="M106 16H40C26.7 16 16 26.7 16 40V106" stroke="#C9A24B" stroke-width="2.5"/>
+                <path d="M92 16C92 34 78 46 62 46C46 46 38 58 38 72C38 86 26 94 16 94" stroke="#C9A24B" stroke-width="2" stroke-linecap="round"/>
+                <path d="M76 16C76 28 66 36 54 36C42 36 34 44 34 56C34 68 24 76 16 76" stroke="#A67C2E" stroke-width="1.8"/>
+                <circle cx="32" cy="32" r="7" fill="#C9A24B"/>
+                <circle cx="32" cy="32" r="3" fill="#0F2342"/>
+                <path d="M54 24L59 29L54 34L49 29Z" fill="#C9A24B"/>
+                <path d="M29 49L34 54L29 59L24 54Z" fill="#C9A24B"/>
+            </svg>
+
+            <!-- 3. العنوان الرئيسي: لوحة الجمعة الزخرفية (أعلى المنتصف) -->
+            <header class="friday-section">
+                <svg width="260" height="36" viewBox="0 0 260 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10 28H95C108 28 118 14 130 6C142 14 152 28 165 28H250" stroke="#C9A24B" stroke-width="2.2" stroke-linecap="round"/>
+                    <path d="M130 12L137 21L130 30L123 21Z" fill="#C9A24B"/>
+                    <circle cx="102" cy="22" r="3.5" fill="#A67C2E"/>
+                    <circle cx="158" cy="22" r="3.5" fill="#A67C2E"/>
+                </svg>
+
+                <div class="friday-plaque-container">
+                    <svg width="100%" height="100%" viewBox="0 0 580 250" fill="none" xmlns="http://www.w3.org/2000/svg" style="position: absolute; inset: 0;">
+                        <defs>
+                            <linearGradient id="navyPlaqueGrad" x1="0" y1="0" x2="0" y2="250" gradientUnits="userSpaceOnUse">
+                                <stop offset="0%" stop-color="#091830"/>
+                                <stop offset="50%" stop-color="#142C52"/>
+                                <stop offset="100%" stop-color="#0A1B36"/>
+                            </linearGradient>
+                            <linearGradient id="goldStrokeGrad" x1="0" y1="0" x2="580" y2="250" gradientUnits="userSpaceOnUse">
+                                <stop offset="0%" stop-color="#E8CF88"/>
+                                <stop offset="50%" stop-color="#C9A24B"/>
+                                <stop offset="100%" stop-color="#9E7424"/>
+                            </linearGradient>
+                        </defs>
+                        <path d="M88 18 H492 C505 18 515 28 518 42 C523 68 542 94 568 125 C542 156 523 182 518 208 C515 222 505 232 492 232 H88 C75 232 65 222 62 208 C57 182 38 156 12 125 C38 94 57 68 62 42 C65 28 75 18 88 18 Z"
+                              fill="url(#navyPlaqueGrad)" stroke="url(#goldStrokeGrad)" stroke-width="5"/>
+                        <path d="M93 27 H487 C497 27 506 35 509 47 C514 71 531 95 554 125 C531 155 514 179 509 203 C506 215 497 223 487 223 H93 C83 223 74 215 71 203 C66 179 49 155 26 125 C49 95 66 71 71 47 C74 35 83 27 93 27 Z"
+                              fill="none" stroke="#E8CF88" stroke-width="2" stroke-opacity="0.85"/>
+                        <path d="M44 125L52 117L60 125L52 133Z" fill="#E8CF88"/>
+                        <path d="M520 125L528 117L536 125L528 133Z" fill="#E8CF88"/>
+                    </svg>
+                    <h1 class="friday-title" id="dayNameDisplay">الجمعة</h1>
+                </div>
+
+                <svg width="240" height="32" viewBox="0 0 240 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15 8H88C100 8 110 18 120 26C130 18 140 8 152 8H225" stroke="#C9A24B" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M120 4L126 12L120 20L114 12Z" fill="#C9A24B"/>
+                </svg>
+            </header>
+
+            <!-- 4. صندوق التاريخ الهجري (أعلى اليسار) -->
+            <section class="date-card hijri-card" aria-label="التاريخ الهجري">
+                <div class="date-card-header">
+                    <svg width="46" height="46" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="crescentGold" x1="10" y1="6" x2="38" y2="42" gradientUnits="userSpaceOnUse">
+                                <stop offset="0%" stop-color="#F6E6B4"/>
+                                <stop offset="50%" stop-color="#C9A24B"/>
+                                <stop offset="100%" stop-color="#9E7424"/>
+                            </linearGradient>
+                        </defs>
+                        <path d="M34.5 31.8C25.8 33.4 17.5 27.6 15.9 18.9C14.9 13.5 16.8 8.2 20.5 4.7C11.9 6.6 6.4 15.1 8.3 23.7C10.2 32.3 18.7 37.8 27.3 35.9C30.2 35.3 32.7 33.8 34.5 31.8Z"
+                              fill="url(#crescentGold)"/>
+                    </svg>
+                </div>
+                <div class="date-card-body">
+                    <div class="date-day-number" id="hijriDayDisplay">١١</div>
+                    <div class="date-month-name" id="hijriMonthDisplay">جمادى الآخرة</div>
+                    <div class="gold-divider-line"></div>
+                    <div class="date-year-text" id="hijriYearDisplay">١٤٤٨ هـ</div>
+                </div>
+            </section>
+
+            <!-- 5. صندوق التاريخ الميلادي (أعلى اليمين) -->
+            <section class="date-card gregorian-card" aria-label="التاريخ الميلادي">
+                <div class="date-card-header">
+                    <svg width="44" height="44" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="calGold" x1="8" y1="6" x2="40" y2="42" gradientUnits="userSpaceOnUse">
+                                <stop offset="0%" stop-color="#F6E6B4"/>
+                                <stop offset="50%" stop-color="#C9A24B"/>
+                                <stop offset="100%" stop-color="#9E7424"/>
+                            </linearGradient>
+                        </defs>
+                        <rect x="7" y="10" width="34" height="31" rx="5" stroke="url(#calGold)" stroke-width="3.2"/>
+                        <line x1="7" y1="19" x2="41" y2="19" stroke="url(#calGold)" stroke-width="3"/>
+                        <line x1="16" y1="6" x2="16" y2="13" stroke="url(#calGold)" stroke-width="3.2" stroke-linecap="round"/>
+                        <line x1="32" y1="6" x2="32" y2="13" stroke="url(#calGold)" stroke-width="3.2" stroke-linecap="round"/>
+                        <circle cx="16" cy="26" r="2.2" fill="#E8CF88"/>
+                        <circle cx="24" cy="26" r="2.2" fill="#E8CF88"/>
+                        <circle cx="32" cy="26" r="2.2" fill="#E8CF88"/>
+                        <circle cx="16" cy="33" r="2.2" fill="#E8CF88"/>
+                        <circle cx="24" cy="33" r="2.2" fill="#E8CF88"/>
+                        <circle cx="32" cy="33" r="2.2" fill="#E8CF88"/>
+                    </svg>
+                </div>
+                <div class="date-card-body">
+                    <div class="date-day-number" id="gregorianDayDisplay">٢٠</div>
+                    <div class="date-month-name" id="gregorianMonthDisplay">نوفمبر</div>
+                    <div class="gold-divider-line"></div>
+                    <div class="date-year-text" id="gregorianYearDisplay">٢٠٢٦ م</div>
+                </div>
+            </section>
+
+            <!-- 6. التاريخ القبطي -->
+            <section class="coptic-section" aria-label="التاريخ القبطي">
+                <div class="coptic-text" id="copticDateDisplay">١١ هاتور ١٧٤٣ ق</div>
+                <svg width="360" height="24" viewBox="0 0 360 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <line x1="10" y1="12" x2="145" y2="12" stroke="url(#goldLineL)" stroke-width="2"/>
+                    <line x1="215" y1="12" x2="350" y2="12" stroke="url(#goldLineR)" stroke-width="2"/>
+                    <defs>
+                        <linearGradient id="goldLineL" x1="10" y1="12" x2="145" y2="12" gradientUnits="userSpaceOnUse">
+                            <stop offset="0%" stop-color="#C9A24B" stop-opacity="0"/>
+                            <stop offset="100%" stop-color="#C9A24B" stop-opacity="1"/>
+                        </linearGradient>
+                        <linearGradient id="goldLineR" x1="215" y1="12" x2="350" y2="12" gradientUnits="userSpaceOnUse">
+                            <stop offset="0%" stop-color="#C9A24B" stop-opacity="1"/>
+                            <stop offset="100%" stop-color="#C9A24B" stop-opacity="0"/>
+                        </linearGradient>
+                    </defs>
+                    <path d="M180 4L188 12L180 20L172 12Z" stroke="#C9A24B" stroke-width="2" fill="#FAF7F0"/>
+                    <circle cx="180" cy="12" r="3" fill="#0F2342"/>
+                    <circle cx="158" cy="12" r="2.5" fill="#C9A24B"/>
+                    <circle cx="202" cy="12" r="2.5" fill="#C9A24B"/>
+                </svg>
+            </section>
+
+            <!-- 7. جدول مواقيت الصلاة -->
+            <div id="prayerCityHeading" class="prayer-city-heading">مواقيت الصلاة — القاهرة</div>
+            <section class="prayer-table-container" aria-label="مواقيت الصلاة">
+
+                <div class="prayer-col">
+                    <div class="prayer-header">
+                        <svg class="prayer-icon" viewBox="0 0 48 48" fill="none">
+                            <path d="M33 31C24.7 32.5 16.8 27 15.3 18.7C14.3 13.5 16.1 8.5 19.7 5.2C11.5 7 6.3 15.1 8.1 23.3C9.9 31.5 18 36.7 26.2 34.9C28.9 34.3 31.3 32.9 33 31Z" fill="#E8CF88"/>
+                        </svg>
+                        <div class="prayer-name">الفجر</div>
+                    </div>
+                    <div class="prayer-time-cell">
+                        <div class="prayer-time-value" id="fajrTime">٠٤:٥٧</div>
+                        <div class="prayer-period" id="fajrPeriod">ص</div>
+                    </div>
+                </div>
+
+                <div class="prayer-col">
+                    <div class="prayer-header">
+                        <svg class="prayer-icon" viewBox="0 0 48 48" fill="none">
+                            <path d="M12 32C12 25.3726 17.3726 20 24 20C30.6274 20 36 25.3726 36 32" fill="#E8CF88"/>
+                            <line x1="6" y1="33" x2="42" y2="33" stroke="#C9A24B" stroke-width="3" stroke-linecap="round"/>
+                            <line x1="12" y1="39" x2="36" y2="39" stroke="#C9A24B" stroke-width="2.2" stroke-linecap="round" stroke-opacity="0.7"/>
+                            <line x1="24" y1="9" x2="24" y2="15" stroke="#E8CF88" stroke-width="3" stroke-linecap="round"/>
+                            <line x1="11" y1="15" x2="15" y2="19" stroke="#E8CF88" stroke-width="3" stroke-linecap="round"/>
+                            <line x1="37" y1="15" x2="33" y2="19" stroke="#E8CF88" stroke-width="3" stroke-linecap="round"/>
+                            <line x1="6" y1="26" x2="10" y2="27" stroke="#E8CF88" stroke-width="2.8" stroke-linecap="round"/>
+                            <line x1="42" y1="26" x2="38" y2="27" stroke="#E8CF88" stroke-width="2.8" stroke-linecap="round"/>
+                        </svg>
+                        <div class="prayer-name">الشروق</div>
+                    </div>
+                    <div class="prayer-time-cell">
+                        <div class="prayer-time-value" id="sunriseTime">٠٦:٢٥</div>
+                        <div class="prayer-period" id="sunrisePeriod">ص</div>
+                    </div>
+                </div>
+
+                <div class="prayer-col">
+                    <div class="prayer-header">
+                        <svg class="prayer-icon" viewBox="0 0 48 48" fill="none">
+                            <circle cx="24" cy="24" r="10" fill="#E8CF88"/>
+                            <g stroke="#E8CF88" stroke-width="3" stroke-linecap="round">
+                                <line x1="24" y1="6" x2="24" y2="10"/>
+                                <line x1="24" y1="38" x2="24" y2="42"/>
+                                <line x1="6" y1="24" x2="10" y2="24"/>
+                                <line x1="38" y1="24" x2="42" y2="24"/>
+                                <line x1="11.3" y1="11.3" x2="14.1" y2="14.1"/>
+                                <line x1="33.9" y1="33.9" x2="36.7" y2="36.7"/>
+                                <line x1="36.7" y1="11.3" x2="33.9" y2="14.1"/>
+                                <line x1="14.1" y1="33.9" x2="11.3" y2="36.7"/>
+                            </g>
+                        </svg>
+                        <div class="prayer-name">الظهر</div>
+                    </div>
+                    <div class="prayer-time-cell">
+                        <div class="prayer-time-value" id="dhuhrTime">١١:٤٦</div>
+                        <div class="prayer-period" id="dhuhrPeriod">ص</div>
+                    </div>
+                </div>
+
+                <div class="prayer-col">
+                    <div class="prayer-header">
+                        <svg class="prayer-icon" viewBox="0 0 48 48" fill="none">
+                            <circle cx="19" cy="19" r="8" fill="#E8CF88"/>
+                            <g stroke="#E8CF88" stroke-width="2.5" stroke-linecap="round">
+                                <line x1="19" y1="6" x2="19" y2="9"/>
+                                <line x1="6" y1="19" x2="9" y2="19"/>
+                                <line x1="10" y1="10" x2="12" y2="12"/>
+                                <line x1="28" y1="10" x2="26" y2="12"/>
+                            </g>
+                            <path d="M18 37H35C38.866 37 42 33.866 42 30C42 26.36 39.22 23.37 35.67 23.03C34.47 19.52 31.14 17 27.2 17C22.23 17 18.2 21.03 18.2 26C18.2 26.22 18.21 26.44 18.23 26.65C15.27 27.32 13 29.96 13 33.1C13 35.25 15.24 37 18 37Z"
+                                  fill="#FAF7F0" stroke="#C9A24B" stroke-width="1.5"/>
+                        </svg>
+                        <div class="prayer-name">العصر</div>
+                    </div>
+                    <div class="prayer-time-cell">
+                        <div class="prayer-time-value" id="asrTime">٠٢:٣٧</div>
+                        <div class="prayer-period" id="asrPeriod">م</div>
+                    </div>
+                </div>
+
+                <div class="prayer-col">
+                    <div class="prayer-header">
+                        <svg class="prayer-icon" viewBox="0 0 48 48" fill="none">
+                            <path d="M13 30C13 23.9249 17.9249 19 24 19C30.0751 19 35 23.9249 35 30" fill="#C9A24B"/>
+                            <line x1="6" y1="31" x2="42" y2="31" stroke="#E8CF88" stroke-width="3" stroke-linecap="round"/>
+                            <line x1="11" y1="37" x2="37" y2="37" stroke="#E8CF88" stroke-width="2.2" stroke-linecap="round" stroke-opacity="0.85"/>
+                            <line x1="17" y1="42" x2="31" y2="42" stroke="#E8CF88" stroke-width="2" stroke-linecap="round" stroke-opacity="0.6"/>
+                            <path d="M24 9V15M24 15L20 11M24 15L28 11" stroke="#E8CF88" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <div class="prayer-name">المغرب</div>
+                    </div>
+                    <div class="prayer-time-cell">
+                        <div class="prayer-time-value" id="maghribTime">٠٥:٠٦</div>
+                        <div class="prayer-period" id="maghribPeriod">م</div>
+                    </div>
+                </div>
+
+                <div class="prayer-col">
+                    <div class="prayer-header">
+                        <svg class="prayer-icon" viewBox="0 0 48 48" fill="none">
+                            <path d="M30 32.5C22.4 33.9 15.1 28.8 13.7 21.2C12.8 16.4 14.5 11.7 17.8 8.7C10.3 10.4 5.5 17.8 7.2 25.3C8.9 32.8 16.3 37.6 23.8 35.9C26.3 35.3 28.5 34.1 30 32.5Z" fill="#E8CF88"/>
+                            <path d="M32 11L33.4 14.6L37 16L33.4 17.4L32 21L30.6 17.4L27 16L30.6 14.6L32 11Z" fill="#F6E6B4"/>
+                            <path d="M38 22L38.9 24.1L41 25L38.9 25.9L38 28L37.1 25.9L35 25L37.1 24.1L38 22Z" fill="#E8CF88"/>
+                        </svg>
+                        <div class="prayer-name">العشاء</div>
+                    </div>
+                    <div class="prayer-time-cell">
+                        <div class="prayer-time-value" id="ishaTime">٠٦:٢٦</div>
+                        <div class="prayer-period" id="ishaPeriod">م</div>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- 8. زخرفة ذهبية أفقية في منتصف أسفل التصميم -->
+            <footer class="bottom-center-ornament" aria-hidden="true">
+                <svg width="480" height="32" viewBox="0 0 480 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <line x1="10" y1="16" x2="185" y2="16" stroke="url(#botGoldL)" stroke-width="2"/>
+                    <line x1="295" y1="16" x2="470" y2="16" stroke="url(#botGoldR)" stroke-width="2"/>
+                    <defs>
+                        <linearGradient id="botGoldL" x1="10" y1="16" x2="185" y2="16" gradientUnits="userSpaceOnUse">
+                            <stop offset="0%" stop-color="#C9A24B" stop-opacity="0"/>
+                            <stop offset="100%" stop-color="#C9A24B" stop-opacity="1"/>
+                        </linearGradient>
+                        <linearGradient id="botGoldR" x1="295" y1="16" x2="470" y2="16" gradientUnits="userSpaceOnUse">
+                            <stop offset="0%" stop-color="#C9A24B" stop-opacity="1"/>
+                            <stop offset="100%" stop-color="#C9A24B" stop-opacity="0"/>
+                        </linearGradient>
+                    </defs>
+                    <path d="M240 5L251 16L240 27L229 16Z" fill="#0F2342" stroke="#C9A24B" stroke-width="2.2"/>
+                    <circle cx="240" cy="16" r="3.5" fill="#E8CF88"/>
+                    <path d="M214 10L220 16L214 22L208 16Z" fill="#C9A24B"/>
+                    <path d="M266 10L272 16L266 22L260 16Z" fill="#C9A24B"/>
+                    <circle cx="196" cy="16" r="2.5" fill="#A67C2E"/>
+                    <circle cx="284" cy="16" r="2.5" fill="#A67C2E"/>
+                </svg>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- سكريبت التحجيم التلقائي وجلب البيانات الحية -->
+    <script>
+        function toggleSettings(forceState) {
+            const panel = document.getElementById('settingsPanel');
+            const button = document.getElementById('settingsToggle');
+            if (!panel || !button) return;
+            const shouldOpen = typeof forceState === 'boolean' ? forceState : panel.hidden;
+
+            if (shouldOpen) {
+                const desktopDateInput = document.getElementById('dateSelector');
+                const mobileDateInput = document.getElementById('mobileDateSelector');
+                if (desktopDateInput && mobileDateInput) {
+                    mobileDateInput.value = desktopDateInput.value || getCairoTodayValue();
+                }
+            }
+
+            panel.hidden = !shouldOpen;
+            button.setAttribute('aria-expanded', String(shouldOpen));
+        }
+
+        function getCairoTodayValue() {
+            const cairoToday = getCairoNow();
+            const yyyy = cairoToday.getFullYear();
+            const mm = String(cairoToday.getMonth() + 1).padStart(2, '0');
+            const dd = String(cairoToday.getDate()).padStart(2, '0');
+            return `${yyyy}-${mm}-${dd}`;
+        }
+
+        function toArabicDigits(value) {
+            const arabicDigits = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+            return String(value).replace(/\d/g, d => arabicDigits[Number(d)]);
+        }
+
+        const ARABIC_DAYS = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+        const GREGORIAN_MONTHS = [
+            'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
+            'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'
+        ];
+        const HIJRI_MONTHS = {
+            1: 'محرم',
+            2: 'صفر',
+            3: 'ربيع الأول',
+            4: 'ربيع الآخر',
+            5: 'جمادى الأولى',
+            6: 'جمادى الآخرة',
+            7: 'رجب',
+            8: 'شعبان',
+            9: 'رمضان',
+            10: 'شوال',
+            11: 'ذو القعدة',
+            12: 'ذو الحجة'
+        };
+        const COPTIC_MONTHS = [
+            'توت', 'بابه', 'هاتور', 'كيهك', 'طوبة', 'أمشير',
+            'برمهات', 'برمودة', 'بشنس', 'بؤونة', 'أبيب', 'مسرى', 'النسيء'
+        ];
+
+        function calculateCopticDate(dateObj) {
+            const year = dateObj.getFullYear();
+            const month = dateObj.getMonth() + 1;
+            const day = dateObj.getDate();
+
+            const a = Math.floor((14 - month) / 12);
+            const y = year + 4800 - a;
+            const m = month + 12 * a - 3;
+            const jdn = day + Math.floor((153 * m + 2) / 5) + 365 * y +
+                        Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) - 32045;
+
+            const copticEpoch = 1825030;
+            const daysSinceEpoch = jdn - copticEpoch;
+            const copticYear = Math.floor((4 * daysSinceEpoch + 3) / 1461) + 1;
+            const dayOfYear = daysSinceEpoch - Math.floor((1461 * (copticYear - 1)) / 4);
+            const copticMonthIndex = Math.floor(dayOfYear / 30);
+            const copticDay = (dayOfYear % 30) + 1;
+
+            const monthName = COPTIC_MONTHS[copticMonthIndex] || COPTIC_MONTHS[0];
+            return `${toArabicDigits(copticDay)} ${monthName} ${toArabicDigits(copticYear)} ق`;
+        }
+
+        function formatPrayerTime12h(time24Str) {
+            if (!time24Str) return { time: '٠٠:٠٠', period: 'ص' };
+            const cleanTime = time24Str.split(' ')[0];
+            const [hourStr, minuteStr] = cleanTime.split(':');
+            let hour = parseInt(hourStr, 10);
+            const minute = minuteStr.padStart(2, '0');
+            const period = hour >= 12 ? 'م' : 'ص';
+
+            hour = hour % 12;
+            if (hour === 0) hour = 12;
+            const formattedHour = String(hour).padStart(2, '0');
+
+            return {
+                time: toArabicDigits(`${formattedHour}:${minute}`),
+                period: period
+            };
+        }
+
+        function updateLocalDates(targetDate) {
+            const dayName = ARABIC_DAYS[targetDate.getDay()];
+            const gDay = targetDate.getDate();
+            const gMonth = GREGORIAN_MONTHS[targetDate.getMonth()];
+            const gYear = targetDate.getFullYear();
+
+            document.getElementById('dayNameDisplay').textContent = dayName;
+            document.getElementById('gregorianDayDisplay').textContent = toArabicDigits(gDay);
+            document.getElementById('gregorianMonthDisplay').textContent = gMonth;
+            document.getElementById('gregorianYearDisplay').textContent = `${toArabicDigits(gYear)} م`;
+            document.getElementById('copticDateDisplay').textContent = calculateCopticDate(targetDate);
+
+            try {
+                const hijriParts = new Intl.DateTimeFormat('en-TN-u-ca-islamic-umalqura', {
+                    day: 'numeric',
+                    month: 'numeric',
+                    year: 'numeric'
+                }).formatToParts(targetDate);
+
+                const hDay = hijriParts.find(p => p.type === 'day')?.value;
+                const hMonthNum = parseInt(hijriParts.find(p => p.type === 'month')?.value, 10);
+                const hYear = hijriParts.find(p => p.type === 'year')?.value;
+
+                if (hDay && hMonthNum && hYear) {
+                    document.getElementById('hijriDayDisplay').textContent = toArabicDigits(hDay);
+                    document.getElementById('hijriMonthDisplay').textContent = HIJRI_MONTHS[hMonthNum] || '';
+                    document.getElementById('hijriYearDisplay').textContent = `${toArabicDigits(hYear)} هـ`;
+                }
+            } catch (e) {
+                console.warn('Intl Hijri fallback skipped:', e);
+            }
+        }
+
+        async function fetchCairoLiveData(targetDate = new Date()) {
+            const statusDot = document.getElementById('liveStatusDot');
+            const statusText = document.getElementById('liveStatusText');
+
+            updateLocalDates(targetDate);
+
+            const citySelector = document.getElementById('mobileCitySelector');
+            const selectedCity = citySelector ? citySelector.value : 'Cairo';
+            const selectedCityLabel = citySelector
+                ? citySelector.options[citySelector.selectedIndex].text
+                : 'القاهرة';
+            const toolbarCityTitle = document.getElementById('toolbarCityTitle');
+            if (toolbarCityTitle) {
+                toolbarCityTitle.textContent = `ورقة نتيجة يومية ومواقيت الصلاة — ${selectedCityLabel}`;
+            }
+            const prayerCityHeading = document.getElementById('prayerCityHeading');
+            if (prayerCityHeading) {
+                prayerCityHeading.textContent = `مواقيت الصلاة — ${selectedCityLabel}`;
+            }
+
+            statusDot.style.backgroundColor = '#E8CF88';
+            statusText.textContent = `جاري جلب مواقيت ${selectedCityLabel}...`;
+
+            const dd = String(targetDate.getDate()).padStart(2, '0');
+            const mm = String(targetDate.getMonth() + 1).padStart(2, '0');
+            const yyyy = targetDate.getFullYear();
+            const dateParam = `${dd}-${mm}-${yyyy}`;
+
+            try {
+                const apiUrl = `https://api.aladhan.com/v1/timingsByCity/${dateParam}?city=${encodeURIComponent(selectedCity)}&country=Egypt&method=5`;
+                const response = await fetch(apiUrl);
+                if (!response.ok) throw new Error('فشل الاتصال بخادم المواقيت');
+
+                const json = await response.json();
+                if (json.code === 200 && json.data) {
+                    const timings = json.data.timings;
+                    const hijri = json.data.date.hijri;
+
+                    const prayersMap = [
+                        { key: 'Fajr', timeId: 'fajrTime', periodId: 'fajrPeriod' },
+                        { key: 'Sunrise', timeId: 'sunriseTime', periodId: 'sunrisePeriod' },
+                        { key: 'Dhuhr', timeId: 'dhuhrTime', periodId: 'dhuhrPeriod' },
+                        { key: 'Asr', timeId: 'asrTime', periodId: 'asrPeriod' },
+                        { key: 'Maghrib', timeId: 'maghribTime', periodId: 'maghribPeriod' },
+                        { key: 'Isha', timeId: 'ishaTime', periodId: 'ishaPeriod' }
+                    ];
+
+                    prayersMap.forEach(item => {
+                        const formatted = formatPrayerTime12h(timings[item.key]);
+                        document.getElementById(item.timeId).textContent = formatted.time;
+                        document.getElementById(item.periodId).textContent = formatted.period;
+                    });
+
+                    if (hijri) {
+                        const hDayClean = parseInt(hijri.day, 10);
+                        const hMonthAr = HIJRI_MONTHS[hijri.month.number] || hijri.month.ar;
+                        document.getElementById('hijriDayDisplay').textContent = toArabicDigits(hDayClean);
+                        document.getElementById('hijriMonthDisplay').textContent = hMonthAr;
+                        document.getElementById('hijriYearDisplay').textContent = `${toArabicDigits(hijri.year)} هـ`;
+                    }
+
+                    statusDot.style.backgroundColor = '#34D399';
+                    statusText.textContent = `محدث مباشرة • توقيت ${selectedCityLabel}`;
+                }
+            } catch (error) {
+                console.error('Error fetching live prayer times:', error);
+                statusDot.style.backgroundColor = '#F59E0B';
+                statusText.textContent = `تعذر تحديث مواقيت ${selectedCityLabel}`;
+            }
+        }
+
+        function getCairoNow() {
+            try {
+                const cairoStr = new Date().toLocaleString('en-US', { timeZone: 'Africa/Cairo' });
+                return new Date(cairoStr);
+            } catch (e) {
+                return new Date();
+            }
+        }
+
+        function resetToToday() {
+            const cairoToday = getCairoNow();
+            const todayValue = getCairoTodayValue();
+
+            document.getElementById('dateSelector').value = todayValue;
+            const mobileDateInput = document.getElementById('mobileDateSelector');
+            if (mobileDateInput) mobileDateInput.value = todayValue;
+
+            fetchCairoLiveData(cairoToday);
+        }
+
+        let scaleRafId = null;
+
+        function scheduleScaleCalendarSheet() {
+            if (scaleRafId) cancelAnimationFrame(scaleRafId);
+            scaleRafId = requestAnimationFrame(scaleCalendarSheet);
+        }
+
+        function scaleCalendarSheet() {
+            const wrapper = document.getElementById('sheetWrapper');
+            const sheet = document.getElementById('calendarSheet');
+            const toolbar = document.querySelector('.toolbar');
+            if (!wrapper || !sheet) return;
+
+            const viewportWidth = document.documentElement.clientWidth || window.innerWidth;
+            const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+            const isMobileLayout = viewportWidth <= 700;
+
+            if (isMobileLayout) {
+                wrapper.style.width = '100%';
+                wrapper.style.height = 'auto';
+                wrapper.style.maxWidth = '520px';
+                sheet.style.position = 'relative';
+                sheet.style.top = 'auto';
+                sheet.style.left = 'auto';
+                sheet.style.width = '100%';
+                sheet.style.height = 'auto';
+                sheet.style.transform = 'none';
+                if (toolbar) {
+                    toolbar.style.width = '';
+                    toolbar.style.maxWidth = '';
+                }
+                return;
+            }
+
+            sheet.style.position = 'absolute';
+            sheet.style.top = '50%';
+            sheet.style.left = '50%';
+            sheet.style.width = '1536px';
+            sheet.style.height = '1024px';
+            sheet.style.transformOrigin = 'center center';
+
+            const bodyStyle = window.getComputedStyle(document.body);
+            const padX = (parseFloat(bodyStyle.paddingLeft) || 0) + (parseFloat(bodyStyle.paddingRight) || 0);
+            const padY = (parseFloat(bodyStyle.paddingTop) || 0) + (parseFloat(bodyStyle.paddingBottom) || 0);
+            const toolbarHeight = toolbar ? (toolbar.offsetHeight + 14) : 0;
+
+            const availableWidth = Math.max(320, viewportWidth - padX);
+            const availableHeight = Math.max(240, viewportHeight - padY - toolbarHeight);
+
+            const scale = Math.min(availableWidth / 1536, availableHeight / 1024);
+            const renderedWidth = Math.floor(1536 * scale);
+            const renderedHeight = Math.floor(1024 * scale);
+
+            wrapper.style.maxWidth = 'none';
+            wrapper.style.width = renderedWidth + 'px';
+            wrapper.style.height = renderedHeight + 'px';
+            sheet.style.transform = `translate(-50%, -50%) scale(${scale})`;
+
+            if (toolbar) {
+                toolbar.style.maxWidth = 'none';
+                toolbar.style.width = renderedWidth + 'px';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            scaleCalendarSheet();
+        });
+
+        window.addEventListener('load', () => {
+            scaleCalendarSheet();
+            resetToToday();
+
+            const dateInput = document.getElementById('dateSelector');
+            dateInput.addEventListener('change', (e) => {
+                if (e.target.value) {
+                    const [y, m, d] = e.target.value.split('-').map(Number);
+                    const selectedDate = new Date(y, m - 1, d);
+                    fetchCairoLiveData(selectedDate);
+                }
+            });
+
+            const mobileCitySelector = document.getElementById('mobileCitySelector');
+            const mobileCitySearch = document.getElementById('mobileCitySearch');
+            const governoratePickerButton = document.getElementById('governoratePickerButton');
+            const governorateDropdown = document.getElementById('governorateDropdown');
+            const governorateOptions = document.getElementById('governorateOptions');
+            const governorateSelectedLabel = document.getElementById('governorateSelectedLabel');
+
+            if (mobileCitySelector && mobileCitySearch && governoratePickerButton &&
+                governorateDropdown && governorateOptions) {
+                const governorates = Array.from(mobileCitySelector.options).map(option => ({
+                    value: option.value,
+                    text: option.textContent.trim()
+                }));
+
+                function renderGovernorates(query = '') {
+                    const q = query.trim().toLocaleLowerCase('ar');
+                    const matches = governorates.filter(item =>
+                        item.text.toLocaleLowerCase('ar').includes(q)
+                    );
+                    governorateOptions.replaceChildren();
+
+                    if (!matches.length) {
+                        const empty = document.createElement('div');
+                        empty.className = 'governorate-empty';
+                        empty.textContent = 'لا توجد محافظة بهذا الاسم';
+                        governorateOptions.appendChild(empty);
+                        return;
+                    }
+
+                    matches.forEach(item => {
+                        const optionButton = document.createElement('button');
+                        optionButton.type = 'button';
+                        optionButton.className = 'governorate-option';
+                        optionButton.textContent = item.text;
+                        optionButton.setAttribute('aria-selected',
+                            String(item.value === mobileCitySelector.value));
+                        optionButton.addEventListener('click', () => {
+                            mobileCitySelector.value = item.value;
+                            governorateSelectedLabel.textContent = item.text;
+                            governorateDropdown.hidden = true;
+                            governoratePickerButton.setAttribute('aria-expanded', 'false');
+                            mobileCitySelector.dispatchEvent(new Event('change', { bubbles: true }));
+                        });
+                        governorateOptions.appendChild(optionButton);
+                    });
+                }
+
+                renderGovernorates();
+
+                const desktopPicker = document.getElementById('desktopGovernoratePicker');
+                const desktopButton = document.getElementById('desktopGovernorateButton');
+                const desktopDropdown = document.getElementById('desktopGovernorateDropdown');
+                const desktopSearch = document.getElementById('desktopGovernorateSearch');
+                const desktopOptions = document.getElementById('desktopGovernorateOptions');
+                const desktopLabel = document.getElementById('desktopGovernorateLabel');
+
+                function renderDesktopGovernorates(query = '') {
+                    if (!desktopOptions) return;
+                    const q = query.trim().toLocaleLowerCase('ar');
+                    const matches = governorates.filter(item =>
+                        item.text.toLocaleLowerCase('ar').includes(q)
+                    );
+                    desktopOptions.replaceChildren();
+
+                    if (!matches.length) {
+                        const empty = document.createElement('div');
+                        empty.className = 'desktop-governorate-empty';
+                        empty.textContent = 'لا توجد محافظة بهذا الاسم';
+                        desktopOptions.appendChild(empty);
+                        return;
+                    }
+
+                    matches.forEach(item => {
+                        const optionButton = document.createElement('button');
+                        optionButton.type = 'button';
+                        optionButton.className = 'desktop-governorate-option';
+                        optionButton.textContent = item.text;
+                        optionButton.setAttribute('aria-selected',
+                            String(item.value === mobileCitySelector.value));
+                        optionButton.addEventListener('click', () => {
+                            mobileCitySelector.value = item.value;
+                            if (desktopLabel) desktopLabel.textContent = item.text;
+                            if (governorateSelectedLabel) governorateSelectedLabel.textContent = item.text;
+                            desktopDropdown.hidden = true;
+                            desktopButton.setAttribute('aria-expanded', 'false');
+                            mobileCitySelector.dispatchEvent(new Event('change', { bubbles: true }));
+                        });
+                        desktopOptions.appendChild(optionButton);
+                    });
+                }
+
+                if (desktopButton && desktopDropdown && desktopSearch) {
+                    renderDesktopGovernorates();
+                    desktopButton.addEventListener('click', () => {
+                        const opening = desktopDropdown.hidden;
+                        desktopDropdown.hidden = !opening;
+                        desktopButton.setAttribute('aria-expanded', String(opening));
+                        if (opening) {
+                            desktopSearch.value = '';
+                            renderDesktopGovernorates();
+                            desktopSearch.focus();
+                        }
+                    });
+                    desktopSearch.addEventListener('input', () => {
+                        renderDesktopGovernorates(desktopSearch.value);
+                    });
+                    document.addEventListener('click', event => {
+                        if (desktopPicker && !desktopPicker.contains(event.target) && !desktopDropdown.hidden) {
+                            desktopDropdown.hidden = true;
+                            desktopButton.setAttribute('aria-expanded', 'false');
+                        }
+                    });
+                }
+
+                governoratePickerButton.addEventListener('click', () => {
+                    const opening = governorateDropdown.hidden;
+                    governorateDropdown.hidden = !opening;
+                    governoratePickerButton.setAttribute('aria-expanded', String(opening));
+                    if (opening) {
+                        mobileCitySearch.value = '';
+                        renderGovernorates();
+                        mobileCitySearch.focus();
+                    }
+                });
+
+                mobileCitySearch.addEventListener('input', () => {
+                    renderGovernorates(mobileCitySearch.value);
+                });
+
+                document.addEventListener('click', event => {
+                    const picker = document.getElementById('governoratePicker');
+                    if (picker && !picker.contains(event.target) && !governorateDropdown.hidden) {
+                        governorateDropdown.hidden = true;
+                        governoratePickerButton.setAttribute('aria-expanded', 'false');
+                    }
+                });
+            }
+
+            if (mobileCitySelector) {
+                mobileCitySelector.addEventListener('change', () => {
+                    const chosenOption = mobileCitySelector.options[mobileCitySelector.selectedIndex];
+                    if (governorateSelectedLabel && chosenOption) {
+                        governorateSelectedLabel.textContent = chosenOption.textContent.trim();
+                    }
+                    const desktopGovernorateLabel = document.getElementById('desktopGovernorateLabel');
+                    if (desktopGovernorateLabel && chosenOption) {
+                        desktopGovernorateLabel.textContent = chosenOption.textContent.trim();
+                    }
+                    const currentDateValue = document.getElementById('dateSelector').value;
+                    let selectedDate = getCairoNow();
+                    if (currentDateValue) {
+                        const [y, m, d] = currentDateValue.split('-').map(Number);
+                        selectedDate = new Date(y, m - 1, d);
+                    }
+
+                    fetchCairoLiveData(selectedDate);
+                    toggleSettings(false);
+                });
+            }
+
+            const mobileDateInput = document.getElementById('mobileDateSelector');
+            if (mobileDateInput) {
+                mobileDateInput.addEventListener('change', (e) => {
+                    if (e.target.value) {
+                        const [y, m, d] = e.target.value.split('-').map(Number);
+                        const selectedDate = new Date(y, m - 1, d);
+                        dateInput.value = e.target.value;
+                        mobileDateInput.value = e.target.value;
+                        fetchCairoLiveData(selectedDate);
+                        toggleSettings(false);
+                    }
+                });
+            }
+        });
+
+        window.addEventListener('resize', scheduleScaleCalendarSheet);
+        window.addEventListener('orientationchange', () => {
+            scheduleScaleCalendarSheet();
+            setTimeout(scheduleScaleCalendarSheet, 200);
+            setTimeout(scheduleScaleCalendarSheet, 500);
+        });
+        window.addEventListener('beforeprint', () => {
+            const sheet = document.getElementById('calendarSheet');
+            const wrapper = document.getElementById('sheetWrapper');
+            if (sheet && wrapper) {
+                const scale = wrapper.clientWidth / 1536;
+                sheet.style.top = '0';
+                sheet.style.left = '0';
+                sheet.style.transformOrigin = 'top left';
+                sheet.style.transform = `scale(${scale})`;
+            }
+        });
+        window.addEventListener('afterprint', scheduleScaleCalendarSheet);
+    </script>
+</body>
+</html>
