@@ -40,6 +40,7 @@
             align-items: center;
             justify-content: center;
             min-height: 100vh;
+            min-height: 100dvh;
             padding: 16px;
             overflow-x: hidden;
         }
@@ -92,7 +93,7 @@
         }
         .desktop-governorate-dropdown {
             position: absolute; top: calc(100% + 6px); right: 0;
-            width: 230px; z-index: 1000; padding: 8px;
+            width: 230px; max-width: calc(100vw - 36px); z-index: 1000; padding: 8px;
             border: 1px solid var(--gold-main); border-radius: 10px;
             background: #0A1B36; box-shadow: 0 10px 24px rgba(0,0,0,.4);
         }
@@ -117,26 +118,26 @@
         }
         .desktop-governorate-empty { padding: 10px; color: #FAF7F0; text-align: center; }
 
-        /* الحاوية المتجاوبة التي تحافظ على نسبة 3:2 بدقة 1536x1024 */
+        /* الحاوية المتجاوبة للآيباد والشاشات الكبيرة والكمبيوتر */
         .sheet-wrapper {
             width: 100%;
-            max-width: 1280px;
-            aspect-ratio: 3 / 2;
             position: relative;
             box-shadow: 0 25px 60px rgba(0, 0, 0, 0.55);
             border-radius: 6px;
             overflow: hidden;
             background-color: var(--ivory-bg);
+            margin: 0 auto;
         }
 
-        /* لوحة التصميم الأساسية بأبعاد ثابتة 1536x1024 يتم تحجيمها تلقائياً */
+        /* لوحة التصميم الأساسية بأبعاد ثابتة 1536x1024 بتمركز متوافق مع جميع المتصفحات */
         .calendar-sheet {
             width: 1536px;
             height: 1024px;
             position: absolute;
-            top: 0;
-            right: 0;
-            transform-origin: top right;
+            top: 50%;
+            left: 50%;
+            transform-origin: center center;
+            transform: translate(-50%, -50%) scale(1);
             background-color: var(--ivory-bg);
             overflow: hidden;
             user-select: none;
@@ -283,7 +284,6 @@
             text-align: center;
         }
 
-        /* تكبير أرقام التواريخ بشكل بارز وفخم بناءً على التعديلات المطلوبة */
         .date-day-number {
             font-family: 'Cairo', sans-serif;
             font-size: 168px;
@@ -317,7 +317,7 @@
             line-height: 1.1;
         }
 
-        /* 3. التاريخ القبطي في المنتصف أسفل لوحة الجمعة (Y: 39% إلى 54%) */
+        /* 3. التاريخ القبطي في المنتصف أسفل لوحة الجمعة */
         .coptic-section {
             position: absolute;
             left: 50%;
@@ -340,7 +340,7 @@
             margin-bottom: 10px;
         }
 
-        /* 4. جدول مواقيت الصلاة (أكثر تناسقاً لإبراز أرقام التواريخ الكبيرة) */
+        /* 4. جدول مواقيت الصلاة */
         .prayer-table-container {
             position: absolute;
             left: 3.8%;
@@ -365,7 +365,6 @@
             position: relative;
         }
 
-        /* فاصل ذهبي رأسي بين الأعمدة الستة */
         .prayer-col:not(:last-child)::after {
             content: '';
             position: absolute;
@@ -466,53 +465,47 @@
                 box-shadow: none;
                 border-radius: 0;
             }
+            .calendar-sheet {
+                top: 0 !important;
+                left: 0 !important;
+                transform-origin: top left !important;
+            }
         }
 
+        /* تنسيق الشاشات المتوسطة والكبيرة */
+        @media screen and (min-width: 701px) {
+            body {
+                padding: 12px 16px;
+                justify-content: center;
+            }
 
-        /* وضع الشاشات الذكية: مساحة عرض كاملة مع الحفاظ على ورقة 3:2 */
-        body.smart-tv-mode {
-            min-height: 100vh;
-            padding: 18px 24px;
-            justify-content: center;
-            gap: 0;
+            .toolbar {
+                margin-bottom: 12px;
+            }
         }
-        body.smart-tv-mode .toolbar {
-            width: auto;
-            max-width: none;
-            min-height: 64px;
-            margin-bottom: 14px;
-            padding: 12px 22px;
-            border-radius: 12px;
-            font-size: 18px;
-        }
-        body.smart-tv-mode .toolbar button,
-        body.smart-tv-mode .toolbar select,
-        body.smart-tv-mode .toolbar input {
-            min-height: 48px;
-            font-size: 18px;
-        }
-        body.smart-tv-mode .sheet-wrapper {
-            max-width: none;
-            width: auto;
-            height: auto;
-            aspect-ratio: auto;
-            flex: 0 0 auto;
-        }
-        body.smart-tv-mode .calendar-sheet {
-            transform-origin: top right;
-        }
-        body.smart-tv-mode .desktop-governorate-dropdown {
-            width: 300px;
-            font-size: 18px;
-        }
-        body.smart-tv-mode .desktop-governorate-search,
-        body.smart-tv-mode .desktop-governorate-option {
-            min-height: 48px;
-            font-size: 18px;
-        }
-        @media screen and (max-width: 700px) {
-            body.smart-tv-mode {
-                padding: 10px;
+
+        @media screen and (min-width: 1600px) {
+            .toolbar {
+                min-height: 64px;
+                padding: 12px 24px;
+                font-size: 18px;
+            }
+
+            .toolbar button,
+            .toolbar input,
+            .desktop-governorate-button {
+                min-height: 46px;
+                font-size: 17px;
+            }
+
+            .desktop-governorate-dropdown {
+                width: 290px;
+            }
+
+            .desktop-governorate-search,
+            .desktop-governorate-option {
+                min-height: 44px;
+                font-size: 17px;
             }
         }
 
@@ -544,11 +537,6 @@
         }
         .btn-outline-gold:hover {
             background: rgba(201, 162, 75, 0.18);
-        }
-
-        /* زر القائمة مخصص للموبايل فقط حتى لا يتغير تصميم الكمبيوتر */
-        .sheet-menu-toggle {
-            display: none;
         }
 
         /* زر القائمة ولوحة الضبط داخل الورقة */
@@ -691,10 +679,8 @@
             }
         }
 
-
         /* =========================
            تخطيط مستقل للهواتف
-           يحافظ على تصميم الطباعة الأصلي
            ========================= */
         @media screen and (max-width: 700px) {
             body {
@@ -714,6 +700,7 @@
             .calendar-sheet {
                 position: relative;
                 top: auto;
+                left: auto;
                 right: auto;
                 width: 100%;
                 height: auto;
@@ -982,8 +969,6 @@
                 border-radius: 0;
             }
         }
-
-
     </style>
 </head>
 <body>
@@ -1107,7 +1092,6 @@
                 <defs>
                     <pattern id="islamicStarGrid" width="120" height="120" patternUnits="userSpaceOnUse">
                         <g fill="none" stroke="#8C6723" stroke-width="1.5">
-                            <!-- نجمة ثمانية إسلامية متكررة -->
                             <polygon points="60,10 74,46 110,60 74,74 60,110 46,74 10,60 46,46"/>
                             <rect x="25" y="25" width="70" height="70" transform="rotate(45 60 60)"/>
                             <circle cx="60" cy="60" r="18"/>
@@ -1175,7 +1159,6 @@
 
             <!-- 3. العنوان الرئيسي: لوحة الجمعة الزخرفية (أعلى المنتصف) -->
             <header class="friday-section">
-                <!-- زخرفة تاجية ذهبية أعلى اللوحة -->
                 <svg width="260" height="36" viewBox="0 0 260 36" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M10 28H95C108 28 118 14 130 6C142 14 152 28 165 28H250" stroke="#C9A24B" stroke-width="2.2" stroke-linecap="round"/>
                     <path d="M130 12L137 21L130 30L123 21Z" fill="#C9A24B"/>
@@ -1183,7 +1166,6 @@
                     <circle cx="158" cy="22" r="3.5" fill="#A67C2E"/>
                 </svg>
 
-                <!-- اللوحة الإسلامية البارزة -->
                 <div class="friday-plaque-container">
                     <svg width="100%" height="100%" viewBox="0 0 580 250" fill="none" xmlns="http://www.w3.org/2000/svg" style="position: absolute; inset: 0;">
                         <defs>
@@ -1198,20 +1180,16 @@
                                 <stop offset="100%" stop-color="#9E7424"/>
                             </linearGradient>
                         </defs>
-                        <!-- الإطار الذهبي الخارجي للخرطوشة الإسلامية -->
                         <path d="M88 18 H492 C505 18 515 28 518 42 C523 68 542 94 568 125 C542 156 523 182 518 208 C515 222 505 232 492 232 H88 C75 232 65 222 62 208 C57 182 38 156 12 125 C38 94 57 68 62 42 C65 28 75 18 88 18 Z"
                               fill="url(#navyPlaqueGrad)" stroke="url(#goldStrokeGrad)" stroke-width="5"/>
-                        <!-- الإطار الذهبي الداخلي المزدوج -->
                         <path d="M93 27 H487 C497 27 506 35 509 47 C514 71 531 95 554 125 C531 155 514 179 509 203 C506 215 497 223 487 223 H93 C83 223 74 215 71 203 C66 179 49 155 26 125 C49 95 66 71 71 47 C74 35 83 27 93 27 Z"
                               fill="none" stroke="#E8CF88" stroke-width="2" stroke-opacity="0.85"/>
-                        <!-- معينات ذهبية جانبية داخل اللوحة -->
                         <path d="M44 125L52 117L60 125L52 133Z" fill="#E8CF88"/>
                         <path d="M520 125L528 117L536 125L528 133Z" fill="#E8CF88"/>
                     </svg>
                     <h1 class="friday-title" id="dayNameDisplay">الجمعة</h1>
                 </div>
 
-                <!-- زخرفة ذهبية صغيرة أسفل اللوحة -->
                 <svg width="240" height="32" viewBox="0 0 240 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M15 8H88C100 8 110 18 120 26C130 18 140 8 152 8H225" stroke="#C9A24B" stroke-width="2" stroke-linecap="round"/>
                     <path d="M120 4L126 12L120 20L114 12Z" fill="#C9A24B"/>
@@ -1221,7 +1199,6 @@
             <!-- 4. صندوق التاريخ الهجري (أعلى اليسار) -->
             <section class="date-card hijri-card" aria-label="التاريخ الهجري">
                 <div class="date-card-header">
-                    <!-- أيقونة هلال ذهبي -->
                     <svg width="46" height="46" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <defs>
                             <linearGradient id="crescentGold" x1="10" y1="6" x2="38" y2="42" gradientUnits="userSpaceOnUse">
@@ -1245,7 +1222,6 @@
             <!-- 5. صندوق التاريخ الميلادي (أعلى اليمين) -->
             <section class="date-card gregorian-card" aria-label="التاريخ الميلادي">
                 <div class="date-card-header">
-                    <!-- أيقونة تقويم ذهبية -->
                     <svg width="44" height="44" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <defs>
                             <linearGradient id="calGold" x1="8" y1="6" x2="40" y2="42" gradientUnits="userSpaceOnUse">
@@ -1274,10 +1250,9 @@
                 </div>
             </section>
 
-            <!-- 6. التاريخ القبطي (في المنتصف أسفل لوحة الجمعة مباشرة بدون إطار) -->
+            <!-- 6. التاريخ القبطي -->
             <section class="coptic-section" aria-label="التاريخ القبطي">
                 <div class="coptic-text" id="copticDateDisplay">١١ هاتور ١٧٤٣ ق</div>
-                <!-- زخرفة ذهبية أفقية رفيعة أسفل النص -->
                 <svg width="360" height="24" viewBox="0 0 360 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <line x1="10" y1="12" x2="145" y2="12" stroke="url(#goldLineL)" stroke-width="2"/>
                     <line x1="215" y1="12" x2="350" y2="12" stroke="url(#goldLineR)" stroke-width="2"/>
@@ -1298,14 +1273,12 @@
                 </svg>
             </section>
 
-            <!-- 7. جدول مواقيت الصلاة لمدينة القاهرة (من اليمين إلى اليسار: الفجر -> العشاء) -->
+            <!-- 7. جدول مواقيت الصلاة -->
             <div id="prayerCityHeading" class="prayer-city-heading">مواقيت الصلاة — القاهرة</div>
             <section class="prayer-table-container" aria-label="مواقيت الصلاة">
 
-                <!-- العمود ١: الفجر -->
                 <div class="prayer-col">
                     <div class="prayer-header">
-                        <!-- أيقونة هلال -->
                         <svg class="prayer-icon" viewBox="0 0 48 48" fill="none">
                             <path d="M33 31C24.7 32.5 16.8 27 15.3 18.7C14.3 13.5 16.1 8.5 19.7 5.2C11.5 7 6.3 15.1 8.1 23.3C9.9 31.5 18 36.7 26.2 34.9C28.9 34.3 31.3 32.9 33 31Z" fill="#E8CF88"/>
                         </svg>
@@ -1317,10 +1290,8 @@
                     </div>
                 </div>
 
-                <!-- العمود ٢: الشروق -->
                 <div class="prayer-col">
                     <div class="prayer-header">
-                        <!-- أيقونة شمس مشرقة -->
                         <svg class="prayer-icon" viewBox="0 0 48 48" fill="none">
                             <path d="M12 32C12 25.3726 17.3726 20 24 20C30.6274 20 36 25.3726 36 32" fill="#E8CF88"/>
                             <line x1="6" y1="33" x2="42" y2="33" stroke="#C9A24B" stroke-width="3" stroke-linecap="round"/>
@@ -1339,10 +1310,8 @@
                     </div>
                 </div>
 
-                <!-- العمود ٣: الظهر -->
                 <div class="prayer-col">
                     <div class="prayer-header">
-                        <!-- أيقونة شمس ساطعة -->
                         <svg class="prayer-icon" viewBox="0 0 48 48" fill="none">
                             <circle cx="24" cy="24" r="10" fill="#E8CF88"/>
                             <g stroke="#E8CF88" stroke-width="3" stroke-linecap="round">
@@ -1364,10 +1333,8 @@
                     </div>
                 </div>
 
-                <!-- العمود ٤: العصر -->
                 <div class="prayer-col">
                     <div class="prayer-header">
-                        <!-- أيقونة شمس مع سحب -->
                         <svg class="prayer-icon" viewBox="0 0 48 48" fill="none">
                             <circle cx="19" cy="19" r="8" fill="#E8CF88"/>
                             <g stroke="#E8CF88" stroke-width="2.5" stroke-linecap="round">
@@ -1387,10 +1354,8 @@
                     </div>
                 </div>
 
-                <!-- العمود ٥: المغرب -->
                 <div class="prayer-col">
                     <div class="prayer-header">
-                        <!-- أيقونة شمس عند الغروب -->
                         <svg class="prayer-icon" viewBox="0 0 48 48" fill="none">
                             <path d="M13 30C13 23.9249 17.9249 19 24 19C30.0751 19 35 23.9249 35 30" fill="#C9A24B"/>
                             <line x1="6" y1="31" x2="42" y2="31" stroke="#E8CF88" stroke-width="3" stroke-linecap="round"/>
@@ -1406,13 +1371,10 @@
                     </div>
                 </div>
 
-                <!-- العمود ٦: العشاء -->
                 <div class="prayer-col">
                     <div class="prayer-header">
-                        <!-- أيقونة هلال ونجوم -->
                         <svg class="prayer-icon" viewBox="0 0 48 48" fill="none">
                             <path d="M30 32.5C22.4 33.9 15.1 28.8 13.7 21.2C12.8 16.4 14.5 11.7 17.8 8.7C10.3 10.4 5.5 17.8 7.2 25.3C8.9 32.8 16.3 37.6 23.8 35.9C26.3 35.3 28.5 34.1 30 32.5Z" fill="#E8CF88"/>
-                            <!-- نجمتان -->
                             <path d="M32 11L33.4 14.6L37 16L33.4 17.4L32 21L30.6 17.4L27 16L30.6 14.6L32 11Z" fill="#F6E6B4"/>
                             <path d="M38 22L38.9 24.1L41 25L38.9 25.9L38 28L37.1 25.9L35 25L37.1 24.1L38 22Z" fill="#E8CF88"/>
                         </svg>
@@ -1441,7 +1403,6 @@
                             <stop offset="100%" stop-color="#C9A24B" stop-opacity="0"/>
                         </linearGradient>
                     </defs>
-                    <!-- زخرفة وسطية متناظرة -->
                     <path d="M240 5L251 16L240 27L229 16Z" fill="#0F2342" stroke="#C9A24B" stroke-width="2.2"/>
                     <circle cx="240" cy="16" r="3.5" fill="#E8CF88"/>
                     <path d="M214 10L220 16L214 22L208 16Z" fill="#C9A24B"/>
@@ -1454,16 +1415,14 @@
         </main>
     </div>
 
-    <!-- سكريبت التحجيم التلقائي وجلب البيانات الحية لمدينة القاهرة -->
+    <!-- سكريبت التحجيم التلقائي وجلب البيانات الحية -->
     <script>
-        // إظهار وإخفاء أدوات الضبط داخل ورقة الموبايل
         function toggleSettings(forceState) {
             const panel = document.getElementById('settingsPanel');
             const button = document.getElementById('settingsToggle');
             if (!panel || !button) return;
             const shouldOpen = typeof forceState === 'boolean' ? forceState : panel.hidden;
 
-            // مزامنة منتقي تاريخ الموبايل مع التاريخ المعروض حالياً قبل فتح القائمة.
             if (shouldOpen) {
                 const desktopDateInput = document.getElementById('dateSelector');
                 const mobileDateInput = document.getElementById('mobileDateSelector');
@@ -1484,13 +1443,11 @@
             return `${yyyy}-${mm}-${dd}`;
         }
 
-        // تحويل الأرقام الإنجليزية إلى أرقام عربية هندية حصراً
         function toArabicDigits(value) {
             const arabicDigits = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
             return String(value).replace(/\d/g, d => arabicDigits[Number(d)]);
         }
 
-        // أسماء الأيام والأشهر العربية
         const ARABIC_DAYS = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
         const GREGORIAN_MONTHS = [
             'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
@@ -1515,20 +1472,17 @@
             'برمهات', 'برمودة', 'بشنس', 'بؤونة', 'أبيب', 'مسرى', 'النسيء'
         ];
 
-        // حساب التاريخ القبطي بدقة فلكية لأي تاريخ ميلادي
         function calculateCopticDate(dateObj) {
             const year = dateObj.getFullYear();
             const month = dateObj.getMonth() + 1;
             const day = dateObj.getDate();
 
-            // حساب رقم اليوم اليولياني (Julian Day Number)
             const a = Math.floor((14 - month) / 12);
             const y = year + 4800 - a;
             const m = month + 12 * a - 3;
             const jdn = day + Math.floor((153 * m + 2) / 5) + 365 * y +
                         Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) - 32045;
 
-            // تحويل الرقم اليولياني إلى التقويم القبطي (عصر الشهداء يبدأ في JDN 1825030)
             const copticEpoch = 1825030;
             const daysSinceEpoch = jdn - copticEpoch;
             const copticYear = Math.floor((4 * daysSinceEpoch + 3) / 1461) + 1;
@@ -1540,10 +1494,8 @@
             return `${toArabicDigits(copticDay)} ${monthName} ${toArabicDigits(copticYear)} ق`;
         }
 
-        // تنسيق الوقت من نظام 24 ساعة إلى 12 ساعة مع ص / م بالأرقام الهندية
         function formatPrayerTime12h(time24Str) {
             if (!time24Str) return { time: '٠٠:٠٠', period: 'ص' };
-            // إزالة أي لاحقة زمنية مثل (EET)
             const cleanTime = time24Str.split(' ')[0];
             const [hourStr, minuteStr] = cleanTime.split(':');
             let hour = parseInt(hourStr, 10);
@@ -1560,7 +1512,6 @@
             };
         }
 
-        // تحديث التواريخ المحلية فوراً (الميلادي + القبطي + اسم اليوم + احتياطي الهجري)
         function updateLocalDates(targetDate) {
             const dayName = ARABIC_DAYS[targetDate.getDay()];
             const gDay = targetDate.getDate();
@@ -1573,7 +1524,6 @@
             document.getElementById('gregorianYearDisplay').textContent = `${toArabicDigits(gYear)} م`;
             document.getElementById('copticDateDisplay').textContent = calculateCopticDate(targetDate);
 
-            // حساب هجري فوري عبر Intl كقيمة مبدئية ريثما يكتمل الاتصال بالـ API
             try {
                 const hijriParts = new Intl.DateTimeFormat('en-TN-u-ca-islamic-umalqura', {
                     day: 'numeric',
@@ -1595,7 +1545,6 @@
             }
         }
 
-        // جلب مواقيت الصلاة الحية والتاريخ الهجري المعتمد لمدينة القاهرة من Aladhan API
         async function fetchCairoLiveData(targetDate = new Date()) {
             const statusDot = document.getElementById('liveStatusDot');
             const statusText = document.getElementById('liveStatusText');
@@ -1625,7 +1574,6 @@
             const dateParam = `${dd}-${mm}-${yyyy}`;
 
             try {
-                // method=5 corresponds to Egyptian General Authority of Survey (الهيئة المصرية العامة للمساحة)
                 const apiUrl = `https://api.aladhan.com/v1/timingsByCity/${dateParam}?city=${encodeURIComponent(selectedCity)}&country=Egypt&method=5`;
                 const response = await fetch(apiUrl);
                 if (!response.ok) throw new Error('فشل الاتصال بخادم المواقيت');
@@ -1635,7 +1583,6 @@
                     const timings = json.data.timings;
                     const hijri = json.data.date.hijri;
 
-                    // تحديث مواقيت الصلاة الستة
                     const prayersMap = [
                         { key: 'Fajr', timeId: 'fajrTime', periodId: 'fajrPeriod' },
                         { key: 'Sunrise', timeId: 'sunriseTime', periodId: 'sunrisePeriod' },
@@ -1651,7 +1598,6 @@
                         document.getElementById(item.periodId).textContent = formatted.period;
                     });
 
-                    // تحديث التاريخ الهجري الدقيق من الاستجابة
                     if (hijri) {
                         const hDayClean = parseInt(hijri.day, 10);
                         const hMonthAr = HIJRI_MONTHS[hijri.month.number] || hijri.month.ar;
@@ -1670,7 +1616,6 @@
             }
         }
 
-        // الحصول على التوقيت الحالي في مدينة القاهرة
         function getCairoNow() {
             try {
                 const cairoStr = new Date().toLocaleString('en-US', { timeZone: 'Africa/Cairo' });
@@ -1680,12 +1625,10 @@
             }
         }
 
-        // إعادة الضبط إلى تاريخ اليوم في القاهرة
         function resetToToday() {
             const cairoToday = getCairoNow();
             const todayValue = getCairoTodayValue();
 
-            // مزامنة التاريخ في شريط الكمبيوتر وقائمة الموبايل.
             document.getElementById('dateSelector').value = todayValue;
             const mobileDateInput = document.getElementById('mobileDateSelector');
             if (mobileDateInput) mobileDateInput.value = todayValue;
@@ -1693,10 +1636,11 @@
             fetchCairoLiveData(cairoToday);
         }
 
-        function isSamsungSmartTV() {
-            const ua = navigator.userAgent || '';
-            return /SMART-TV|SMARTTV|Tizen|SamsungBrowser|Maple/i.test(ua) ||
-                   (window.location.search && window.location.search.indexOf('tv=1') !== -1);
+        let scaleRafId = null;
+
+        function scheduleScaleCalendarSheet() {
+            if (scaleRafId) cancelAnimationFrame(scaleRafId);
+            scaleRafId = requestAnimationFrame(scaleCalendarSheet);
         }
 
         function scaleCalendarSheet() {
@@ -1710,56 +1654,49 @@
             const isMobileLayout = viewportWidth <= 700;
 
             if (isMobileLayout) {
-                document.body.classList.remove('smart-tv-mode');
                 wrapper.style.width = '100%';
                 wrapper.style.height = 'auto';
                 wrapper.style.maxWidth = '520px';
-                sheet.style.transform = 'none';
                 sheet.style.position = 'relative';
-                return;
-            }
-
-            sheet.style.position = 'absolute';
-            sheet.style.width = '1536px';
-            sheet.style.height = '1024px';
-            sheet.style.transformOrigin = 'top right';
-
-            const tvMode = isSamsungSmartTV();
-            document.body.classList.toggle('smart-tv-mode', tvMode);
-
-            if (tvMode) {
-                const sidePadding = 48;
-                const verticalPadding = 170;
-                const availableWidth = Math.max(320, viewportWidth - sidePadding);
-                const availableHeight = Math.max(240, viewportHeight - verticalPadding);
-                const scale = Math.min(availableWidth / 1536, availableHeight / 1024);
-                const renderedWidth = Math.floor(1536 * scale);
-                const renderedHeight = Math.floor(1024 * scale);
-
-                wrapper.style.width = renderedWidth + 'px';
-                wrapper.style.height = renderedHeight + 'px';
-                wrapper.style.maxWidth = 'none';
-                sheet.style.transform = 'scale(' + scale + ')';
-
-                if (toolbar) {
-                    toolbar.style.width = renderedWidth + 'px';
-                    toolbar.style.maxWidth = 'none';
-                }
-            } else {
-                wrapper.style.width = '100%';
-                wrapper.style.maxWidth = '1280px';
-                const renderedWidth = wrapper.clientWidth;
-                const scale = renderedWidth / 1536;
-                const renderedHeight = Math.round(1024 * scale);
-
-                /* لا نعتمد على aspect-ratio؛ نحدد ارتفاع الحاوية صراحةً */
-                wrapper.style.height = renderedHeight + 'px';
-                sheet.style.transform = 'scale(' + scale + ')';
-
+                sheet.style.top = 'auto';
+                sheet.style.left = 'auto';
+                sheet.style.width = '100%';
+                sheet.style.height = 'auto';
+                sheet.style.transform = 'none';
                 if (toolbar) {
                     toolbar.style.width = '';
                     toolbar.style.maxWidth = '';
                 }
+                return;
+            }
+
+            sheet.style.position = 'absolute';
+            sheet.style.top = '50%';
+            sheet.style.left = '50%';
+            sheet.style.width = '1536px';
+            sheet.style.height = '1024px';
+            sheet.style.transformOrigin = 'center center';
+
+            const bodyStyle = window.getComputedStyle(document.body);
+            const padX = (parseFloat(bodyStyle.paddingLeft) || 0) + (parseFloat(bodyStyle.paddingRight) || 0);
+            const padY = (parseFloat(bodyStyle.paddingTop) || 0) + (parseFloat(bodyStyle.paddingBottom) || 0);
+            const toolbarHeight = toolbar ? (toolbar.offsetHeight + 14) : 0;
+
+            const availableWidth = Math.max(320, viewportWidth - padX);
+            const availableHeight = Math.max(240, viewportHeight - padY - toolbarHeight);
+
+            const scale = Math.min(availableWidth / 1536, availableHeight / 1024);
+            const renderedWidth = Math.floor(1536 * scale);
+            const renderedHeight = Math.floor(1024 * scale);
+
+            wrapper.style.maxWidth = 'none';
+            wrapper.style.width = renderedWidth + 'px';
+            wrapper.style.height = renderedHeight + 'px';
+            sheet.style.transform = `translate(-50%, -50%) scale(${scale})`;
+
+            if (toolbar) {
+                toolbar.style.maxWidth = 'none';
+                toolbar.style.width = renderedWidth + 'px';
             }
         }
 
@@ -1771,7 +1708,6 @@
             scaleCalendarSheet();
             resetToToday();
 
-            // الاستماع لتغيير التاريخ من المستخدم
             const dateInput = document.getElementById('dateSelector');
             dateInput.addEventListener('change', (e) => {
                 if (e.target.value) {
@@ -1781,7 +1717,6 @@
                 }
             });
 
-            // اختيار المدينة من قائمة الموبايل مع الاحتفاظ بالتاريخ المحدد.
             const mobileCitySelector = document.getElementById('mobileCitySelector');
             const mobileCitySearch = document.getElementById('mobileCitySearch');
             const governoratePickerButton = document.getElementById('governoratePickerButton');
@@ -1831,7 +1766,6 @@
 
                 renderGovernorates();
 
-                // القائمة العلوية للكمبيوتر تستخدم نفس المحافظات ونفس محدّث المواقيت.
                 const desktopPicker = document.getElementById('desktopGovernoratePicker');
                 const desktopButton = document.getElementById('desktopGovernorateButton');
                 const desktopDropdown = document.getElementById('desktopGovernorateDropdown');
@@ -1938,13 +1872,11 @@
                         selectedDate = new Date(y, m - 1, d);
                     }
 
-                    // حدّث المواقيت للمحافظة المختارة ثم أغلق القائمة مباشرة لعرض النتيجة.
                     fetchCairoLiveData(selectedDate);
                     toggleSettings(false);
                 });
             }
 
-            // منتقي التاريخ داخل قائمة الموبايل: نفس سلوك اختيار تاريخ الكمبيوتر
             const mobileDateInput = document.getElementById('mobileDateSelector');
             if (mobileDateInput) {
                 mobileDateInput.addEventListener('change', (e) => {
@@ -1960,22 +1892,24 @@
             }
         });
 
-        window.addEventListener('resize', scaleCalendarSheet);
-        window.addEventListener('orientationchange', scaleCalendarSheet);
+        window.addEventListener('resize', scheduleScaleCalendarSheet);
+        window.addEventListener('orientationchange', () => {
+            scheduleScaleCalendarSheet();
+            setTimeout(scheduleScaleCalendarSheet, 200);
+            setTimeout(scheduleScaleCalendarSheet, 500);
+        });
         window.addEventListener('beforeprint', () => {
             const sheet = document.getElementById('calendarSheet');
             const wrapper = document.getElementById('sheetWrapper');
             if (sheet && wrapper) {
                 const scale = wrapper.clientWidth / 1536;
+                sheet.style.top = '0';
+                sheet.style.left = '0';
+                sheet.style.transformOrigin = 'top left';
                 sheet.style.transform = `scale(${scale})`;
             }
         });
-        window.addEventListener('afterprint', scaleCalendarSheet);
-    
-        window.addEventListener('resize', scaleCalendarSheet);
-        window.addEventListener('orientationchange', function () {
-            setTimeout(scaleCalendarSheet, 250);
-        });
-</script>
+        window.addEventListener('afterprint', scheduleScaleCalendarSheet);
+    </script>
 </body>
 </html>
