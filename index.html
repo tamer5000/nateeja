@@ -1705,24 +1705,33 @@
             const toolbar = document.querySelector('.toolbar');
             if (!wrapper || !sheet) return;
 
-            const isMobileLayout = window.innerWidth <= 700;
+            const viewportWidth = document.documentElement.clientWidth || window.innerWidth;
+            const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+            const isMobileLayout = viewportWidth <= 700;
+
             if (isMobileLayout) {
                 document.body.classList.remove('smart-tv-mode');
-                wrapper.style.height = '';
-                wrapper.style.width = '';
+                wrapper.style.width = '100%';
+                wrapper.style.height = 'auto';
+                wrapper.style.maxWidth = '520px';
                 sheet.style.transform = 'none';
+                sheet.style.position = 'relative';
                 return;
             }
 
-            const tvMode = isSamsungSmartTV() && window.innerWidth > 700;
+            sheet.style.position = 'absolute';
+            sheet.style.width = '1536px';
+            sheet.style.height = '1024px';
+            sheet.style.transformOrigin = 'top right';
+
+            const tvMode = isSamsungSmartTV();
             document.body.classList.toggle('smart-tv-mode', tvMode);
 
             if (tvMode) {
-                /* حساب الحجم يدوياً لتفادي اعتماد المتصفح القديم على aspect-ratio */
                 const sidePadding = 48;
-                const verticalPadding = 150;
-                const availableWidth = Math.max(320, window.innerWidth - sidePadding);
-                const availableHeight = Math.max(240, window.innerHeight - verticalPadding);
+                const verticalPadding = 170;
+                const availableWidth = Math.max(320, viewportWidth - sidePadding);
+                const availableHeight = Math.max(240, viewportHeight - verticalPadding);
                 const scale = Math.min(availableWidth / 1536, availableHeight / 1024);
                 const renderedWidth = Math.floor(1536 * scale);
                 const renderedHeight = Math.floor(1024 * scale);
@@ -1737,16 +1746,26 @@
                     toolbar.style.maxWidth = 'none';
                 }
             } else {
-                /* fallback عام: بعض متصفحات التلفزيون لا تدعم CSS aspect-ratio */
-                wrapper.style.height = Math.round(wrapper.clientWidth * 2 / 3) + 'px';
-                const scale = wrapper.clientWidth / 1536;
+                wrapper.style.width = '100%';
+                wrapper.style.maxWidth = '1280px';
+                const renderedWidth = wrapper.clientWidth;
+                const scale = renderedWidth / 1536;
+                const renderedHeight = Math.round(1024 * scale);
+
+                /* لا نعتمد على aspect-ratio؛ نحدد ارتفاع الحاوية صراحةً */
+                wrapper.style.height = renderedHeight + 'px';
                 sheet.style.transform = 'scale(' + scale + ')';
+
                 if (toolbar) {
                     toolbar.style.width = '';
                     toolbar.style.maxWidth = '';
                 }
             }
         }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            scaleCalendarSheet();
+        });
 
         window.addEventListener('load', () => {
             scaleCalendarSheet();
@@ -1952,6 +1971,11 @@
             }
         });
         window.addEventListener('afterprint', scaleCalendarSheet);
-    </script>
+    
+        window.addEventListener('resize', scaleCalendarSheet);
+        window.addEventListener('orientationchange', function () {
+            setTimeout(scaleCalendarSheet, 250);
+        });
+</script>
 </body>
 </html>
