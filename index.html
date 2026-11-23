@@ -358,8 +358,14 @@
             50% { box-shadow: inset 0 0 0 3px var(--gold-light), 0 0 25px rgba(201, 162, 75, 0.8); }
         }
 
-        .prayer-table-container { position: absolute; left: 3.8%; right: 3.8%; top: 63%; height: 27%; border-radius: 22px; border: 3px solid var(--gold-main); box-shadow: 0 16px 35px rgba(15, 35, 66, 0.16), inset 0 0 0 3px #FAF6EE; background: linear-gradient(180deg, #FBF8F1 0%, #EFE5D1 100%); display: grid; grid-template-columns: repeat(6, 1fr); overflow: hidden; z-index: 15; }
+        .prayer-table-container { position: absolute; left: 3.8%; right: 3.8%; top: 63%; height: 27%; border-radius: 22px; border: 3px solid var(--gold-main); box-shadow: 0 16px 35px rgba(15, 35, 66, 0.16), inset 0 0 0 3px #FAF6EE; background: linear-gradient(180deg, #FBF8F1 0%, #EFE5D1 100%); display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); overflow: hidden; z-index: 15; }
         .prayer-col { display: flex; flex-direction: column; position: relative; transition: background .3s ease; }
+        /* Keep the sixth prayer column (Isha) visible when card contents are enlarged. */
+        .prayer-table-container > .prayer-col { display: flex; min-width: 0; min-height: 0; visibility: visible; opacity: 1; }
+        .prayer-table-container > .prayer-col:last-child { grid-column: auto / span 1; }
+        .prayer-table-container .prayer-col:last-child .prayer-name,
+        .prayer-table-container .prayer-col:last-child .prayer-time-value,
+        .prayer-table-container .prayer-col:last-child .prayer-period { display: block; visibility: visible; opacity: 1; }
         .prayer-col:not(:last-child)::after { content: ''; position: absolute; top: 8px; bottom: 8px; left: 0; width: 2px; background: linear-gradient(180deg, var(--gold-light) 0%, var(--gold-main) 50%, var(--gold-dark) 100%); z-index: 5; }
         .prayer-header { height: 38%; background: linear-gradient(180deg, var(--navy-dark) 0%, var(--navy-light) 100%); border-bottom: 3px solid var(--gold-main); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 6px 4px; }
         .prayer-icon { width: 36px; height: 36px; filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.35)); }
@@ -367,16 +373,10 @@
         .prayer-time-cell { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4px; }
         .prayer-time-value { font-family: var(--font-primary); font-size: 50px; font-weight: 900; color: var(--navy-main); line-height: 1.05; letter-spacing: 0.5px; }
         .prayer-period { font-family: var(--font-primary); font-size: 24px; font-weight: 800; color: var(--navy-light); margin-top: 0; line-height: 1; }
-        /* Duha uses the exact same visual card treatment as the iqama cards. */
-        .duha-info { margin-top: 12px; }
-        .duha-label { font-weight: 900; }
-        .duha-time { direction: ltr; unicode-bidi: isolate; }
-
-
         .iqama-time {
             margin: 12px 8px 3px;
-            padding: 9px 12px;
-            min-height: 48px;
+            padding: 11px 14px;
+            min-height: 56px;
             width: calc(100% - 16px);
             box-sizing: border-box;
             background: linear-gradient(135deg, rgba(201, 162, 75, 0.24), rgba(232, 207, 136, 0.34));
@@ -384,27 +384,33 @@
             border-radius: 12px;
             color: var(--gold-dark);
             font-family: var(--font-primary);
-            font-size: clamp(17px, 1.65vw, 23px);
+            font-size: clamp(14px, 1.35vw, 19px);
             font-weight: 900;
             line-height: 1.2;
+            text-align: center;
+            white-space: normal;
+            overflow-wrap: anywhere;
+            min-width: 0;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 7px;
-            letter-spacing: 0.2px;
-            white-space: nowrap;
+            gap: 5px;
+            letter-spacing: 0;
+            white-space: normal;
+            max-width: calc(100% - 8px);
             box-shadow: 0 3px 9px rgba(15, 35, 66, 0.10), inset 0 1px 0 rgba(255,255,255,.55);
         }
         .iqama-time::before {
             content: '';
             display: inline-block;
-            flex: 0 0 1.05em;
-            width: 1.05em;
-            height: 1.05em;
+            flex: 0 0 0.9em;
+            width: 0.9em;
+            height: 0.9em;
             background: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23A67C2E' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 7v5l3 2'/%3E%3C/svg%3E");
             opacity: 1;
         }
         .iqama-time[hidden] { display: none !important; }
+        .duha-time-card { flex-wrap: wrap; row-gap: 2px; }
         .adhan-toggle[aria-pressed="true"] {
             background: linear-gradient(135deg, #D9C58F, #F5E8C6);
             color: #10213B;
@@ -617,7 +623,7 @@
             .next-prayer-banner .np-sep { height: 18px; }
             .next-prayer-banner .np-countdown { font-size: 14px; }
             .next-prayer-banner .np-countdown strong { font-size: 16px; }
-            .prayer-table-container { grid-area: prayers; position: relative; left: auto; right: auto; top: auto; width: 100%; height: auto; min-height: 0; grid-template-columns: repeat(3, minmax(0, 1fr)); border-radius: 14px; border-width: 2px; }
+            .prayer-table-container { grid-area: prayers; position: relative; left: auto; right: auto; top: auto; width: 100%; height: auto; min-height: 0; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-flow: row; border-radius: 14px; border-width: 2px; }
             .prayer-col { min-width: 0; min-height: 118px; border-bottom: 1px solid rgba(166, 124, 46, 0.45); }
             .prayer-col:nth-child(3n + 1), .prayer-col:nth-child(3n + 2) { border-left: 1px solid rgba(166, 124, 46, 0.45); }
             .prayer-col:not(:last-child)::after { display: none; }
@@ -630,13 +636,16 @@
             .iqama-time {
                 margin: 8px 2px 2px;
                 width: calc(100% - 4px);
-                min-height: 36px;
+                min-height: 43px;
                 padding: 6px 2px;
                 border-width: 1.5px;
                 border-radius: 9px;
-                font-size: clamp(12px, 3.15vw, 16px);
+                font-size: clamp(11px, 2.9vw, 14px);
                 gap: 3px;
                 letter-spacing: 0;
+                white-space: normal;
+                overflow-wrap: anywhere;
+                text-align: center;
             }
             .bottom-center-ornament { width: min(68%, 280px); height: 22px; bottom: 17px; }
             .sheet-menu-toggle { display: flex !important; align-items: center; justify-content: center; position: absolute; top: 70px; right: 16px; z-index: 40; width: 40px; height: 40px; color: var(--gold-light); background: linear-gradient(145deg, var(--navy-light), var(--navy-dark)); border: 2px solid var(--gold-main); border-radius: 10px; box-shadow: 0 4px 12px rgba(10, 27, 54, 0.2); cursor: pointer; }
@@ -1026,9 +1035,8 @@
                     <div class="prayer-time-cell">
                         <div class="prayer-time-value" id="sunriseTime">٠٦:٢٥</div>
                         <div class="prayer-period" id="sunrisePeriod">ص</div>
-                        <div class="iqama-time duha-info" aria-label="موعد صلاة الضحى بعد الشروق بعشرين دقيقة">
-                            <span class="duha-label">الضحى:</span>
-                            <span class="duha-time" id="duhaTime">٠٦:٤٥ ص</span>
+                        <div class="iqama-time duha-time-card" id="duhaTimeCard" aria-label="موعد صلاة الضحى بعد الشروق بعشرين دقيقة">
+                            الضحى: <span id="duhaTime">٠٦:٤٥ ص</span>
                         </div>
                     </div>
                 </div>
@@ -1581,32 +1589,6 @@
             const copticDay = (dayOfYear % 30) + 1;
             return `${toArabicDigits(copticDay)} ${COPTIC_MONTHS[copticMonthIndex] || COPTIC_MONTHS[0]} ${toArabicDigits(copticYear)} ق`;
         }
-        function updateDuhaTime() {
-            const timeEl = document.getElementById('sunriseTime');
-            const periodEl = document.getElementById('sunrisePeriod');
-            const duhaEl = document.getElementById('duhaTime');
-            if (!timeEl || !periodEl || !duhaEl) return;
-
-            const toEnglishDigits = value => String(value).replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d));
-            const digits = toEnglishDigits(timeEl.textContent.trim());
-            let [hour, minute] = digits.split(':').map(Number);
-            if (!Number.isFinite(hour) || !Number.isFinite(minute)) return;
-
-            const period = periodEl.textContent.trim();
-            if (period === 'م' && hour < 12) hour += 12;
-            if (period === 'ص' && hour === 12) hour = 0;
-
-            let totalMinutes = (hour * 60 + minute + 20) % (24 * 60);
-            let duhaHour24 = Math.floor(totalMinutes / 60);
-            const duhaMinute = totalMinutes % 60;
-            const duhaPeriod = duhaHour24 >= 12 ? 'م' : 'ص';
-            let duhaHour12 = duhaHour24 % 12;
-            if (duhaHour12 === 0) duhaHour12 = 12;
-
-            const formatted = `${String(duhaHour12).padStart(2, '0')}:${String(duhaMinute).padStart(2, '0')} ${duhaPeriod}`;
-            duhaEl.textContent = typeof toArabicDigits === 'function' ? toArabicDigits(formatted) : formatted;
-        }
-
         function formatPrayerTime12h(time24Str) {
             if (!time24Str) return { time: '٠٠:٠٠', period: 'ص' };
             const cleanTime = time24Str.split(' ')[0];
@@ -1616,6 +1598,25 @@
             const period = hour >= 12 ? 'م' : 'ص';
             hour = hour % 12; if (hour === 0) hour = 12;
             return { time: toArabicDigits(`${String(hour).padStart(2, '0')}:${minute}`), period };
+        }
+        function updateDuhaTime() {
+            const sunriseTimeEl = document.getElementById('sunriseTime');
+            const sunrisePeriodEl = document.getElementById('sunrisePeriod');
+            const duhaTimeEl = document.getElementById('duhaTime');
+            if (!sunriseTimeEl || !sunrisePeriodEl || !duhaTimeEl) return;
+
+            const englishDigits = String(sunriseTimeEl.textContent).replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d));
+            let [hours, minutes] = englishDigits.trim().split(':').map(Number);
+            if (!Number.isFinite(hours) || !Number.isFinite(minutes)) return;
+            if (sunrisePeriodEl.textContent.trim() === 'م' && hours < 12) hours += 12;
+            if (sunrisePeriodEl.textContent.trim() === 'ص' && hours === 12) hours = 0;
+
+            const duhaTotal = (hours * 60 + minutes + 20) % (24 * 60);
+            let duhaHours = Math.floor(duhaTotal / 60);
+            const duhaMinutes = duhaTotal % 60;
+            const period = duhaHours >= 12 ? 'م' : 'ص';
+            duhaHours = duhaHours % 12 || 12;
+            duhaTimeEl.textContent = `${toArabicDigits(String(duhaHours).padStart(2, '0') + ':' + String(duhaMinutes).padStart(2, '0'))} ${period}`;
         }
         function updateLocalDates(targetDate) {
             document.getElementById('dayNameDisplay').textContent = ARABIC_DAYS[targetDate.getDay()];
@@ -2419,7 +2420,6 @@
             });
         }
 
-        updateDuhaTime();
         window.addEventListener('resize', scaleCalendarSheet);
         window.addEventListener('orientationchange', () => setTimeout(scaleCalendarSheet, 250));
         window.addEventListener('beforeprint', scaleCalendarSheet);
