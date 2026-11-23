@@ -367,6 +367,11 @@
         .prayer-time-cell { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4px; }
         .prayer-time-value { font-family: var(--font-primary); font-size: 50px; font-weight: 900; color: var(--navy-main); line-height: 1.05; letter-spacing: 0.5px; }
         .prayer-period { font-family: var(--font-primary); font-size: 24px; font-weight: 800; color: var(--navy-light); margin-top: 0; line-height: 1; }
+        /* Duha uses the exact same visual card treatment as the iqama cards. */
+        .duha-info { margin-top: 12px; }
+        .duha-label { font-weight: 900; }
+        .duha-time { direction: ltr; unicode-bidi: isolate; }
+
 
         .iqama-time {
             margin: 12px 8px 3px;
@@ -391,9 +396,13 @@
             box-shadow: 0 3px 9px rgba(15, 35, 66, 0.10), inset 0 1px 0 rgba(255,255,255,.55);
         }
         .iqama-time::before {
-            content: '⏱';
-            font-size: 1em;
-            opacity: 0.95;
+            content: '';
+            display: inline-block;
+            flex: 0 0 1.05em;
+            width: 1.05em;
+            height: 1.05em;
+            background: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23A67C2E' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 7v5l3 2'/%3E%3C/svg%3E");
+            opacity: 1;
         }
         .iqama-time[hidden] { display: none !important; }
         .adhan-toggle[aria-pressed="true"] {
@@ -676,7 +685,10 @@
                 <span id="adhanAutoToggleLabel">تفعيل الأذان</span>
             </button>
             <button type="button" onclick="openAdhanSettings()" class="btn-outline-gold adhan-settings-open" title="إعدادات ومعاينة الأذان">
-                <span aria-hidden="true">♫</span><span>إعدادات الأذان</span>
+                <svg class="adhan-settings-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/>
+                    <path d="M10 21h4"/>
+                </svg><span>إعدادات الأذان</span>
             </button>
             <button type="button" onclick="toggleTheme()" class="btn-outline-gold theme-toggle" id="themeToggle" title="تفعيل الوضع الداكن" aria-label="تفعيل الوضع الداكن">
                 <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"></path></svg>
@@ -1014,6 +1026,10 @@
                     <div class="prayer-time-cell">
                         <div class="prayer-time-value" id="sunriseTime">٠٦:٢٥</div>
                         <div class="prayer-period" id="sunrisePeriod">ص</div>
+                        <div class="iqama-time duha-info" aria-label="موعد صلاة الضحى بعد الشروق بعشرين دقيقة">
+                            <span class="duha-label">الضحى:</span>
+                            <span class="duha-time" id="duhaTime">٠٦:٤٥ ص</span>
+                        </div>
                     </div>
                 </div>
                 <div class="prayer-col">
@@ -1565,6 +1581,32 @@
             const copticDay = (dayOfYear % 30) + 1;
             return `${toArabicDigits(copticDay)} ${COPTIC_MONTHS[copticMonthIndex] || COPTIC_MONTHS[0]} ${toArabicDigits(copticYear)} ق`;
         }
+        function updateDuhaTime() {
+            const timeEl = document.getElementById('sunriseTime');
+            const periodEl = document.getElementById('sunrisePeriod');
+            const duhaEl = document.getElementById('duhaTime');
+            if (!timeEl || !periodEl || !duhaEl) return;
+
+            const toEnglishDigits = value => String(value).replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d));
+            const digits = toEnglishDigits(timeEl.textContent.trim());
+            let [hour, minute] = digits.split(':').map(Number);
+            if (!Number.isFinite(hour) || !Number.isFinite(minute)) return;
+
+            const period = periodEl.textContent.trim();
+            if (period === 'م' && hour < 12) hour += 12;
+            if (period === 'ص' && hour === 12) hour = 0;
+
+            let totalMinutes = (hour * 60 + minute + 20) % (24 * 60);
+            let duhaHour24 = Math.floor(totalMinutes / 60);
+            const duhaMinute = totalMinutes % 60;
+            const duhaPeriod = duhaHour24 >= 12 ? 'م' : 'ص';
+            let duhaHour12 = duhaHour24 % 12;
+            if (duhaHour12 === 0) duhaHour12 = 12;
+
+            const formatted = `${String(duhaHour12).padStart(2, '0')}:${String(duhaMinute).padStart(2, '0')} ${duhaPeriod}`;
+            duhaEl.textContent = typeof toArabicDigits === 'function' ? toArabicDigits(formatted) : formatted;
+        }
+
         function formatPrayerTime12h(time24Str) {
             if (!time24Str) return { time: '٠٠:٠٠', period: 'ص' };
             const cleanTime = time24Str.split(' ')[0];
@@ -1640,6 +1682,7 @@
                         document.getElementById(item.timeId).textContent = f.time;
                         document.getElementById(item.periodId).textContent = f.period;
                     });
+                    updateDuhaTime();
                     if (hijri) {
                         const hDayClean = parseInt(hijri.day, 10);
                         const hMonthAr = HIJRI_MONTHS[hijri.month.number] || hijri.month.ar;
@@ -2376,6 +2419,7 @@
             });
         }
 
+        updateDuhaTime();
         window.addEventListener('resize', scaleCalendarSheet);
         window.addEventListener('orientationchange', () => setTimeout(scaleCalendarSheet, 250));
         window.addEventListener('beforeprint', scaleCalendarSheet);
