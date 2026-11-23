@@ -12,7 +12,58 @@
         @font-face { font-family: 'CairoLocal'; src: url('./fonts/Cairo-SemiBold.woff2') format('woff2'); font-weight: 600; font-display: swap; }
         @font-face { font-family: 'CairoLocal'; src: url('./fonts/Cairo-Bold.woff2') format('woff2'); font-weight: 700; font-display: swap; }
         @font-face { font-family: 'CairoLocal'; src: url('./fonts/Cairo-Black.woff2') format('woff2'); font-weight: 900; font-display: swap; }
-    </style>
+    
+        /* إعدادات ومعاينة الأذان */
+        .adhan-settings-open { display:inline-flex; align-items:center; gap:7px; }
+        .adhan-settings-overlay {
+            position:fixed; inset:0; z-index:10020; display:flex; align-items:center; justify-content:center;
+            padding:18px; background:rgba(4,13,27,.78); backdrop-filter:blur(7px);
+        }
+        .adhan-settings-overlay[hidden] { display:none !important; }
+        .adhan-settings-panel {
+            direction:rtl; width:min(100%,560px); max-height:min(90vh,820px); overflow:auto;
+            background:var(--sheet-bg); color:var(--text-primary); border:2px solid var(--gold-main);
+            border-radius:20px; padding:22px; box-shadow:0 24px 80px rgba(0,0,0,.45);
+        }
+        .adhan-settings-header { display:flex; justify-content:space-between; gap:16px; align-items:flex-start; padding-bottom:16px; border-bottom:1px solid var(--gold-dark); }
+        .adhan-settings-kicker { color:var(--gold-dark); font-size:12px; font-weight:800; margin-bottom:5px; }
+        .adhan-settings-header h2 { font-family:var(--font-display); font-size:27px; line-height:1.35; color:var(--text-primary); }
+        .adhan-settings-header p { color:var(--text-secondary); font-size:13px; margin-top:5px; line-height:1.7; }
+        .adhan-settings-close { flex:0 0 36px; width:36px; height:36px; border:1px solid var(--gold-dark); border-radius:50%; background:transparent; color:var(--text-primary); font-size:27px; line-height:1; cursor:pointer; }
+        .adhan-settings-section { margin-top:16px; padding:15px; border:1px solid rgba(180,145,75,.48); border-radius:14px; background:var(--card-bg); }
+        .adhan-auto-card { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+        .adhan-auto-card strong,.adhan-volume-heading strong,.adhan-preview-heading strong { display:block; font-size:15px; }
+        .adhan-auto-card small,.adhan-preview-row small { display:block; color:var(--text-secondary); font-size:11px; margin-top:4px; line-height:1.5; }
+        .adhan-settings-switch { min-width:112px; border:1px solid var(--gold-dark); border-radius:30px; padding:7px 10px; display:flex; align-items:center; justify-content:center; gap:8px; background:transparent; color:var(--text-primary); font:700 12px var(--font-primary); cursor:pointer; }
+        .adhan-settings-switch[aria-pressed="true"] { background:linear-gradient(135deg,#D9C58F,#F5E8C6); color:#10213B; }
+        .adhan-switch-knob { width:10px; height:10px; border-radius:50%; background:currentColor; }
+        .adhan-volume-heading,.adhan-preview-heading { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+        #adhanVolumeValue { color:var(--gold-dark); font-weight:800; font-variant-numeric:tabular-nums; }
+        .adhan-volume-slider { width:100%; margin:14px 0 3px; accent-color:var(--gold-dark); cursor:pointer; }
+        .adhan-volume-scale { display:flex; justify-content:space-between; color:var(--text-secondary); font-size:10px; }
+        .adhan-preview-heading span { color:var(--text-secondary); font-size:11px; }
+        .adhan-preview-list { margin-top:10px; display:grid; gap:7px; }
+        .adhan-preview-row { display:flex; justify-content:space-between; align-items:center; gap:12px; padding:9px 11px; border-radius:10px; background:rgba(180,145,75,.10); }
+        .adhan-preview-row strong { font-size:14px; }
+        .adhan-preview-row button,.adhan-stop-button,.adhan-settings-footer button {
+            border:1px solid var(--gold-dark); border-radius:9px; padding:7px 13px; background:var(--gold-main);
+            color:#14233A; font:800 12px var(--font-primary); cursor:pointer; white-space:nowrap;
+        }
+        .adhan-preview-row button:hover,.adhan-stop-button:hover,.adhan-settings-footer button:hover { filter:brightness(1.06); }
+        .adhan-now-playing { margin-top:11px; color:var(--text-secondary); font-size:12px; min-height:20px; }
+        .adhan-stop-button { width:100%; margin-top:8px; background:transparent; color:var(--text-primary); }
+        .adhan-settings-footer { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:16px; color:var(--text-secondary); font-size:11px; }
+        @media(max-width:600px) {
+            .adhan-settings-panel { padding:16px; border-radius:16px; }
+            .adhan-settings-header h2 { font-size:23px; }
+            .adhan-auto-card { align-items:flex-start; }
+            .adhan-settings-switch { min-width:100px; }
+            .adhan-preview-heading { align-items:flex-start; flex-direction:column; gap:3px; }
+            .adhan-settings-open span:last-child { display:none; }
+        }
+        @media print { .adhan-settings-open,.adhan-settings-overlay { display:none !important; } }
+
+</style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
@@ -283,26 +334,39 @@
         .prayer-period { font-family: var(--font-primary); font-size: 24px; font-weight: 800; color: var(--navy-light); margin-top: 0; line-height: 1; }
 
         .iqama-time {
-            margin-top: 4px;
-            padding: 2px 8px;
-            background: rgba(201, 162, 75, 0.18);
-            border: 1px solid rgba(201, 162, 75, 0.5);
-            border-radius: 6px;
+            margin: 12px 8px 3px;
+            padding: 9px 12px;
+            min-height: 48px;
+            width: calc(100% - 16px);
+            box-sizing: border-box;
+            background: linear-gradient(135deg, rgba(201, 162, 75, 0.24), rgba(232, 207, 136, 0.34));
+            border: 2px solid rgba(201, 162, 75, 0.72);
+            border-radius: 12px;
             color: var(--gold-dark);
             font-family: var(--font-primary);
-            font-size: 15px;
-            font-weight: 800;
+            font-size: clamp(17px, 1.65vw, 23px);
+            font-weight: 900;
+            line-height: 1.2;
             display: inline-flex;
             align-items: center;
-            gap: 4px;
-            letter-spacing: 0.3px;
+            justify-content: center;
+            gap: 7px;
+            letter-spacing: 0.2px;
+            white-space: nowrap;
+            box-shadow: 0 3px 9px rgba(15, 35, 66, 0.10), inset 0 1px 0 rgba(255,255,255,.55);
         }
         .iqama-time::before {
             content: '⏱';
-            font-size: 12px;
-            opacity: 0.9;
+            font-size: 1em;
+            opacity: 0.95;
         }
         .iqama-time[hidden] { display: none !important; }
+        .adhan-toggle[aria-pressed="true"] {
+            background: linear-gradient(135deg, #D9C58F, #F5E8C6);
+            color: #10213B;
+        }
+        @media print { .adhan-toggle { display: none !important; } }
+
 
         .prayer-col.in-iqama .iqama-time {
             background: var(--gold-main);
@@ -519,7 +583,17 @@
             .prayer-time-cell { min-height: 58px; padding: 5px 2px; }
             .prayer-time-value { font-size: clamp(22px, 6.3vw, 30px); line-height: 1.1; letter-spacing: 0; }
             .prayer-period { font-size: 15px; margin-top: 2px; }
-            .iqama-time { font-size: 12px; padding: 2px 6px; }
+            .iqama-time {
+                margin: 8px 2px 2px;
+                width: calc(100% - 4px);
+                min-height: 36px;
+                padding: 6px 2px;
+                border-width: 1.5px;
+                border-radius: 9px;
+                font-size: clamp(12px, 3.15vw, 16px);
+                gap: 3px;
+                letter-spacing: 0;
+            }
             .bottom-center-ornament { width: min(68%, 280px); height: 22px; bottom: 17px; }
             .sheet-menu-toggle { display: flex !important; align-items: center; justify-content: center; position: absolute; top: 70px; right: 16px; z-index: 40; width: 40px; height: 40px; color: var(--gold-light); background: linear-gradient(145deg, var(--navy-light), var(--navy-dark)); border: 2px solid var(--gold-main); border-radius: 10px; box-shadow: 0 4px 12px rgba(10, 27, 54, 0.2); cursor: pointer; }
             .sheet-settings-panel { position: absolute; top: 118px; right: 16px; z-index: 45; width: min(280px, calc(100% - 32px)); padding: 12px; display: flex; flex-direction: column; gap: 12px; color: var(--ivory-bg); background: linear-gradient(160deg, var(--navy-light), var(--navy-dark)); border: 2px solid var(--gold-main); border-radius: 14px; box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3); }
@@ -558,6 +632,12 @@
             <span id="toolbarCityTitle" class="font-bold text-sm sm:text-base" style="color: var(--ivory-bg);">ورقة نتيجة يومية — القاهرة</span>
         </div>
         <div class="flex items-center gap-2 sm:gap-3 flex-wrap">
+            <button type="button" onclick="toggleAdhanAuto()" class="btn-outline-gold adhan-toggle" id="adhanAutoToggle" aria-pressed="false" title="تفعيل الأذان التلقائي">
+                <span id="adhanAutoToggleLabel">تفعيل الأذان</span>
+            </button>
+            <button type="button" onclick="openAdhanSettings()" class="btn-outline-gold adhan-settings-open" title="إعدادات ومعاينة الأذان">
+                <span aria-hidden="true">♫</span><span>إعدادات الأذان</span>
+            </button>
             <button type="button" onclick="toggleTheme()" class="btn-outline-gold theme-toggle" id="themeToggle" title="تفعيل الوضع الداكن" aria-label="تفعيل الوضع الداكن">
                 <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"></path></svg>
                 <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5 8.5 8.5 0 1 0 20.5 14.2Z"></path></svg>
@@ -1019,6 +1099,61 @@
                 <button type="button" class="btn-outline-gold" onclick="resetIqamaSettings()">القيم الافتراضية</button>
             </div>
         </div>
+    </div>
+
+
+    <!-- إعدادات ومعاينة الأذان -->
+    <div class="adhan-settings-overlay" id="adhanSettingsOverlay" hidden>
+        <section class="adhan-settings-panel" role="dialog" aria-modal="true" aria-labelledby="adhanSettingsTitle">
+            <div class="adhan-settings-header">
+                <div>
+                    <div class="adhan-settings-kicker">الصوت والتنبيهات</div>
+                    <h2 id="adhanSettingsTitle">إعدادات ومعاينة الأذان</h2>
+                    <p>تحكم في الأذان التلقائي واستمع إلى تسجيل كل صلاة قبل اعتماده.</p>
+                </div>
+                <button type="button" id="adhanSettingsClose" class="adhan-settings-close" onclick="closeAdhanSettings()" aria-label="إغلاق">×</button>
+            </div>
+
+            <div class="adhan-settings-section adhan-auto-card">
+                <div>
+                    <strong>الأذان التلقائي</strong>
+                    <small id="adhanSettingsAutoHint">يعمل في موعد الصلاة عند تفعيل الصوت والسماح للمتصفح بالتشغيل.</small>
+                </div>
+                <button type="button" class="adhan-settings-switch" id="adhanSettingsAutoButton" onclick="toggleAdhanAuto(); syncAdhanSettingsUI();" aria-pressed="false">
+                    <span class="adhan-switch-knob"></span>
+                    <span id="adhanSettingsAutoLabel">غير مفعل</span>
+                </button>
+            </div>
+
+            <div class="adhan-settings-section">
+                <div class="adhan-volume-heading">
+                    <strong>مستوى الصوت</strong>
+                    <output id="adhanVolumeValue" for="adhanVolume">100%</output>
+                </div>
+                <input id="adhanVolume" class="adhan-volume-slider" type="range" min="0" max="100" value="100" step="5" oninput="updateAdhanVolume(this.value)">
+                <div class="adhan-volume-scale"><span>صامت</span><span>مرتفع</span></div>
+            </div>
+
+            <div class="adhan-settings-section">
+                <div class="adhan-preview-heading">
+                    <strong>معاينة تسجيلات الأذان</strong>
+                    <span>اختر الصلاة للاستماع</span>
+                </div>
+                <div class="adhan-preview-list">
+                    <div class="adhan-preview-row"><div><strong>الفجر</strong><small>تسجيل أذان الفجر</small></div><button type="button" onclick="previewAdhan('Fajr')">▶ معاينة</button></div>
+                    <div class="adhan-preview-row"><div><strong>الظهر</strong><small>تسجيل أذان الظهر</small></div><button type="button" onclick="previewAdhan('Dhuhr')">▶ معاينة</button></div>
+                    <div class="adhan-preview-row"><div><strong>العصر</strong><small>تسجيل أذان العصر</small></div><button type="button" onclick="previewAdhan('Asr')">▶ معاينة</button></div>
+                    <div class="adhan-preview-row"><div><strong>المغرب</strong><small>تسجيل أذان المغرب</small></div><button type="button" onclick="previewAdhan('Maghrib')">▶ معاينة</button></div>
+                    <div class="adhan-preview-row"><div><strong>العشاء</strong><small>تسجيل أذان العشاء</small></div><button type="button" onclick="previewAdhan('Isha')">▶ معاينة</button></div>
+                </div>
+                <div class="adhan-now-playing" id="adhanPreviewStatus" aria-live="polite">لا يوجد تسجيل قيد التشغيل</div>
+                <button type="button" class="adhan-stop-button" onclick="stopAdhanPreview()">■ إيقاف المعاينة</button>
+            </div>
+            <div class="adhan-settings-footer">
+                <span>تحتاج التسجيلات إلى اتصال بالإنترنت.</span>
+                <button type="button" onclick="closeAdhanSettings()">تم</button>
+            </div>
+        </section>
     </div>
 
     <script>
@@ -1730,6 +1865,244 @@
         }
 
 
+
+        // ===== الأذان اليدوي والتلقائي =====
+        const ADHAN_STORAGE_KEY = 'prayerSheet_adhan_auto_enabled';
+        const ADHAN_AUDIO_URLS = {
+            Fajr: 'https://archive.org/download/adhan.recordings.from.doha.qatar/Adhan_Doha_Qatar_01_Fajr_Adhan.mp3',
+            Dhuhr: 'https://archive.org/download/adhan.recordings.from.doha.qatar/Adhan_Doha_Qatar_02_Dhuhr_Adhan.mp3',
+            Asr: 'https://archive.org/download/adhan.recordings.from.doha.qatar/Adhan_Doha_Qatar_03_Asr_Adhan.mp3',
+            Maghrib: 'https://archive.org/download/adhan.recordings.from.doha.qatar/Adhan_Doha_Qatar_04_Maghrib_Adhan.mp3',
+            Isha: 'https://archive.org/download/adhan.recordings.from.doha.qatar/Adhan_Doha_Qatar_05_Isha_Adhan.mp3'
+        };
+        const ADHAN_TIME_IDS = {
+            Fajr: ['fajrTime', 'fajrPeriod'],
+            Dhuhr: ['dhuhrTime', 'dhuhrPeriod'],
+            Asr: ['asrTime', 'asrPeriod'],
+            Maghrib: ['maghribTime', 'maghribPeriod'],
+            Isha: ['ishaTime', 'ishaPeriod']
+        };
+        let adhanAudio = new Audio();
+        let adhanAutoEnabled = false;
+        let adhanAudioUnlocked = false;
+        let adhanSchedulerInterval = null;
+        let currentlyPlayingAdhan = null;
+
+        function updateAdhanToggleUI() {
+            const button = document.getElementById('adhanAutoToggle');
+            const label = document.getElementById('adhanAutoToggleLabel');
+            if (!button || !label) return;
+            button.setAttribute('aria-pressed', String(adhanAutoEnabled));
+            label.textContent = !adhanAudioUnlocked ? 'تفعيل الصوت' : (adhanAutoEnabled ? 'إيقاف الأذان التلقائي' : 'تفعيل الأذان');
+            button.title = !adhanAudioUnlocked ? 'اضغط لتفعيل الصوت في المتصفح' : (adhanAutoEnabled ? 'إيقاف الأذان التلقائي' : 'تفعيل الأذان التلقائي');
+            syncAdhanSettingsUI();
+        }
+
+        function loadAdhanPreference() {
+            try {
+                adhanAutoEnabled = localStorage.getItem(ADHAN_STORAGE_KEY) === 'true';
+            } catch (e) { adhanAutoEnabled = false; }
+            updateAdhanToggleUI();
+        }
+
+        async function unlockAdhanAudio() {
+            // تشغيل/إيقاف سريع من نقرة المستخدم لفتح صلاحية الصوت في المتصفح.
+            adhanAudio.src = ADHAN_AUDIO_URLS.Fajr;
+            adhanAudio.volume = 0.01;
+            try {
+                await adhanAudio.play();
+                adhanAudio.pause();
+                adhanAudio.currentTime = 0;
+                adhanAudio.volume = 1;
+                return true;
+            } catch (error) {
+                adhanAudio.volume = 1;
+                console.warn('تعذر تفعيل الصوت من المتصفح:', error);
+                return false;
+            }
+        }
+
+        async function toggleAdhanAuto() {
+            // بعد كل تحميل للصفحة يجب تفعيل الصوت بنقرة جديدة بسبب سياسة المتصفح.
+            if (!adhanAudioUnlocked) {
+                const unlocked = await unlockAdhanAudio();
+                if (!unlocked) {
+                    alert('لم يتمكن المتصفح من تفعيل الصوت. اضغط مرة أخرى واسمح بتشغيل الصوت لهذا الموقع.');
+                    return;
+                }
+                adhanAudioUnlocked = true;
+                adhanAutoEnabled = true;
+                try { localStorage.setItem(ADHAN_STORAGE_KEY, 'true'); } catch (e) {}
+                updateAdhanToggleUI();
+                return;
+            }
+
+            adhanAutoEnabled = !adhanAutoEnabled;
+            try { localStorage.setItem(ADHAN_STORAGE_KEY, String(adhanAutoEnabled)); } catch (e) {}
+            updateAdhanToggleUI();
+            syncAdhanSettingsUI();
+            if (!adhanAutoEnabled) stopAdhanPlayback();
+        }
+
+        function stopAdhanPlayback() {
+            if (adhanAudio && !adhanAudio.paused) adhanAudio.pause();
+            currentlyPlayingAdhan = null;
+        }
+
+        async function playAdhanFor(prayerKey) {
+            const url = ADHAN_AUDIO_URLS[prayerKey];
+            if (!url) return;
+            try {
+                if (!adhanAudio.paused) adhanAudio.pause();
+                adhanAudio.src = url;
+                adhanAudio.currentTime = 0;
+                const volumeControl = document.getElementById('adhanVolume');
+                adhanAudio.volume = volumeControl ? Number(volumeControl.value) / 100 : 1;
+                currentlyPlayingAdhan = prayerKey;
+                await adhanAudio.play();
+                adhanAudioUnlocked = true;
+                updateAdhanToggleUI();
+            } catch (error) {
+                currentlyPlayingAdhan = null;
+                alert('تعذر تشغيل الأذان. تحقق من اتصال الإنترنت وسماح المتصفح بالصوت.');
+                console.error('Adhan playback failed:', error);
+            }
+        }
+
+
+        const ADHAN_VOLUME_KEY = 'prayerSheet_adhan_volume';
+        const ADHAN_PRAYER_NAMES = { Fajr: 'الفجر', Dhuhr: 'الظهر', Asr: 'العصر', Maghrib: 'المغرب', Isha: 'العشاء' };
+
+        function openAdhanSettings() {
+            const overlay = document.getElementById('adhanSettingsOverlay');
+            if (!overlay) return;
+            overlay.hidden = false;
+            syncAdhanSettingsUI();
+            document.body.style.overflow = 'hidden';
+            document.getElementById('adhanSettingsClose')?.focus();
+        }
+
+        function closeAdhanSettings() {
+            const overlay = document.getElementById('adhanSettingsOverlay');
+            if (overlay) overlay.hidden = true;
+            document.body.style.overflow = '';
+        }
+
+        function syncAdhanSettingsUI() {
+            const button = document.getElementById('adhanSettingsAutoButton');
+            const label = document.getElementById('adhanSettingsAutoLabel');
+            const hint = document.getElementById('adhanSettingsAutoHint');
+            if (button) {
+                button.setAttribute('aria-pressed', String(adhanAutoEnabled));
+                if (label) label.textContent = adhanAutoEnabled ? 'مفعل' : 'غير مفعل';
+            }
+            if (hint) hint.textContent = !adhanAudioUnlocked
+                ? 'اضغط معاينة أو تفعيل الصوت أولاً للسماح للمتصفح بتشغيل الأذان.'
+                : (adhanAutoEnabled ? 'سيتم تشغيل الأذان تلقائياً في مواعيد الصلوات.' : 'الأذان التلقائي متوقف حالياً.');
+        }
+
+        function updateAdhanVolume(value) {
+            const volume = Math.max(0, Math.min(100, Number(value) || 0)) / 100;
+            if (adhanAudio) adhanAudio.volume = volume;
+            const output = document.getElementById('adhanVolumeValue');
+            if (output) output.textContent = `${Math.round(volume * 100)}%`;
+            try { localStorage.setItem(ADHAN_VOLUME_KEY, String(Math.round(volume * 100))); } catch (e) {}
+        }
+
+        function loadAdhanVolume() {
+            let value = 100;
+            try {
+                const saved = localStorage.getItem(ADHAN_VOLUME_KEY);
+                if (saved !== null && Number.isFinite(Number(saved))) value = Math.max(0, Math.min(100, Number(saved)));
+            } catch (e) {}
+            const slider = document.getElementById('adhanVolume');
+            if (slider) slider.value = String(value);
+            updateAdhanVolume(value);
+        }
+
+        async function previewAdhan(prayerKey) {
+            const status = document.getElementById('adhanPreviewStatus');
+            if (status) status.textContent = `جاري تشغيل معاينة أذان ${ADHAN_PRAYER_NAMES[prayerKey] || ''}...`;
+            await playAdhanFor(prayerKey);
+            syncAdhanSettingsUI();
+            if (status && currentlyPlayingAdhan === prayerKey) {
+                status.textContent = `يتم الآن تشغيل أذان ${ADHAN_PRAYER_NAMES[prayerKey]}`;
+            } else if (status) {
+                status.textContent = 'تعذر تشغيل التسجيل. تحقق من اتصال الإنترنت.';
+            }
+        }
+
+        function stopAdhanPreview() {
+            stopAdhanPlayback();
+            const status = document.getElementById('adhanPreviewStatus');
+            if (status) status.textContent = 'تم إيقاف المعاينة';
+        }
+
+        document.addEventListener('keydown', event => {
+            if (event.key === 'Escape') closeAdhanSettings();
+        });
+        document.getElementById('adhanSettingsOverlay')?.addEventListener('click', event => {
+            if (event.target.id === 'adhanSettingsOverlay') closeAdhanSettings();
+        });
+        if (adhanAudio) {
+            adhanAudio.addEventListener('ended', () => {
+                currentlyPlayingAdhan = null;
+                const status = document.getElementById('adhanPreviewStatus');
+                if (status) status.textContent = 'انتهى تسجيل الأذان';
+            });
+        }
+        loadAdhanVolume();
+
+        function prayerTimeMinutesForAdhan(prayerKey) {
+            const ids = ADHAN_TIME_IDS[prayerKey];
+            if (!ids) return null;
+            const timeEl = document.getElementById(ids[0]);
+            const periodEl = document.getElementById(ids[1]);
+            if (!timeEl || !periodEl) return null;
+
+            const digits = String(timeEl.textContent).replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d));
+            let [hour, minute] = digits.trim().split(':').map(Number);
+            if (!Number.isFinite(hour) || !Number.isFinite(minute)) return null;
+            const period = periodEl.textContent.trim();
+            if (period === 'م' && hour < 12) hour += 12;
+            if (period === 'ص' && hour === 12) hour = 0;
+            return hour * 60 + minute;
+        }
+
+        function checkAutomaticAdhan() {
+            if (!adhanAutoEnabled || !adhanAudioUnlocked || document.hidden) return;
+            const selectedDate = document.getElementById('dateSelector')?.value;
+            const today = getSystemTodayValue();
+            if (selectedDate !== today) return;
+
+            const now = new Date();
+            const nowMinutes = now.getHours() * 60 + now.getMinutes();
+            for (const prayerKey of Object.keys(ADHAN_TIME_IDS)) {
+                const prayerMinutes = prayerTimeMinutesForAdhan(prayerKey);
+                if (prayerMinutes === null) continue;
+                if (nowMinutes === prayerMinutes && now.getSeconds() < 20) {
+                    const playedKey = `prayerSheet_adhan_played_${today}_${prayerKey}`;
+                    try {
+                        if (localStorage.getItem(playedKey) === 'true') continue;
+                        localStorage.setItem(playedKey, 'true');
+                    } catch (storageError) {
+                        console.warn('تعذر حفظ سجل الأذان:', storageError);
+                    }
+                    playAdhanFor(prayerKey);
+                    break;
+                }
+            }
+        }
+
+        function startAdhanScheduler() {
+            loadAdhanPreference();
+            if (adhanSchedulerInterval) clearInterval(adhanSchedulerInterval);
+            adhanSchedulerInterval = setInterval(checkAutomaticAdhan, 1000);
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden) checkAutomaticAdhan();
+            });
+        }
+
         // ===== الساعة الحية حسب توقيت الجهاز =====
         let cairoClockInterval = null;
         function updateCairoClock() {
@@ -1762,6 +2135,7 @@
             initializeDesignSettings();
             startCairoClock();
             startSystemMidnightUpdater();
+            startAdhanScheduler();
             scaleCalendarSheet();
             loadIqamaSettings();
             const prefs = loadPreferences();
