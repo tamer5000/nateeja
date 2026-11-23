@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ورقة نتيجة يومية ومواقيت الصلاة - القاهرة</title>
 
+    <!-- الخطوط المحلية مع خطة بديلة -->
     <style>
         @font-face { font-family: 'AmiriLocal'; src: url('./fonts/Amiri-Bold.woff2') format('woff2'); font-weight: 700; font-display: swap; }
         @font-face { font-family: 'CairoLocal'; src: url('./fonts/Cairo-Regular.woff2') format('woff2'); font-weight: 400; font-display: swap; }
@@ -31,6 +32,27 @@
             --cream-deep: #EAE0CC;
             --font-primary: 'CairoLocal', 'Cairo', sans-serif;
             --font-display: 'AmiriLocal', 'Amiri', serif;
+            --page-bg: #FAF7F0;
+            --sheet-bg: #FAF7F0;
+            --card-bg: linear-gradient(180deg, #FDFBF7 0%, #F3EBDC 100%);
+            --table-bg: linear-gradient(180deg, #FBF8F1 0%, #EFE5D1 100%);
+            --text-primary: #0F2342;
+            --text-secondary: #1B365D;
+            --toolbar-bg: rgba(15, 35, 66, 0.9);
+        }
+
+        :root[data-theme="dark"] {
+            color-scheme: dark;
+            --page-bg: #080F1D;
+            --sheet-bg: #0B1729;
+            --ivory-bg: #F3E8C8;
+            --cream-card: #14243A;
+            --cream-deep: #1B2D46;
+            --card-bg: linear-gradient(180deg, #172943 0%, #102039 100%);
+            --table-bg: linear-gradient(180deg, #142640 0%, #0D1B30 100%);
+            --text-primary: #F4E7C2;
+            --text-secondary: #D9C58F;
+            --toolbar-bg: rgba(7, 17, 33, 0.96);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
@@ -240,7 +262,6 @@
         .prayer-time-value { font-family: var(--font-primary); font-size: 50px; font-weight: 900; color: var(--navy-main); line-height: 1.05; letter-spacing: 0.5px; }
         .prayer-period { font-family: var(--font-primary); font-size: 24px; font-weight: 800; color: var(--navy-light); margin-top: 0; line-height: 1; }
 
-        /* عرض وقت الإقامة داخل الجدول */
         .iqama-time {
             margin-top: 4px;
             padding: 2px 8px;
@@ -275,7 +296,6 @@
 
         .bottom-center-ornament { position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); width: 480px; height: 32px; z-index: 15; display: flex; align-items: center; justify-content: center; }
 
-        /* === لوحة الإقامة === */
         .iqama-overlay {
             position: fixed; inset: 0; z-index: 9999;
             background: rgba(10, 27, 54, 0.75);
@@ -299,13 +319,8 @@
             margin-bottom: 18px; padding-bottom: 12px;
             border-bottom: 2px solid var(--gold-main);
         }
-        .iqama-panel-header h3 {
-            color: var(--navy-main); font-size: 22px; font-weight: 800;
-        }
-        .iqama-close {
-            background: transparent; border: 0; color: var(--navy-main);
-            font-size: 32px; line-height: 1; cursor: pointer; padding: 0 8px;
-        }
+        .iqama-panel-header h3 { color: var(--navy-main); font-size: 22px; font-weight: 800; }
+        .iqama-close { background: transparent; border: 0; color: var(--navy-main); font-size: 32px; line-height: 1; cursor: pointer; padding: 0 8px; }
         .iqama-close:hover { color: var(--gold-dark); }
         .iqama-grid { display: grid; gap: 12px; margin-bottom: 14px; }
         .iqama-row {
@@ -320,17 +335,73 @@
             padding: 6px 10px; font-size: 20px; font-weight: 900;
             color: var(--navy-dark); background: #FFFFFF;
             border: 2px solid var(--gold-main); border-radius: 8px;
-            font-family: var(--font-primary);
-            color-scheme: light;
+            font-family: var(--font-primary); color-scheme: light;
         }
         .iqama-note {
             color: #8B6914; font-size: 13px; font-weight: 700;
             text-align: center; margin-bottom: 16px;
-            padding: 8px; background: rgba(201, 162, 75, 0.12);
-            border-radius: 8px;
+            padding: 8px; background: rgba(201, 162, 75, 0.12); border-radius: 8px;
         }
         .iqama-actions { display: flex; gap: 10px; }
         .iqama-actions > button { flex: 1; justify-content: center; }
+
+
+        /* ===== الوضع الداكن ===== */
+        :root[data-theme="dark"] body { background-color: #050B15; }
+        :root[data-theme="dark"] .toolbar {
+            background: var(--toolbar-bg); color: #F3E8C8;
+            border-color: var(--gold-main); box-shadow: 0 8px 24px rgba(0,0,0,.55);
+        }
+        :root[data-theme="dark"] .sheet-wrapper,
+        :root[data-theme="dark"] .calendar-sheet { background-color: var(--sheet-bg); }
+        :root[data-theme="dark"] .ambient-lighting {
+            background: radial-gradient(circle at 50% 42%, rgba(42,65,96,.42) 0%, rgba(5,13,27,.78) 100%);
+        }
+        :root[data-theme="dark"] .islamic-pattern-bg { opacity: .16; filter: brightness(1.35) sepia(.25); }
+        :root[data-theme="dark"] .outer-frame-navy { border-color: #C9A24B; }
+        :root[data-theme="dark"] .date-card {
+            background: var(--card-bg); color: var(--text-primary);
+            box-shadow: 0 14px 30px rgba(0,0,0,.38), inset 0 0 0 4px #1B2D46, inset 0 0 0 6px var(--gold-dark);
+        }
+        :root[data-theme="dark"] .date-day-number,
+        :root[data-theme="dark"] .date-month-name,
+        :root[data-theme="dark"] .date-year-text,
+        :root[data-theme="dark"] .coptic-text,
+        :root[data-theme="dark"] .prayer-city-heading { color: var(--text-primary); }
+        :root[data-theme="dark"] .prayer-table-container {
+            background: var(--table-bg);
+            box-shadow: 0 16px 35px rgba(0,0,0,.4), inset 0 0 0 3px #1B2D46;
+        }
+        :root[data-theme="dark"] .prayer-time-value { color: #F5E8C6; }
+        :root[data-theme="dark"] .prayer-period { color: #D8C58F; }
+        :root[data-theme="dark"] .prayer-col { background-color: rgba(8,20,37,.28); }
+        :root[data-theme="dark"] .prayer-col:not(:last-child)::after { opacity: .8; }
+        :root[data-theme="dark"] .next-prayer-banner {
+            background: linear-gradient(135deg, #071326 0%, #1A3456 50%, #071326 100%);
+            box-shadow: 0 6px 18px rgba(0,0,0,.45), inset 0 0 0 2px rgba(232,207,136,.2);
+        }
+        :root[data-theme="dark"] .iqama-time { color: #F0D78F; background: rgba(201,162,75,.16); }
+        :root[data-theme="dark"] .iqama-panel {
+            background: linear-gradient(160deg, #172943 0%, #0D1B30 100%);
+            box-shadow: 0 20px 60px rgba(0,0,0,.65), inset 0 0 0 4px #1B2D46, inset 0 0 0 6px var(--gold-dark);
+        }
+        :root[data-theme="dark"] .iqama-panel-header h3,
+        :root[data-theme="dark"] .iqama-close,
+        :root[data-theme="dark"] .iqama-row { color: #F3E8C8; }
+        :root[data-theme="dark"] .iqama-row { background: rgba(201,162,75,.12); border-color: rgba(201,162,75,.35); }
+        :root[data-theme="dark"] .iqama-row input { color: #F3E8C8; background: #0B1729; color-scheme: dark; }
+        :root[data-theme="dark"] .iqama-note { color: #E8CF88; background: rgba(201,162,75,.14); }
+        :root[data-theme="dark"] .sheet-settings-panel {
+            background: linear-gradient(160deg, #1A3456, #071326); color: #F3E8C8;
+        }
+        :root[data-theme="dark"] .sheet-settings-label { color: #F3E8C8; }
+        :root[data-theme="dark"] .coptic-section svg path { fill: #0B1729; }
+        .theme-toggle { min-width: 42px; justify-content: center; padding-inline: 11px; }
+        .theme-toggle svg { width: 18px; height: 18px; }
+        .theme-toggle .theme-icon-moon { display: none; }
+        :root[data-theme="dark"] .theme-toggle .theme-icon-sun { display: none; }
+        :root[data-theme="dark"] .theme-toggle .theme-icon-moon { display: block; }
+        .mobile-theme-toggle { width: 100%; justify-content: center; }
 
         @media print {
             @page { size: landscape; margin: 0; }
@@ -342,7 +413,6 @@
             .prayer-col.is-next, .prayer-col.in-iqama { animation: none; background: transparent; box-shadow: none; }
         }
 
-        /* ===== الموبايل ===== */
         .sheet-menu-toggle { display: none; }
         @media screen and (max-width: 700px) {
             .toolbar { display: none !important; }
@@ -372,11 +442,7 @@
             .coptic-section { grid-area: coptic; position: relative; left: auto; top: auto; transform: none; width: 100%; padding: 2px 4px; }
             .coptic-text { font-size: clamp(18px, 5vw, 25px); line-height: 1.35; margin-bottom: 3px; text-align: center; }
             .prayer-city-heading { grid-area: cityheading; position: static; transform: none; font-size: 18px; margin: 0; white-space: normal; }
-            .next-prayer-banner {
-                grid-area: nextprayer; position: static; transform: none;
-                padding: 8px 16px; gap: 8px;
-                font-size: 14px; white-space: normal; flex-wrap: wrap;
-            }
+            .next-prayer-banner { grid-area: nextprayer; position: static; transform: none; padding: 8px 16px; gap: 8px; font-size: 14px; white-space: normal; flex-wrap: wrap; }
             .next-prayer-banner .np-icon { width: 24px; height: 24px; }
             .next-prayer-banner .np-label { font-size: 14px; }
             .next-prayer-banner .np-name { font-size: 18px; }
@@ -432,6 +498,11 @@
             <span id="toolbarCityTitle" class="font-bold text-sm sm:text-base" style="color: var(--ivory-bg);">ورقة نتيجة يومية — القاهرة</span>
         </div>
         <div class="flex items-center gap-2 sm:gap-3 flex-wrap">
+            <button type="button" onclick="toggleTheme()" class="btn-outline-gold theme-toggle" id="themeToggle" title="تفعيل الوضع الداكن" aria-label="تفعيل الوضع الداكن">
+                <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"></path></svg>
+                <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5 8.5 8.5 0 1 0 20.5 14.2Z"></path></svg>
+                <span id="themeToggleLabel">الوضع الداكن</span>
+            </button>
             <button type="button" onclick="toggleFullscreen()" class="btn-outline-gold" id="fullscreenBtn" title="عرض بملء الشاشة">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
@@ -491,6 +562,11 @@
                     <span>أدوات الضبط</span>
                     <button type="button" class="sheet-settings-close" onclick="toggleSettings(false)" aria-label="إغلاق">×</button>
                 </div>
+                <button type="button" onclick="toggleTheme()" class="btn-outline-gold theme-toggle mobile-theme-toggle" id="mobileThemeToggle">
+                    <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"></path></svg>
+                    <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5 8.5 8.5 0 1 0 20.5 14.2Z"></path></svg>
+                    <span id="mobileThemeToggleLabel">الوضع الداكن</span>
+                </button>
                 <label class="sheet-settings-label">اختيار المدينة</label>
                 <div class="governorate-picker" id="governoratePicker">
                     <button type="button" id="governoratePickerButton" class="date-picker-input governorate-picker-button" aria-expanded="false">
@@ -865,6 +941,62 @@
     </div>
 
     <script>
+        // ===== إدارة الوضع الفاتح/الداكن =====
+        const THEME_STORAGE_KEY = 'prayerSheet_theme';
+        const systemThemeQuery = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+
+        function applyTheme(theme, persist = true) {
+            const normalized = theme === 'dark' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', normalized);
+            document.documentElement.style.colorScheme = normalized;
+            const isDark = normalized === 'dark';
+            const label = isDark ? 'الوضع الفاتح' : 'الوضع الداكن';
+            ['themeToggleLabel', 'mobileThemeToggleLabel'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = label;
+            });
+            ['themeToggle', 'mobileThemeToggle'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.title = isDark ? 'تفعيل الوضع الفاتح' : 'تفعيل الوضع الداكن';
+                    el.setAttribute('aria-label', el.title);
+                    el.setAttribute('aria-pressed', String(isDark));
+                }
+            });
+            if (persist) {
+                try { localStorage.setItem(THEME_STORAGE_KEY, normalized); } catch (error) {
+                    console.warn('تعذر حفظ تفضيل المظهر:', error);
+                }
+            }
+        }
+
+        function initializeTheme() {
+            let savedTheme = null;
+            try { savedTheme = localStorage.getItem(THEME_STORAGE_KEY); } catch (error) {}
+            const initialTheme = savedTheme === 'dark' || savedTheme === 'light'
+                ? savedTheme
+                : (systemThemeQuery && systemThemeQuery.matches ? 'dark' : 'light');
+            applyTheme(initialTheme, false);
+        }
+
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme') || 'light';
+            applyTheme(current === 'dark' ? 'light' : 'dark', true);
+        }
+
+        initializeTheme();
+        if (systemThemeQuery) {
+            const onSystemThemeChange = event => {
+                let savedTheme = null;
+                try { savedTheme = localStorage.getItem(THEME_STORAGE_KEY); } catch (error) {}
+                if (savedTheme !== 'dark' && savedTheme !== 'light') {
+                    applyTheme(event.matches ? 'dark' : 'light', false);
+                }
+            };
+            if (systemThemeQuery.addEventListener) systemThemeQuery.addEventListener('change', onSystemThemeChange);
+            else if (systemThemeQuery.addListener) systemThemeQuery.addListener(onSystemThemeChange);
+        }
+
         // ===== زر ملء الشاشة =====
         function toggleFullscreen() {
             const wrapper = document.getElementById('sheetWrapper');
@@ -898,12 +1030,17 @@
         function savePreferences() {
             const city = document.getElementById('mobileCitySelector').value;
             const date = document.getElementById('dateSelector').value;
-            localStorage.setItem(STORAGE_KEYS.CITY, city);
-            if (date) localStorage.setItem(STORAGE_KEYS.DATE, date);
+            try {
+                localStorage.setItem(STORAGE_KEYS.CITY, city);
+                if (date) localStorage.setItem(STORAGE_KEYS.DATE, date);
+            } catch (error) { console.warn('تعذر حفظ التفضيلات:', error); }
         }
         function loadPreferences() {
-            const savedCity = localStorage.getItem(STORAGE_KEYS.CITY);
-            const savedDate = localStorage.getItem(STORAGE_KEYS.DATE);
+            let savedCity = null, savedDate = null;
+            try {
+                savedCity = localStorage.getItem(STORAGE_KEYS.CITY);
+                savedDate = localStorage.getItem(STORAGE_KEYS.DATE);
+            } catch (error) { console.warn('تعذر قراءة التفضيلات:', error); }
             if (savedCity) {
                 const sel = document.getElementById('mobileCitySelector');
                 if (Array.from(sel.options).some(o => o.value === savedCity)) {
@@ -1243,7 +1380,6 @@
                 return;
             }
 
-            // هل نحن داخل وقت إقامة؟
             let inIqama = null;
             for (const p of times) {
                 if (p.duration <= 0) continue;
