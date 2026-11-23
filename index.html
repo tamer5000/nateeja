@@ -63,6 +63,41 @@
         }
         @media print { .adhan-settings-open,.adhan-settings-overlay { display:none !important; } }
 
+
+        /* عرض Kiosk: إخفاء شريط الأدوات وإظهار زر خروج عائم */
+        .fullscreen-exit-fab {
+            display:none; position:fixed; top:12px; right:12px; z-index:20000;
+            width:42px; height:42px; border-radius:50%;
+            border:1px solid var(--gold-main);
+            background:rgba(15,35,66,.88); color:var(--gold-light);
+            font:800 22px/1 var(--font-primary); cursor:pointer;
+            box-shadow:0 3px 14px rgba(0,0,0,.28);
+            align-items:center; justify-content:center;
+            opacity:.28; transition:opacity .2s ease, transform .2s ease;
+            touch-action:manipulation;
+        }
+        .fullscreen-exit-fab:active,.fullscreen-exit-fab:focus-visible { opacity:1; transform:scale(1.06); outline:2px solid var(--gold-main); }
+        body.fullscreen-kiosk-mode .toolbar { display:none !important; }
+        body.fullscreen-kiosk-mode .fullscreen-exit-fab { display:flex; }
+        body.fullscreen-kiosk-mode { padding:0 !important; min-height:100vh; justify-content:center; }
+        body.fullscreen-kiosk-mode #sheetWrapper {
+            width:100vw !important; max-width:none !important; height:100vh !important;
+            aspect-ratio:auto !important; margin:0 !important; border-radius:0 !important;
+            display:block; overflow:hidden;
+        }
+        body.fullscreen-kiosk-mode #calendarSheet {
+            position:absolute !important; top:50% !important; right:50% !important;
+            margin-right:-768px !important; margin-top:-512px !important;
+            transform-origin:center center !important;
+        }
+        .sheet-wrapper:fullscreen {
+            width:100vw; max-width:100vw; height:100vh; aspect-ratio:auto;
+        }
+        @media (hover:hover) {
+            body.fullscreen-kiosk-mode .fullscreen-exit-fab:hover { opacity:1; }
+        }
+        @media print { .fullscreen-exit-fab { display:none !important; } }
+
 </style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -621,6 +656,11 @@
     </style>
 </head>
 <body>
+    <button type="button" id="fullscreenExitFab" class="fullscreen-exit-fab"
+        onclick="toggleFullscreen()" aria-label="إظهار شريط الأدوات" title="إظهار شريط الأدوات">
+        <span aria-hidden="true">↙</span>
+    </button>
+
 
     <!-- شريط الأدوات -->
     <div class="toolbar">
@@ -1386,22 +1426,61 @@
         }
 
 
-        // ===== زر ملء الشاشة =====
+        // ===== وضع ملء الشاشة المناسب للـ Kiosk =====
         function toggleFullscreen() {
             const wrapper = document.getElementById('sheetWrapper');
-            if (!document.fullscreenElement) {
-                if (wrapper.requestFullscreen) wrapper.requestFullscreen().catch(err => console.error('فشل تفعيل ملء الشاشة:', err));
-                else if (wrapper.webkitRequestFullscreen) wrapper.webkitRequestFullscreen();
+            const activeElement = document.fullscreenElement || document.webkitFullscreenElement;
+            const isFullscreen = activeElement === wrapper;
+
+            if (!isFullscreen && !document.body.classList.contains('fullscreen-kiosk-mode')) {
+                const request = wrapper && (wrapper.requestFullscreen || wrapper.webkitRequestFullscreen);
+                if (request) {
+                    try {
+                        const result = request.call(wrapper);
+                        if (result && typeof result.catch === 'function') {
+                            result.catch(err => {
+                                console.error('فشل تفعيل ملء الشاشة:', err);
+                                document.body.classList.add('fullscreen-kiosk-mode');
+                                setTimeout(scaleCalendarSheet, 80);
+                            });
+                        }
+                    } catch (err) {
+                        console.error('فشل تفعيل ملء الشاشة:', err);
+                        document.body.classList.add('fullscreen-kiosk-mode');
+                        setTimeout(scaleCalendarSheet, 80);
+                    }
+                } else {
+                    // بديل بصري عند عدم دعم Fullscreen API؛ إخفاء واجهة المتصفح يتطلب إعداد FreeKiosk.
+                    document.body.classList.add('fullscreen-kiosk-mode');
+                    setTimeout(scaleCalendarSheet, 80);
+                }
             } else {
-                if (document.exitFullscreen) document.exitFullscreen();
+                if (activeElement === wrapper) {
+                    const exit = document.exitFullscreen || document.webkitExitFullscreen;
+                    if (exit) {
+                        try { exit.call(document); }
+                        catch (err) { console.error('فشل إنهاء ملء الشاشة:', err); }
+                    }
+                } else {
+                    document.body.classList.remove('fullscreen-kiosk-mode');
+                    setTimeout(scaleCalendarSheet, 80);
+                }
             }
         }
+
         function updateFullscreenButtonLabel() {
+            const wrapper = document.getElementById('sheetWrapper');
+            const isFs = !!(wrapper && (
+                document.fullscreenElement === wrapper ||
+                document.webkitFullscreenElement === wrapper
+            ));
+            document.body.classList.toggle('fullscreen-kiosk-mode', isFs);
             const btn = document.getElementById('fullscreenBtn');
-            if (!btn) return;
-            const isFs = !!document.fullscreenElement;
-            btn.querySelector('span').textContent = isFs ? 'إنهاء ملء الشاشة' : 'ملء الشاشة';
-            setTimeout(scaleCalendarSheet, 100);
+            if (btn) {
+                const label = btn.querySelector('span');
+                if (label) label.textContent = isFs ? 'إنهاء ملء الشاشة' : 'ملء الشاشة';
+            }
+            setTimeout(scaleCalendarSheet, 120);
         }
         document.addEventListener('fullscreenchange', updateFullscreenButtonLabel);
         document.addEventListener('webkitfullscreenchange', updateFullscreenButtonLabel);
@@ -1643,8 +1722,15 @@
             const wrapper = document.getElementById('sheetWrapper');
             const sheet = document.getElementById('calendarSheet');
             if (!wrapper || !sheet) return;
-            if (document.fullscreenElement) {
-                const scale = Math.min(window.innerWidth / 1536, window.innerHeight / 1024);
+
+            const nativeFullscreen = document.fullscreenElement === wrapper ||
+                document.webkitFullscreenElement === wrapper;
+            const kioskFallback = document.body.classList.contains('fullscreen-kiosk-mode') && !nativeFullscreen;
+
+            if (nativeFullscreen || kioskFallback) {
+                const availableWidth = wrapper.clientWidth || window.innerWidth;
+                const availableHeight = wrapper.clientHeight || window.innerHeight;
+                const scale = Math.min(availableWidth / 1536, availableHeight / 1024);
                 sheet.style.transform = `scale(${scale})`;
                 sheet.style.transformOrigin = 'center center';
                 sheet.style.position = 'absolute';
@@ -2291,6 +2377,7 @@
         }
 
         window.addEventListener('resize', scaleCalendarSheet);
+        window.addEventListener('orientationchange', () => setTimeout(scaleCalendarSheet, 250));
         window.addEventListener('beforeprint', scaleCalendarSheet);
         window.addEventListener('afterprint', scaleCalendarSheet);
     </script>
