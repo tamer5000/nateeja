@@ -65,6 +65,7 @@
         }
 
         .toolbar {
+            position: relative;
             width: 100%; max-width: 1280px;
             display: flex; justify-content: space-between; align-items: center;
             margin-bottom: 14px; padding: 10px 20px;
@@ -403,6 +404,41 @@
         :root[data-theme="dark"] .theme-toggle .theme-icon-moon { display: block; }
         .mobile-theme-toggle { width: 100%; justify-content: center; }
 
+
+        /* ===== تخصيص الهوية والزخارف ===== */
+        .design-panel {
+            position: fixed; top: 86px; right: max(16px, calc((100vw - 1280px) / 2)); z-index: 1200;
+            width: min(360px, calc(100vw - 32px)); padding: 16px;
+            display: grid; gap: 13px; color: var(--ivory-bg);
+            background: linear-gradient(160deg, var(--navy-light), var(--navy-dark));
+            border: 2px solid var(--gold-main); border-radius: 14px;
+            box-shadow: 0 14px 32px rgba(0,0,0,.38);
+        }
+        .design-panel[hidden] { display: none !important; }
+        .design-panel-title { display:flex; align-items:center; justify-content:space-between; color:var(--gold-light); font-weight:900; font-size:17px; }
+        .design-panel-close { border:0; background:transparent; color:var(--gold-light); font-size:25px; cursor:pointer; }
+        .design-field { display:grid; gap:6px; }
+        .design-field label { font-size:13px; font-weight:800; color:var(--ivory-bg); }
+        .design-field select {
+            width:100%; min-height:40px; padding:7px 10px; border-radius:8px;
+            border:1px solid var(--gold-main); background:rgba(250,247,240,.12);
+            color:var(--ivory-bg); font:inherit;
+        }
+        .design-field select option { color:#14243A; background:#FAF7F0; }
+        .design-colors { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+        .design-color {
+            display:flex; align-items:center; gap:8px; padding:8px;
+            border:1px solid rgba(201,162,75,.45); border-radius:9px;
+            background:rgba(250,247,240,.08); font-size:12px; font-weight:800;
+        }
+        .design-color input { width:34px; height:30px; padding:2px; border:0; background:transparent; cursor:pointer; }
+        .design-actions { display:flex; gap:8px; }
+        .design-actions button { flex:1; justify-content:center; }
+        :root[data-theme="dark"] .design-panel { color:#F3E8C8; }
+        @media screen and (max-width:700px) {
+            .design-panel { position:fixed; top:12px; right:12px; left:12px; width:auto; max-height:calc(100vh - 24px); overflow:auto; }
+        }
+
         @media print {
             @page { size: landscape; margin: 0; }
             body { background: #FFFFFF; padding: 0; margin: 0; min-height: auto; }
@@ -503,6 +539,10 @@
                 <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5 8.5 8.5 0 1 0 20.5 14.2Z"></path></svg>
                 <span id="themeToggleLabel">الوضع الداكن</span>
             </button>
+            <button type="button" onclick="toggleDesignPanel()" class="btn-outline-gold" id="designToggle" aria-expanded="false" aria-controls="designPanel" title="تخصيص الزخارف والألوان">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3m0 12v3M3 12h3m12 0h3M5.6 5.6l2.1 2.1m8.6 8.6 2.1 2.1m0-12.8-2.1 2.1m-8.6 8.6-2.1 2.1"/><circle cx="12" cy="12" r="4"/></svg>
+                <span>التصميم</span>
+            </button>
             <button type="button" onclick="toggleFullscreen()" class="btn-outline-gold" id="fullscreenBtn" title="عرض بملء الشاشة">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
@@ -545,6 +585,42 @@
             </button>
         </div>
     </div>
+
+    <!-- لوحة تخصيص الزخارف والألوان -->
+    <section id="designPanel" class="design-panel" hidden aria-label="تخصيص التصميم">
+        <div class="design-panel-title">
+            <span>تخصيص التصميم</span>
+            <button type="button" class="design-panel-close" onclick="toggleDesignPanel(false)" aria-label="إغلاق">×</button>
+        </div>
+        <div class="design-field">
+            <label for="cornerStyleSelect">زخارف الأركان</label>
+            <select id="cornerStyleSelect">
+                <option value="andalusian">أندلسي</option>
+                <option value="ottoman">عثماني</option>
+                <option value="mamluk">مملوكي</option>
+                <option value="geometric">هندسي إسلامي</option>
+            </select>
+        </div>
+        <div class="design-field">
+            <label for="plaqueStyleSelect">شكل لوحة الجمعة</label>
+            <select id="plaqueStyleSelect">
+                <option value="moroccan">خرطوشة مغربية</option>
+                <option value="ottoman">طغراء عثمانية</option>
+                <option value="star">نجمة إسلامية</option>
+            </select>
+        </div>
+        <div class="design-field">
+            <label>ألوان التصميم</label>
+            <div class="design-colors">
+                <label class="design-color" for="navyColorPicker"><input type="color" id="navyColorPicker" value="#0F2342"> الأزرق</label>
+                <label class="design-color" for="goldColorPicker"><input type="color" id="goldColorPicker" value="#C9A24B"> الذهبي</label>
+            </div>
+        </div>
+        <div class="design-actions">
+            <button type="button" class="btn-outline-gold" onclick="resetDesignSettings()">استعادة الافتراضي</button>
+            <button type="button" class="btn-gold" onclick="toggleDesignPanel(false)">تم</button>
+        </div>
+    </section>
 
     <!-- حاوية الورقة -->
     <div class="sheet-wrapper" id="sheetWrapper">
@@ -609,6 +685,7 @@
                 </select>
                 <label class="sheet-settings-label" for="mobileDateSelector">اختيار تاريخ المعاينة</label>
                 <input type="date" id="mobileDateSelector" class="date-picker-input">
+                <button type="button" class="btn-outline-gold mobile-theme-toggle" onclick="toggleDesignPanel()" style="width:100%">تخصيص الزخارف والألوان</button>
                 <div class="sheet-settings-actions">
                     <button onclick="resetToToday()" class="btn-outline-gold">اليوم</button>
                     <button onclick="window.print()" class="btn-gold">طباعة</button>
@@ -618,16 +695,7 @@
             <!-- زخارف الأركان -->
             <svg width="0" height="0" style="position:absolute;">
                 <defs>
-                    <g id="cornerOrnamentGroup">
-                        <path d="M112 8H36C20.5 8 8 20.5 8 36V112" stroke="#0F2342" stroke-width="3.5"/>
-                        <path d="M106 16H40C26.7 16 16 26.7 16 40V106" stroke="#C9A24B" stroke-width="2.5"/>
-                        <path d="M92 16C92 34 78 46 62 46C46 46 38 58 38 72C38 86 26 94 16 94" stroke="#C9A24B" stroke-width="2" stroke-linecap="round"/>
-                        <path d="M76 16C76 28 66 36 54 36C42 36 34 44 34 56C34 68 24 76 16 76" stroke="#A67C2E" stroke-width="1.8"/>
-                        <circle cx="32" cy="32" r="7" fill="#C9A24B"/>
-                        <circle cx="32" cy="32" r="3" fill="#0F2342"/>
-                        <path d="M54 24L59 29L54 34L49 29Z" fill="#C9A24B"/>
-                        <path d="M29 49L34 54L29 59L24 54Z" fill="#C9A24B"/>
-                    </g>
+                    <g id="cornerOrnamentGroup"></g>
                 </defs>
             </svg>
             <svg class="corner-ornament corner-tr" viewBox="0 0 120 120" fill="none"><use href="#cornerOrnamentGroup"/></svg>
@@ -665,24 +733,7 @@
                     <circle cx="158" cy="22" r="3.5" fill="#A67C2E"/>
                 </svg>
                 <div class="friday-plaque-container">
-                    <svg width="100%" height="100%" viewBox="0 0 580 250" fill="none" style="position: absolute; inset: 0;">
-                        <defs>
-                            <linearGradient id="navyPlaqueGrad" x1="0" y1="0" x2="0" y2="250" gradientUnits="userSpaceOnUse">
-                                <stop offset="0%" stop-color="#091830"/>
-                                <stop offset="50%" stop-color="#142C52"/>
-                                <stop offset="100%" stop-color="#0A1B36"/>
-                            </linearGradient>
-                            <linearGradient id="goldStrokeGrad" x1="0" y1="0" x2="580" y2="250" gradientUnits="userSpaceOnUse">
-                                <stop offset="0%" stop-color="#E8CF88"/>
-                                <stop offset="50%" stop-color="#C9A24B"/>
-                                <stop offset="100%" stop-color="#9E7424"/>
-                            </linearGradient>
-                        </defs>
-                        <path d="M88 18 H492 C505 18 515 28 518 42 C523 68 542 94 568 125 C542 156 523 182 518 208 C515 222 505 232 492 232 H88 C75 232 65 222 62 208 C57 182 38 156 12 125 C38 94 57 68 62 42 C65 28 75 18 88 18 Z" fill="url(#navyPlaqueGrad)" stroke="url(#goldStrokeGrad)" stroke-width="5"/>
-                        <path d="M93 27 H487 C497 27 506 35 509 47 C514 71 531 95 554 125 C531 155 514 179 509 203 C506 215 497 223 487 223 H93 C83 223 74 215 71 203 C66 179 49 155 26 125 C49 95 66 71 71 47 C74 35 83 27 93 27 Z" fill="none" stroke="#E8CF88" stroke-width="2" stroke-opacity="0.85"/>
-                        <path d="M44 125L52 117L60 125L52 133Z" fill="#E8CF88"/>
-                        <path d="M520 125L528 117L536 125L528 133Z" fill="#E8CF88"/>
-                    </svg>
+                    <svg id="fridayPlaqueArtwork" width="100%" height="100%" viewBox="0 0 580 250" fill="none" style="position:absolute;inset:0;"></svg>
                     <h1 class="friday-title" id="dayNameDisplay">الجمعة</h1>
                 </div>
                 <svg width="240" height="32" viewBox="0 0 240 32" fill="none">
@@ -996,6 +1047,179 @@
             if (systemThemeQuery.addEventListener) systemThemeQuery.addEventListener('change', onSystemThemeChange);
             else if (systemThemeQuery.addListener) systemThemeQuery.addListener(onSystemThemeChange);
         }
+
+
+        // ===== تخصيص الزخارف والألوان =====
+        const DESIGN_STORAGE_KEY = 'prayerSheet_design_v1';
+        const DEFAULT_DESIGN = {
+            corners: 'andalusian',
+            plaque: 'moroccan',
+            navy: '#0F2342',
+            gold: '#C9A24B'
+        };
+
+        const CORNER_ART = {
+            andalusian: `
+                <path d="M112 8H36C20 8 8 20 8 36V112" stroke="var(--navy-main)" stroke-width="3.5"/>
+                <path d="M106 16H40C27 16 16 27 16 40V106" stroke="var(--gold-main)" stroke-width="2.5"/>
+                <path d="M92 16C92 34 78 46 62 46S38 58 38 72 26 94 16 94" stroke="var(--gold-main)" stroke-width="2" stroke-linecap="round"/>
+                <path d="M76 16C76 28 66 36 54 36S34 44 34 56 24 76 16 76" stroke="var(--gold-dark)" stroke-width="1.8"/>
+                <circle cx="32" cy="32" r="7" fill="var(--gold-main)"/><circle cx="32" cy="32" r="3" fill="var(--navy-main)"/>
+                <path d="M54 24L59 29L54 34L49 29Z M29 49L34 54L29 59L24 54Z" fill="var(--gold-main)"/>`,
+            ottoman: `
+                <path d="M112 8H42Q8 8 8 42V112" fill="none" stroke="var(--navy-main)" stroke-width="3.5"/>
+                <path d="M103 17H48Q17 17 17 48V103" fill="none" stroke="var(--gold-main)" stroke-width="2.5"/>
+                <path d="M28 92C28 67 44 49 63 49C81 49 91 34 88 18C103 36 99 59 82 70C65 82 47 78 36 96" fill="none" stroke="var(--gold-main)" stroke-width="2.5"/>
+                <path d="M62 15L68 27L81 29L71 38L73 51L62 45L51 51L53 38L43 29L56 27Z" fill="none" stroke="var(--gold-dark)" stroke-width="2"/>
+                <circle cx="62" cy="33" r="3" fill="var(--gold-main)"/>`,
+            mamluk: `
+                <path d="M112 8H36C20 8 8 20 8 36V112" fill="none" stroke="var(--navy-main)" stroke-width="3.5"/>
+                <path d="M104 16H42Q16 16 16 42V104" fill="none" stroke="var(--gold-main)" stroke-width="2.5"/>
+                <path d="M60 18L70 38L92 40L76 56L80 78L60 67L40 78L44 56L28 40L50 38Z" fill="none" stroke="var(--gold-main)" stroke-width="2.4"/>
+                <path d="M60 29L66 43L81 44L70 55L73 70L60 63L47 70L50 55L39 44L54 43Z" fill="none" stroke="var(--gold-dark)" stroke-width="1.8"/>
+                <circle cx="60" cy="51" r="5" fill="var(--gold-main)"/>`,
+            geometric: `
+                <path d="M112 8H36C20 8 8 20 8 36V112" fill="none" stroke="var(--navy-main)" stroke-width="3.5"/>
+                <path d="M106 16H40Q16 16 16 40V106" fill="none" stroke="var(--gold-main)" stroke-width="2"/>
+                <path d="M60 17L70 38L93 27L82 50L105 60L82 70L93 93L70 82L60 105L50 82L27 93L38 70L15 60L38 50L27 27L50 38Z" fill="none" stroke="var(--gold-main)" stroke-width="2"/>
+                <circle cx="60" cy="60" r="9" fill="none" stroke="var(--gold-dark)" stroke-width="2"/>
+                <circle cx="60" cy="60" r="3" fill="var(--gold-main)"/>`
+        };
+
+        function plaqueArtwork(type) {
+            const commonDefs = `
+                <defs>
+                    <linearGradient id="plaqueNavy" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0" stop-color="var(--navy-light)"/>
+                        <stop offset="1" stop-color="var(--navy-dark)"/>
+                    </linearGradient>
+                    <linearGradient id="plaqueGold" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0" stop-color="var(--gold-light)"/>
+                        <stop offset=".5" stop-color="var(--gold-main)"/>
+                        <stop offset="1" stop-color="var(--gold-dark)"/>
+                    </linearGradient>
+                </defs>`;
+            if (type === 'ottoman') return commonDefs + `
+                <path d="M92 24H488Q514 24 514 50V200Q514 226 488 226H92Q66 226 66 200V50Q66 24 92 24Z" fill="url(#plaqueNavy)" stroke="url(#plaqueGold)" stroke-width="4"/>
+                <path d="M110 34H470M110 216H470" stroke="var(--gold-light)" stroke-width="1.5" opacity=".8"/>
+                <path d="M290 30C245 63 224 76 178 77C208 88 234 85 257 74C238 103 202 112 166 107C201 130 244 120 270 99C252 136 218 153 175 153C223 168 262 145 286 119C286 158 264 179 232 193C273 188 296 164 300 132C320 163 344 184 386 190C350 166 331 141 312 111C343 128 382 132 414 111C378 114 348 99 326 75C355 88 386 90 414 76C370 76 334 57 290 30Z" fill="none" stroke="url(#plaqueGold)" stroke-width="3" stroke-linejoin="round"/>
+                <path d="M92 125L108 109L124 125L108 141Z M472 125L488 109L504 125L488 141Z" fill="none" stroke="var(--gold-main)" stroke-width="3"/>`;
+            if (type === 'star') return commonDefs + `
+                <path d="M290 12L326 63L386 40L378 103L440 125L378 147L386 210L326 187L290 238L254 187L194 210L202 147L140 125L202 103L194 40L254 63Z" fill="url(#plaqueNavy)" stroke="url(#plaqueGold)" stroke-width="4" stroke-linejoin="round"/>
+                <path d="M290 28L318 76L373 58L357 111L411 125L357 139L373 192L318 174L290 222L262 174L207 192L223 139L169 125L223 111L207 58L262 76Z" fill="none" stroke="var(--gold-light)" stroke-width="2"/>
+                <path d="M120 125H460" stroke="var(--gold-main)" stroke-width="2" opacity=".8"/>
+                <circle cx="290" cy="125" r="93" fill="none" stroke="var(--gold-main)" stroke-width="2" stroke-dasharray="4 7"/>`;
+            return commonDefs + `
+                <path d="M90 18H490Q508 18 516 42Q526 78 568 125Q526 172 516 208Q508 232 490 232H90Q72 232 64 208Q54 172 12 125Q54 78 64 42Q72 18 90 18Z" fill="url(#plaqueNavy)" stroke="url(#plaqueGold)" stroke-width="5"/>
+                <path d="M96 29H484Q500 29 506 48Q516 82 551 125Q516 168 506 202Q500 221 484 221H96Q80 221 74 202Q64 168 29 125Q64 82 74 48Q80 29 96 29Z" fill="none" stroke="var(--gold-light)" stroke-width="2"/>
+                <path d="M44 125L56 113L68 125L56 137Z M512 125L524 113L536 125L524 137Z" fill="none" stroke="var(--gold-light)" stroke-width="2"/>`;
+        }
+
+        function renderDesignArtwork() {
+            const ornament = document.getElementById('cornerOrnamentGroup');
+            const plaque = document.getElementById('fridayPlaqueArtwork');
+            const settings = getDesignSettings();
+            if (ornament) ornament.innerHTML = CORNER_ART[settings.corners] || CORNER_ART.andalusian;
+            if (plaque) plaque.innerHTML = plaqueArtwork(settings.plaque);
+            const title = document.getElementById('dayNameDisplay');
+            if (title) title.style.fontSize = settings.plaque === 'ottoman' ? '112px' : '138px';
+        }
+
+        function getDesignSettings() {
+            try {
+                const saved = JSON.parse(localStorage.getItem(DESIGN_STORAGE_KEY) || '{}');
+                return { ...DEFAULT_DESIGN, ...saved };
+            } catch (error) { return { ...DEFAULT_DESIGN }; }
+        }
+
+        function adjustHexColor(hex, adjustment) {
+            const value = parseInt(hex.slice(1), 16);
+            const offsets = Array.isArray(adjustment) ? adjustment : [adjustment, adjustment, adjustment];
+            const r = Math.max(0, Math.min(255, (value >> 16) + offsets[0]));
+            const g = Math.max(0, Math.min(255, ((value >> 8) & 255) + offsets[1]));
+            const b = Math.max(0, Math.min(255, (value & 255) + offsets[2]));
+            return '#' + (0x1000000 + (r << 16) + (g << 8) + b).toString(16).slice(1);
+        }
+
+        function applyDesignSettings(settings, persist = true) {
+            const navy = /^#[0-9A-Fa-f]{6}$/.test(settings.navy) ? settings.navy : DEFAULT_DESIGN.navy;
+            const gold = /^#[0-9A-Fa-f]{6}$/.test(settings.gold) ? settings.gold : DEFAULT_DESIGN.gold;
+            const root = document.documentElement;
+            root.style.setProperty('--navy-main', navy);
+            root.style.setProperty('--navy-dark', adjustHexColor(navy, [-5, -8, -12]));
+            root.style.setProperty('--navy-light', adjustHexColor(navy, [12, 19, 27]));
+            root.style.setProperty('--gold-main', gold);
+            root.style.setProperty('--gold-dark', adjustHexColor(gold, [-35, -38, -29]));
+            root.style.setProperty('--gold-light', adjustHexColor(gold, [31, 45, 61]));
+            root.style.setProperty('--gold-pale', adjustHexColor(gold, [45, 52, 105]));
+            const controls = {
+                cornerStyleSelect: settings.corners,
+                plaqueStyleSelect: settings.plaque,
+                navyColorPicker: navy,
+                goldColorPicker: gold
+            };
+            Object.entries(controls).forEach(([id, value]) => {
+                const el = document.getElementById(id);
+                if (el) el.value = value;
+            });
+            renderDesignArtwork();
+            if (persist) {
+                try { localStorage.setItem(DESIGN_STORAGE_KEY, JSON.stringify({ ...settings, navy, gold })); }
+                catch (error) { console.warn('تعذر حفظ إعدادات التصميم:', error); }
+            }
+        }
+
+        function toggleDesignPanel(force) {
+            const panel = document.getElementById('designPanel');
+            if (!panel) return;
+            const open = typeof force === 'boolean' ? force : panel.hidden;
+            panel.hidden = !open;
+            const trigger = document.getElementById('designToggle');
+            if (trigger) trigger.setAttribute('aria-expanded', String(open));
+            if (open) {
+                const settings = getDesignSettings();
+                applyDesignSettings(settings, false);
+            }
+        }
+
+        function resetDesignSettings() {
+            applyDesignSettings({ ...DEFAULT_DESIGN }, true);
+        }
+
+        function initializeDesignSettings() {
+            const settings = getDesignSettings();
+            applyDesignSettings(settings, false);
+            ['cornerStyleSelect', 'plaqueStyleSelect', 'navyColorPicker', 'goldColorPicker'].forEach(id => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                el.addEventListener('input', () => {
+                    const current = getDesignSettings();
+                    current.corners = document.getElementById('cornerStyleSelect').value;
+                    current.plaque = document.getElementById('plaqueStyleSelect').value;
+                    current.navy = document.getElementById('navyColorPicker').value;
+                    current.gold = document.getElementById('goldColorPicker').value;
+                    applyDesignSettings(current, true);
+                });
+                el.addEventListener('change', () => {
+                    const current = getDesignSettings();
+                    current.corners = document.getElementById('cornerStyleSelect').value;
+                    current.plaque = document.getElementById('plaqueStyleSelect').value;
+                    current.navy = document.getElementById('navyColorPicker').value;
+                    current.gold = document.getElementById('goldColorPicker').value;
+                    applyDesignSettings(current, true);
+                });
+            });
+            document.addEventListener('click', event => {
+                const panel = document.getElementById('designPanel');
+                const trigger = document.getElementById('designToggle');
+                const mobileTrigger = document.querySelector('.mobile-theme-toggle');
+                if (!panel || panel.hidden || panel.contains(event.target) ||
+                    (trigger && trigger.contains(event.target)) ||
+                    (mobileTrigger && mobileTrigger.contains(event.target))) return;
+                if (window.innerWidth > 700) toggleDesignPanel(false);
+            });
+        }
+
 
         // ===== زر ملء الشاشة =====
         function toggleFullscreen() {
@@ -1436,6 +1660,7 @@
 
         // ===== بدء التشغيل =====
         window.addEventListener('load', () => {
+            initializeDesignSettings();
             scaleCalendarSheet();
             loadIqamaSettings();
             const prefs = loadPreferences();
