@@ -202,6 +202,25 @@
         .coptic-section { position: absolute; left: 50%; transform: translateX(-50%); top: 40.5%; width: 34%; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 15; }
         .coptic-text { font-family: var(--font-primary); font-size: 38px; font-weight: 800; color: var(--navy-main); letter-spacing: 0.5px; margin-bottom: 10px; }
 
+
+        .live-clock {
+            position: absolute; top: 49.1%; left: 50%; transform: translateX(-50%);
+            z-index: 16; display: flex; flex-direction: column; align-items: center;
+            justify-content: center; gap: 1px; min-width: 230px;
+            color: var(--navy-main); font-family: var(--font-primary);
+            text-shadow: 0 2px 5px rgba(201,162,75,.16);
+            font-variant-numeric: tabular-nums;
+        }
+        .live-clock-time {
+            font-size: 43px; line-height: 1.05; font-weight: 900;
+            letter-spacing: 2px; color: var(--navy-main);
+            direction: ltr; unicode-bidi: isolate; display: inline-block;
+        }
+        .live-clock-caption {
+            color: var(--gold-dark); font-size: 15px; line-height: 1.2; font-weight: 800;
+            letter-spacing: .3px;
+        }
+
         .prayer-city-heading {
             position: absolute; top: 56.5%; left: 50%; transform: translateX(-50%);
             text-align: center; color: var(--navy-main);
@@ -364,6 +383,8 @@
             background: var(--card-bg); color: var(--text-primary);
             box-shadow: 0 14px 30px rgba(0,0,0,.38), inset 0 0 0 4px #1B2D46, inset 0 0 0 6px var(--gold-dark);
         }
+        :root[data-theme="dark"] .live-clock-time { color: #F5E8C6; }
+        :root[data-theme="dark"] .live-clock-caption { color: var(--gold-light); }
         :root[data-theme="dark"] .date-day-number,
         :root[data-theme="dark"] .date-month-name,
         :root[data-theme="dark"] .date-year-text,
@@ -454,7 +475,7 @@
             .toolbar { display: none !important; }
             body { justify-content: flex-start; padding: 10px; }
             .sheet-wrapper { width: 100%; max-width: 520px; aspect-ratio: auto; height: auto; overflow: visible; border-radius: 8px; }
-            .calendar-sheet { position: relative; top: auto; right: auto; width: 100%; height: auto; min-height: 0; transform: none !important; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-areas: "friday friday" "hijri gregorian" "coptic coptic" "cityheading cityheading" "nextprayer nextprayer" "prayers prayers"; gap: 12px; padding: 28px 16px 54px; overflow: hidden; border-radius: 8px; }
+            .calendar-sheet { position: relative; top: auto; right: auto; width: 100%; height: auto; min-height: 0; transform: none !important; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-areas: "friday friday" "hijri gregorian" "coptic coptic" "clock clock" "cityheading cityheading" "nextprayer nextprayer" "prayers prayers"; gap: 12px; padding: 28px 16px 54px; overflow: hidden; border-radius: 8px; }
             .outer-frame-navy { inset: 7px; border-width: 2px; border-radius: 10px; }
             .outer-frame-gold { inset: 12px; border-width: 1px; border-radius: 7px; }
             .corner-ornament { width: 54px; height: 54px; }
@@ -477,6 +498,9 @@
             .date-year-text { font-size: clamp(17px, 4.8vw, 23px); line-height: 1.1; }
             .coptic-section { grid-area: coptic; position: relative; left: auto; top: auto; transform: none; width: 100%; padding: 2px 4px; }
             .coptic-text { font-size: clamp(18px, 5vw, 25px); line-height: 1.35; margin-bottom: 3px; text-align: center; }
+            .live-clock { grid-area: clock; position: static; transform: none; min-width: 0; gap: 0; margin: -2px 0 0; }
+            .live-clock-time { font-size: clamp(30px, 9vw, 42px); letter-spacing: 1.5px; }
+            .live-clock-caption { font-size: 13px; }
             .prayer-city-heading { grid-area: cityheading; position: static; transform: none; font-size: 18px; margin: 0; white-space: normal; }
             .next-prayer-banner { grid-area: nextprayer; position: static; transform: none; padding: 8px 16px; gap: 8px; font-size: 14px; white-space: normal; flex-wrap: wrap; }
             .next-prayer-banner .np-icon { width: 24px; height: 24px; }
@@ -817,6 +841,12 @@
                     <circle cx="202" cy="12" r="2.5" fill="#C9A24B"/>
                 </svg>
             </section>
+
+            <!-- الساعة الحالية بتوقيت القاهرة -->
+            <div class="live-clock" id="liveClock" role="timer" aria-label="الساعة الحالية بتوقيت القاهرة">
+                <span class="live-clock-time" id="liveClockTime">--:--:--</span>
+                <span class="live-clock-caption">توقيت القاهرة</span>
+            </div>
 
             <!-- عنوان مواقيت الصلاة — المحافظة -->
             <div id="prayerCityHeading" class="prayer-city-heading">مواقيت الصلاة — القاهرة</div>
@@ -1658,9 +1688,40 @@
             nextPrayerInterval = setInterval(updateNextPrayerBanner, 60 * 1000);
         }
 
+
+        // ===== الساعة الحية بتوقيت القاهرة =====
+        let cairoClockInterval = null;
+        function updateCairoClock() {
+            const clockEl = document.getElementById('liveClockTime');
+            if (!clockEl) return;
+            try {
+                const time = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'Africa/Cairo',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      }).format(new Date());
+                clockEl.textContent = time;
+            } catch (error) {
+                const fallback = new Intl.DateTimeFormat('en-US', {
+                    timeZone: 'Africa/Cairo',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: true
+                }).format(new Date());
+                clockEl.textContent = fallback;
+            }
+        }
+        function startCairoClock() {
+            if (cairoClockInterval) clearInterval(cairoClockInterval);
+            updateCairoClock();
+            cairoClockInterval = setInterval(updateCairoClock, 1000);
+        }
+
         // ===== بدء التشغيل =====
         window.addEventListener('load', () => {
             initializeDesignSettings();
+            startCairoClock();
             scaleCalendarSheet();
             loadIqamaSettings();
             const prefs = loadPreferences();
