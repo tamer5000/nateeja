@@ -199,8 +199,8 @@
         .gold-divider-line { width: 78%; height: 2.5px; background: linear-gradient(90deg, transparent 0%, var(--gold-dark) 20%, var(--gold-main) 50%, var(--gold-dark) 80%, transparent 100%); border-radius: 2px; }
         .date-year-text { font-family: var(--font-primary); font-size: 48px; font-weight: 800; color: var(--navy-main); line-height: 1.1; }
 
-        .coptic-section { position: absolute; left: 50%; transform: translateX(-50%); top: 40.5%; width: 34%; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 15; }
-        .coptic-text { font-family: var(--font-primary); font-size: 38px; font-weight: 800; color: var(--navy-main); letter-spacing: 0.5px; margin-bottom: 10px; }
+        .coptic-section { position: absolute; left: 50%; transform: translateX(-50%); top: 39%; width: 34%; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 15; }
+        .coptic-text { font-family: var(--font-primary); font-size: 38px; font-weight: 800; color: var(--navy-main); letter-spacing: 0.5px; margin-bottom: 2px; }
 
 
         .live-clock {
@@ -496,7 +496,7 @@
             .date-month-name { font-size: clamp(16px, 4.5vw, 22px); line-height: 1.2; overflow-wrap: anywhere; }
             .gold-divider-line { width: 78%; height: 2px; }
             .date-year-text { font-size: clamp(17px, 4.8vw, 23px); line-height: 1.1; }
-            .coptic-section { grid-area: coptic; position: relative; left: auto; top: auto; transform: none; width: 100%; padding: 2px 4px; }
+            .coptic-section { grid-area: coptic; position: relative; left: auto; top: auto; transform: none; width: 100%; padding: 0 4px; }
             .coptic-text { font-size: clamp(18px, 5vw, 25px); line-height: 1.35; margin-bottom: 3px; text-align: center; }
             .live-clock { grid-area: clock; position: static; transform: none; min-width: 0; gap: 0; margin: -2px 0 0; }
             .live-clock-time { font-size: clamp(30px, 9vw, 42px); letter-spacing: 1.5px; }
@@ -822,7 +822,7 @@
             <!-- التاريخ القبطي -->
             <section class="coptic-section" aria-label="التاريخ القبطي">
                 <div class="coptic-text" id="copticDateDisplay">١١ هاتور ١٧٤٣ ق</div>
-                <svg width="360" height="24" viewBox="0 0 360 24" fill="none">
+                <svg width="360" height="18" viewBox="0 0 360 24" fill="none">
                     <line x1="10" y1="12" x2="145" y2="12" stroke="url(#goldLineL)" stroke-width="2"/>
                     <line x1="215" y1="12" x2="350" y2="12" stroke="url(#goldLineR)" stroke-width="2"/>
                     <defs>
